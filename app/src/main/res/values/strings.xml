@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Muzic</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_rate_app">Rate app</string>
+
+    <color name="app_theme">#7C0020</color>
+    <color name="light_grey">#d3d3d3</color>
+
+    <color name="dark_grey">#7e7e7e</color>
+
+</resources>
