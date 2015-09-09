@@ -2,11 +2,13 @@
     <string name="app_name">Muzic</string>
 
     <string name="hello_world">Hello world!</string>
+    <string name="track_list_activity_label">Muzic</string>
     <string name="action_rate_app">Rate app</string>
+    <string name="scroll_to_top">Scroll to Top</string>
+    <string name="search_text">Search</string>
 
     <color name="app_theme">#7C0020</color>
     <color name="light_grey">#d3d3d3</color>
-
     <color name="dark_grey">#7e7e7e</color>
 
 </resources>

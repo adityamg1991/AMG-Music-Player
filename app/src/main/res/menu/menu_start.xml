@@ -2,6 +2,20 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools">
 
+
+    <item
+        android:id="@+id/search"
+        android:icon="@drawable/searchicon"
+        android:title="@string/search_text"
+        app:showAsAction="always"/>
+
+
+    <item
+        android:id="@+id/scroll_to_top"
+        android:title="@string/scroll_to_top"
+        app:showAsAction="never"/>
+
+
     <item
         android:id="@+id/rate_app"
         android:title="@string/action_rate_app"

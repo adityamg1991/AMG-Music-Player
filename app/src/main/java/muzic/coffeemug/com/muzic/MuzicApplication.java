@@ -4,8 +4,11 @@ import android.app.Application;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Point;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.view.Display;
+import android.view.WindowManager;
 
 import java.util.ArrayList;
 
@@ -75,5 +78,29 @@ public class MuzicApplication extends Application {
         cursor.close();
 
         return musicList;
+    }
+
+
+    public static float dpFromPx(final Context context, final float px) {
+        return px / context.getResources().getDisplayMetrics().density;
+    }
+
+
+    public static float pxFromDp(final Context context, final float dp) {
+        return dp * context.getResources().getDisplayMetrics().density;
+    }
+
+
+    public static int getScreenHeight(Context con) {
+
+        WindowManager wm = (WindowManager) con.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int height = size.y;
+
+        return height;
     }
 }

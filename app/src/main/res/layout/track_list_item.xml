@@ -1,63 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@android:color/transparent"
-              android:orientation="vertical">
+<LinearLayout
+    android:id="@+id/ll_container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/info_text"
-            android:text="AKOSHA"
-            android:layout_width="match_parent"
-            android:singleLine="true"
-            android:paddingLeft="20dp"
-            android:paddingTop="15dp"
-            android:layout_marginBottom="3dp"
-            android:textColor="@android:color/white"
-            android:layout_height="match_parent"/>
+    <TextView
+        android:id="@+id/info_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="3dp"
+        android:paddingLeft="20dp"
+        android:paddingTop="15dp"
+        android:layout_marginRight="20dp"
+        android:singleLine="true"
+        android:text="AKOSHA"
+        android:textColor="@android:color/white"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:layout_marginLeft="20dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
-        android:layout_height="wrap_content">
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/tv_artist"
+            android:id="@+id/tv_info"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center"
-            android:textSize="12sp"
-            android:textColor="@color/dark_grey"
-            android:layout_width="wrap_content"
-            android:singleLine="true"
-            android:layout_height="match_parent"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:text="I"
-            android:textColor="@color/dark_grey"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:id="@+id/tv_album"
-            android:textSize="12sp"
-            android:gravity="center"
-            android:layout_width="wrap_content"
             android:singleLine="true"
             android:textColor="@color/dark_grey"
-            android:layout_height="match_parent"/>
+            android:textSize="12sp"/>
 
 
     </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
+        android:layout_height="0.1dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:alpha="0.5"
-        android:background="@color/dark_grey"
-        android:layout_height="0.1dp"/>
+        android:background="@color/dark_grey"/>
 
 </LinearLayout>

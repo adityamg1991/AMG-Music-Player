@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 
@@ -18,13 +19,17 @@ public class BaseActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
     }
 
-    protected void initActionBar(String title) {
+    protected void initActionBar() {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+    }
+
+
+    protected void setTitle(String str) {
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(Html.fromHtml("<font color=\"#FFFFFF\">" + title + "</font>"));
+        actionBar.setTitle(Html.fromHtml("<font color=\"#FFFFFF\">" + str + "</font>"));
     }
 
 
@@ -35,5 +40,10 @@ public class BaseActivity extends ActionBarActivity {
         } catch (android.content.ActivityNotFoundException exception) {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
         }
+    }
+
+
+    protected void scrollToTop(RecyclerView rView) {
+        rView.scrollToPosition(0);
     }
 }
