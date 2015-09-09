@@ -3,6 +3,7 @@ package muzic.coffeemug.com.muzic;
 import android.animation.Animator;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import muzic.coffeemug.com.muzic.Activities.SearchActivity;
 import muzic.coffeemug.com.muzic.Adapters.TrackListAdapter;
 import muzic.coffeemug.com.muzic.Data.ScrollData;
 import muzic.coffeemug.com.muzic.Data.SharedPrefs;
@@ -30,7 +32,7 @@ public class TrackListActivity extends BaseActivity {
     private ScrollListener scrollListener;
 
     private float pixelsToMove;
-    private MyTrackReceiver myTrackReceiver;
+    private TrackResultReceiver mTrackResultReceiver;
     private Context mContext;
 
 
@@ -38,13 +40,18 @@ public class TrackListActivity extends BaseActivity {
     private TextView tvTrackName;
     private TextView tvArtistName;
 
-    @Override
+    private TrackListAdapter mTrackListAdapter;
+    private ArrayList<Track> mTrackList;
+
+    private final int SEARCH_REQUEST_CODE = 1;
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
         mContext = this;
 
-        myTrackReceiver = new MyTrackReceiver(new Handler());
+        mTrackResultReceiver = new TrackResultReceiver(new Handler());
         pixelsToMove = MuzicApplication.pxFromDp(mContext, 60);
 
         scrollListener = new ScrollListener();
@@ -65,43 +72,39 @@ public class TrackListActivity extends BaseActivity {
 
     private void prepareListOfTracks() {
 
-        new AsyncTask<Void, Void, ArrayList<Track>>() {
+        new AsyncTask<Void, Void, Void>() {
 
-            @Override
-            protected ArrayList<Track> doInBackground(Void... params) {
-                return MuzicApplication.getInstance().getMusicFiles(mContext);
+            protected Void doInBackground(Void... params) {
+                mTrackList = MuzicApplication.getInstance().getMusicFiles(mContext);
+                return null;
             }
 
-            @Override
-            protected void onPostExecute(ArrayList<Track> list) {
-                super.onPostExecute(list);
-                updateUI(list);
-
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                updateUI();
             }
         }.execute();
 
     }
 
 
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         ScrollData.getInstance().reset();
     }
 
 
-    private void updateUI(ArrayList<Track> list) {
+    private void updateUI() {
 
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(mContext);
         recyclerView.setLayoutManager(mLayoutManager);
 
-        TrackListAdapter adapter = new TrackListAdapter(mContext, list, myTrackReceiver);
-        recyclerView.setAdapter(adapter);
+        mTrackListAdapter = new TrackListAdapter(mContext, mTrackList, mTrackResultReceiver);
+        recyclerView.setAdapter(mTrackListAdapter);
     }
 
 
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         MenuInflater inflater = getMenuInflater();
@@ -110,7 +113,6 @@ public class TrackListActivity extends BaseActivity {
     }
 
 
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch(item.getItemId()) {
@@ -120,6 +122,10 @@ public class TrackListActivity extends BaseActivity {
             }
             case R.id.scroll_to_top: {
                 scrollToTop(recyclerView);
+                break;
+            }
+            case R.id.search: {
+                startActivityForResult(new Intent(mContext, SearchActivity.class), SEARCH_REQUEST_CODE);
                 break;
             }
         }
@@ -196,9 +202,9 @@ public class TrackListActivity extends BaseActivity {
     }
 
 
-    private class MyTrackReceiver extends ResultReceiver {
+    private class TrackResultReceiver extends ResultReceiver {
 
-        public MyTrackReceiver(Handler handler) {
+        public TrackResultReceiver(Handler handler) {
             super(handler);
         }
 
@@ -217,8 +223,15 @@ public class TrackListActivity extends BaseActivity {
                         if(null != selectedTrack) {
                             // Store the current track in Shared Preferences
                             SharedPrefs.getInstance(mContext).storeTrack(selectedTrack);
-                            // Retrieve current track from Shared Preferences and show display it
+                            // Retrieve current track from Shared Preferences and display it
                             initialiseBottomBar();
+                        }
+                    } else if(resultData.containsKey(Constants.DELETED_TRACK)) {
+
+                        Track deletedTrack = resultData.getParcelable(Constants.DELETED_TRACK);
+                        if(null != deletedTrack) {
+                            mTrackList.remove(deletedTrack);
+                            mTrackListAdapter.notifyDataSetChanged();
                         }
                     }
                 }

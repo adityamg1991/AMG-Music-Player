@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.view.Display;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -59,7 +60,7 @@ public class MuzicApplication extends Application {
 
         ContentResolver musicResolver = context.getContentResolver();
         Uri musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        Cursor cursor = musicResolver.query(musicUri, projection, selection, null, null);
+        Cursor cursor = musicResolver.query(musicUri, projection, selection, null, "UPPER (" + MediaStore.Audio.Media.TITLE + ") ASC");
 
         for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
 
@@ -102,5 +103,10 @@ public class MuzicApplication extends Application {
         int height = size.y;
 
         return height;
+    }
+
+
+    public void showToast(String msg, Context con) {
+        Toast.makeText(con, msg, Toast.LENGTH_SHORT).show();
     }
 }

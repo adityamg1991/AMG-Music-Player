@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import muzic.coffeemug.com.muzic.Constants;
 import muzic.coffeemug.com.muzic.Data.Track;
+import muzic.coffeemug.com.muzic.Dialogs.TrackOptionsDialog;
 import muzic.coffeemug.com.muzic.R;
 
 /**
@@ -24,13 +25,13 @@ import muzic.coffeemug.com.muzic.R;
 public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.ViewHolder> {
 
     private ArrayList<Track> dataSet;
-    private Context context;
+    private Context mContext;
     private ResultReceiver resultReceiver;
 
 
     public TrackListAdapter(Context context, ArrayList<Track> dataSet, ResultReceiver resultReceiver) {
         this.dataSet = dataSet;
-        this.context = context;
+        this.mContext = context;
         this.resultReceiver = resultReceiver;
     }
 
@@ -79,6 +80,17 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.View
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(Constants.SELECTED_TRACK, selectedTrack);
                 resultReceiver.send(Activity.RESULT_OK, bundle);
+            }
+        });
+
+        holder.llContainer.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+
+                int pos = (int) holder.llContainer.getTag();
+                Track selectedTrack = dataSet.get(pos);
+                new TrackOptionsDialog(selectedTrack, mContext, resultReceiver).show();
+                return true;
             }
         });
 

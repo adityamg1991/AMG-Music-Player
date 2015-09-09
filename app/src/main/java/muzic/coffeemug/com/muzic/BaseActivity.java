@@ -1,10 +1,12 @@
 package muzic.coffeemug.com.muzic;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -12,7 +14,7 @@ import android.text.Html;
 /**
  * Created by aditya on 07/09/15.
  */
-public class BaseActivity extends ActionBarActivity {
+public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,5 +47,18 @@ public class BaseActivity extends ActionBarActivity {
 
     protected void scrollToTop(RecyclerView rView) {
         rView.scrollToPosition(0);
+    }
+
+
+    protected void enableBack() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+
+    protected void makeBackIconWhite() {
+
+        final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        upArrow.setColorFilter(getResources().getColor(android.R.color.white), PorterDuff.Mode.SRC_ATOP);
+        getSupportActionBar().setHomeAsUpIndicator(upArrow);
     }
 }

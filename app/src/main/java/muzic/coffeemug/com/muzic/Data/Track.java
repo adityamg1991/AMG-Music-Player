@@ -11,7 +11,12 @@ public class Track implements Parcelable {
     private String ID;
     private String ARTIST;
     private String TITLE;
+
+    /**
+     * Contains the file path
+      */
     private String DATA;
+
     private String DISPLAY_NAME;
     private String DURATION;
     private String ALBUM_NAME;
