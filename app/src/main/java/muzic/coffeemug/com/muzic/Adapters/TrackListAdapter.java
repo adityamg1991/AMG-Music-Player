@@ -27,12 +27,15 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.View
     private ArrayList<Track> dataSet;
     private Context mContext;
     private ResultReceiver resultReceiver;
+    private boolean isLongClickEnabled = false;
 
 
-    public TrackListAdapter(Context context, ArrayList<Track> dataSet, ResultReceiver resultReceiver) {
+    public TrackListAdapter(Context context, ArrayList<Track> dataSet,
+                            ResultReceiver resultReceiver, boolean isLongClickEnabled) {
         this.dataSet = dataSet;
         this.mContext = context;
         this.resultReceiver = resultReceiver;
+        this.isLongClickEnabled = isLongClickEnabled;
     }
 
 
@@ -87,10 +90,13 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.View
             @Override
             public boolean onLongClick(View view) {
 
-                int pos = (int) holder.llContainer.getTag();
-                Track selectedTrack = dataSet.get(pos);
-                new TrackOptionsDialog(selectedTrack, mContext, resultReceiver).show();
+                if(isLongClickEnabled) {
+                    int pos = (int) holder.llContainer.getTag();
+                    Track selectedTrack = dataSet.get(pos);
+                    new TrackOptionsDialog(selectedTrack, mContext, resultReceiver).show();
+                }
                 return true;
+
             }
         });
 

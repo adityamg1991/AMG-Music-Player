@@ -1,10 +1,11 @@
-package muzic.coffeemug.com.muzic;
+package muzic.coffeemug.com.muzic.Activities;
 
 import android.animation.Animator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
@@ -15,15 +16,20 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import muzic.coffeemug.com.muzic.Activities.SearchActivity;
 import muzic.coffeemug.com.muzic.Adapters.TrackListAdapter;
+import muzic.coffeemug.com.muzic.BaseActivity;
+import muzic.coffeemug.com.muzic.Constants;
 import muzic.coffeemug.com.muzic.Data.ScrollData;
 import muzic.coffeemug.com.muzic.Data.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
+import muzic.coffeemug.com.muzic.MuzicApplication;
+import muzic.coffeemug.com.muzic.R;
+import muzic.coffeemug.com.muzic.Store.TrackStore;
 
 
 public class TrackListActivity extends BaseActivity {
@@ -39,11 +45,13 @@ public class TrackListActivity extends BaseActivity {
     private View bottomBar;
     private TextView tvTrackName;
     private TextView tvArtistName;
+    private ImageView ivAlbumArt;
 
     private TrackListAdapter mTrackListAdapter;
     private ArrayList<Track> mTrackList;
 
     private final int SEARCH_REQUEST_CODE = 1;
+    private Bitmap bmpNoAlbumArt;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +59,7 @@ public class TrackListActivity extends BaseActivity {
         setContentView(R.layout.activity_start);
         mContext = this;
 
+        bmpNoAlbumArt = BitmapFactory.decodeResource(getResources(), R.drawable.no_album_art_small);
         mTrackResultReceiver = new TrackResultReceiver(new Handler());
         pixelsToMove = MuzicApplication.pxFromDp(mContext, 60);
 
@@ -64,27 +73,22 @@ public class TrackListActivity extends BaseActivity {
         bottomBar = findViewById(R.id.bottom_bar);
         tvTrackName = (TextView) bottomBar.findViewById(R.id.tv_track_name);
         tvArtistName = (TextView) bottomBar.findViewById(R.id.tv_artist_name);
-        initialiseBottomBar();
+        ivAlbumArt = (ImageView) bottomBar.findViewById(R.id.iv_album_art);
+        bottomBar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                startActivity(new Intent(TrackListActivity.this, PlayTrackActivity.class));
+                overridePendingTransition(R.anim.pull_up_from_bottom, android.R.anim.fade_out);
+            }
+        });
 
-        prepareListOfTracks();
+        TrackStore.getInstance().readyTracks(this, mTrackResultReceiver);
     }
 
 
-    private void prepareListOfTracks() {
-
-        new AsyncTask<Void, Void, Void>() {
-
-            protected Void doInBackground(Void... params) {
-                mTrackList = MuzicApplication.getInstance().getMusicFiles(mContext);
-                return null;
-            }
-
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                updateUI();
-            }
-        }.execute();
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initialiseBottomBar();
     }
 
 
@@ -100,7 +104,7 @@ public class TrackListActivity extends BaseActivity {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(mContext);
         recyclerView.setLayoutManager(mLayoutManager);
 
-        mTrackListAdapter = new TrackListAdapter(mContext, mTrackList, mTrackResultReceiver);
+        mTrackListAdapter = new TrackListAdapter(mContext, mTrackList, mTrackResultReceiver, true);
         recyclerView.setAdapter(mTrackListAdapter);
     }
 
@@ -221,10 +225,7 @@ public class TrackListActivity extends BaseActivity {
 
                         Track selectedTrack = resultData.getParcelable(Constants.SELECTED_TRACK);
                         if(null != selectedTrack) {
-                            // Store the current track in Shared Preferences
-                            SharedPrefs.getInstance(mContext).storeTrack(selectedTrack);
-                            // Retrieve current track from Shared Preferences and display it
-                            initialiseBottomBar();
+                            saveAndShowTrack(selectedTrack);
                         }
                     } else if(resultData.containsKey(Constants.DELETED_TRACK)) {
 
@@ -233,11 +234,25 @@ public class TrackListActivity extends BaseActivity {
                             mTrackList.remove(deletedTrack);
                             mTrackListAdapter.notifyDataSetChanged();
                         }
+                    } else if(resultData.containsKey(Constants.TRACK_LIST)) {
+
+                        mTrackList = resultData.getParcelableArrayList(Constants.TRACK_LIST);
+                        if(null != mTrackList) {
+                            updateUI();
+                        }
                     }
                 }
             }
+
         }
 
+    }
+
+
+    private void saveAndShowTrack(Track track) {
+
+        SharedPrefs.getInstance(mContext).storeTrack(track);
+        initialiseBottomBar();
     }
 
 
@@ -257,7 +272,35 @@ public class TrackListActivity extends BaseActivity {
             if(!TextUtils.isEmpty(artistName)) {
                 tvArtistName.setText(artistName);
             }
+
+            try {
+                Bitmap bmp = MuzicApplication.getInstance().getAlbumArt(track.getAlbumID(), this);
+                if(null != bmp) {
+                    ivAlbumArt.setImageBitmap(bmp);
+                } else {
+                    ivAlbumArt.setImageBitmap(bmpNoAlbumArt);
+                }
+            } catch (Exception e) {
+                ivAlbumArt.setImageBitmap(bmpNoAlbumArt);
+            }
         }
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == SEARCH_REQUEST_CODE
+                && resultCode == RESULT_OK && null != data) {
+
+            if(data.hasExtra(Constants.SELECTED_TRACK)) {
+
+                Track track = data.getParcelableExtra(Constants.SELECTED_TRACK);
+                if(null != track) {
+                    saveAndShowTrack(track);
+                }
+            }
+        }
+    }
 }

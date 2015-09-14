@@ -1,22 +1,144 @@
 package muzic.coffeemug.com.muzic.Fragments;
 
-import android.support.v4.app.Fragment;
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.ResultReceiver;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+
+import muzic.coffeemug.com.muzic.Activities.SearchActivity;
+import muzic.coffeemug.com.muzic.Adapters.TrackListAdapter;
+import muzic.coffeemug.com.muzic.Constants;
+import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.R;
+import muzic.coffeemug.com.muzic.Store.TrackStore;
 
 
 public class SearchFragment extends Fragment {
+
+
+    private ArrayList<Track> completeTrackList;
+    private ArrayList<Track> listSetInAdapter;
+    private TrackListAdapter listAdapter;
+    private Context mContext;
+    private MyResultReceiver resultReceiver;
+    private SearchActivity activity;
+
 
     public SearchFragment() {
     }
 
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.activity = (SearchActivity) activity;
+    }
+
+    public static SearchFragment getInstance() {
+
+        SearchFragment instance = new SearchFragment();
+        return instance;
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
+
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+
         return inflater.inflate(R.layout.fragment_search, container, false);
+    }
+
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        resultReceiver = new MyResultReceiver(new Handler());
+        RecyclerView recyclerView = (RecyclerView) getActivity().findViewById(R.id.recycler_view);
+
+        completeTrackList = TrackStore.getInstance().getTrackList();
+        listSetInAdapter = new ArrayList<Track>();
+        for(Track track : completeTrackList) {
+            listSetInAdapter.add(track);
+        }
+
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(mContext);
+        recyclerView.setLayoutManager(mLayoutManager);
+        listAdapter = new TrackListAdapter(mContext, listSetInAdapter, resultReceiver, false);
+        recyclerView.setAdapter(listAdapter);
+
+    }
+
+
+    private class MyResultReceiver extends ResultReceiver {
+
+        public MyResultReceiver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+            super.onReceiveResult(resultCode, resultData);
+
+            if(Activity.RESULT_OK == resultCode) {
+
+                if(null != resultData) {
+
+                    if(resultData.containsKey(Constants.SELECTED_TRACK)) {
+
+                        Track selectedTrack = resultData.getParcelable(Constants.SELECTED_TRACK);
+                        if(null != selectedTrack) {
+                            activity.throwSearchedTrackBack(selectedTrack);
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+
+    public void setQueryString(String str) {
+
+        str = str.toLowerCase();
+        listSetInAdapter.clear();
+
+        if(TextUtils.isEmpty(str)) {
+
+            for(Track track : completeTrackList) {
+                listSetInAdapter.add(track);
+            }
+
+        } else {
+
+            for(Track track : completeTrackList) {
+
+                if(track.getDisplayName().toLowerCase().contains(str)
+                        || track.getArtist().toLowerCase().contains(str)
+                        || track.getAlbumName().toLowerCase().contains(str)
+                        || track.getTitle().toLowerCase().contains(str)) {
+
+                    listSetInAdapter.add(track);
+                }
+            }
+        }
+
+        listAdapter.notifyDataSetChanged();
     }
 }
