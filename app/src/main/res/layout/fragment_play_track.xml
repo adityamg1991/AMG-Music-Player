@@ -1,8 +1,142 @@
-<RelativeLayout
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_light">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/iv_drop_down"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:clickable="true"
+            android:padding="10dp"
+            android:src="@drawable/down_icon_selector"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="5dp"
+            android:layout_toRightOf="@id/iv_drop_down"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_track_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Love Runs Out"
+                android:textColor="@android:color/white"
+                android:textSize="24sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tv_add_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Love Runs Out"
+                android:textColor="@color/dark_grey"/>
+
+        </LinearLayout>
 
 
-</RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:padding="30dp"
+        android:layout_weight="3">
+
+        <ImageView
+            android:id="@+id/iv_album_art"
+            android:src="@drawable/no_album_art_big"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.1"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/iv_rewind"
+            android:background="@drawable/selector_previous"
+            android:layout_width="wrap_content"
+            android:clickable="true"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/iv_play_pause"
+            android:layout_toLeftOf="@+id/iv_play_pause"
+            android:layout_toStartOf="@+id/iv_play_pause"/>
+
+        <ImageView
+            android:id="@+id/iv_play_pause"
+            android:background="@drawable/selector_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:layout_alignBottom="@+id/seekBarDistance"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_centerHorizontal="true"/>
+
+        <ImageView
+            android:id="@+id/iv_forward"
+            android:background="@drawable/selector_next"
+            android:layout_width="wrap_content"
+            android:clickable="true"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/iv_play_pause"
+            android:layout_toRightOf="@+id/iv_play_pause"
+            android:layout_toEndOf="@+id/iv_play_pause"/>
+
+
+        <TextView
+            android:id="@+id/tv_starting_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00"
+            android:textSize="11sp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:textColor="@android:color/white"/>
+
+
+        <SeekBar
+            android:id="@+id/seekBarDistance"
+            android:layout_width="match_parent"
+            android:layout_above="@id/tv_starting_time"
+            android:layout_marginBottom="5dp"
+            android:thumb="@drawable/seekbar_white_thumb"
+            android:progressDrawable="@drawable/seekbar_progress_drawable"
+            android:layout_marginTop="5dp"
+            android:layout_height="wrap_content">
+        </SeekBar>
+
+        <TextView
+            android:id="@+id/tv_total_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="04:14"
+            android:textSize="11sp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:textColor="@android:color/white"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

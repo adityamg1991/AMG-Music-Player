@@ -9,6 +9,7 @@
 
     <color name="app_theme">#7C0020</color>
     <color name="app_theme_light">#701A30</color>
+
     <color name="light_grey">#d3d3d3</color>
     <color name="dark_grey">#7e7e7e</color>
     <string name="title_activity_search">Search</string>
