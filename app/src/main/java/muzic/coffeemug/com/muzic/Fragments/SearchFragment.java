@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -23,7 +22,7 @@ import muzic.coffeemug.com.muzic.R;
 import muzic.coffeemug.com.muzic.Store.TrackStore;
 
 
-public class SearchFragment extends Fragment {
+public class SearchFragment extends BaseFragment {
 
 
     private ArrayList<Track> completeTrackList;

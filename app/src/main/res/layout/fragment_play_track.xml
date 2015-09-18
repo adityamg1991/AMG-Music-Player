@@ -2,9 +2,9 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:orientation="vertical"
     android:layout_height="match_parent"
-    android:background="@drawable/background_light">
+    android:background="@drawable/background_light"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -54,12 +54,12 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:padding="30dp"
-        android:layout_weight="3">
+        android:layout_weight="3"
+        android:padding="30dp">
 
-        <ImageView
-            android:id="@+id/iv_album_art"
-            android:src="@drawable/no_album_art_big"
+        <android.support.v4.view.ViewPager
+            android:id="@+id/vp_player"
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
@@ -74,68 +74,68 @@
 
         <ImageView
             android:id="@+id/iv_rewind"
-            android:background="@drawable/selector_previous"
             android:layout_width="wrap_content"
-            android:clickable="true"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/iv_play_pause"
             android:layout_toLeftOf="@+id/iv_play_pause"
-            android:layout_toStartOf="@+id/iv_play_pause"/>
+            android:layout_toStartOf="@+id/iv_play_pause"
+            android:background="@drawable/selector_previous"
+            android:clickable="true"/>
 
         <ImageView
             android:id="@+id/iv_play_pause"
-            android:background="@drawable/selector_play"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true"
             android:layout_alignBottom="@+id/seekBarDistance"
+            android:layout_centerHorizontal="true"
             android:layout_marginBottom="20dp"
-            android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
-            android:layout_centerHorizontal="true"/>
+            android:layout_marginRight="20dp"
+            android:background="@drawable/selector_play"
+            android:clickable="true"/>
 
         <ImageView
             android:id="@+id/iv_forward"
-            android:background="@drawable/selector_next"
             android:layout_width="wrap_content"
-            android:clickable="true"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/iv_play_pause"
+            android:layout_toEndOf="@+id/iv_play_pause"
             android:layout_toRightOf="@+id/iv_play_pause"
-            android:layout_toEndOf="@+id/iv_play_pause"/>
+            android:background="@drawable/selector_next"
+            android:clickable="true"/>
 
 
         <TextView
             android:id="@+id/tv_starting_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="00:00"
-            android:textSize="11sp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
-            android:textColor="@android:color/white"/>
+            android:text="00:00"
+            android:textColor="@android:color/white"
+            android:textSize="11sp"/>
 
 
         <SeekBar
             android:id="@+id/seekBarDistance"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_above="@id/tv_starting_time"
             android:layout_marginBottom="5dp"
-            android:thumb="@drawable/seekbar_white_thumb"
-            android:progressDrawable="@drawable/seekbar_progress_drawable"
             android:layout_marginTop="5dp"
-            android:layout_height="wrap_content">
+            android:progressDrawable="@drawable/seekbar_progress_drawable"
+            android:thumb="@drawable/seekbar_white_thumb">
         </SeekBar>
 
         <TextView
             android:id="@+id/tv_total_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="04:14"
-            android:textSize="11sp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:textColor="@android:color/white"/>
+            android:text="04:14"
+            android:textColor="@android:color/white"
+            android:textSize="11sp"/>
 
     </RelativeLayout>
 
