@@ -22,12 +22,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import muzic.coffeemug.com.muzic.Adapters.TrackListAdapter;
-import muzic.coffeemug.com.muzic.BaseActivity;
-import muzic.coffeemug.com.muzic.Constants;
+import muzic.coffeemug.com.muzic.Utilities.Constants;
 import muzic.coffeemug.com.muzic.Data.ScrollData;
 import muzic.coffeemug.com.muzic.Data.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
-import muzic.coffeemug.com.muzic.MuzicApplication;
+import muzic.coffeemug.com.muzic.Utilities.MuzicApplication;
 import muzic.coffeemug.com.muzic.R;
 import muzic.coffeemug.com.muzic.Store.TrackStore;
 

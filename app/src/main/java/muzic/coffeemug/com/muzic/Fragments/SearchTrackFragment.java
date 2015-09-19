@@ -14,15 +14,15 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
-import muzic.coffeemug.com.muzic.Activities.SearchActivity;
+import muzic.coffeemug.com.muzic.Activities.TrackBaseActivity;
 import muzic.coffeemug.com.muzic.Adapters.TrackListAdapter;
-import muzic.coffeemug.com.muzic.Constants;
+import muzic.coffeemug.com.muzic.Utilities.Constants;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.R;
 import muzic.coffeemug.com.muzic.Store.TrackStore;
 
 
-public class SearchFragment extends BaseFragment {
+public class SearchTrackFragment extends BaseFragment {
 
 
     private ArrayList<Track> completeTrackList;
@@ -30,22 +30,22 @@ public class SearchFragment extends BaseFragment {
     private TrackListAdapter listAdapter;
     private Context mContext;
     private MyResultReceiver resultReceiver;
-    private SearchActivity activity;
+    private TrackBaseActivity activity;
 
 
-    public SearchFragment() {
+    public SearchTrackFragment() {
     }
 
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        this.activity = (SearchActivity) activity;
+        this.activity = (TrackBaseActivity) activity;
     }
 
-    public static SearchFragment getInstance() {
+    public static SearchTrackFragment getInstance() {
 
-        SearchFragment instance = new SearchFragment();
+        SearchTrackFragment instance = new SearchTrackFragment();
         return instance;
     }
 
@@ -81,7 +81,6 @@ public class SearchFragment extends BaseFragment {
         recyclerView.setLayoutManager(mLayoutManager);
         listAdapter = new TrackListAdapter(mContext, listSetInAdapter, resultReceiver, false);
         recyclerView.setAdapter(listAdapter);
-
     }
 
 

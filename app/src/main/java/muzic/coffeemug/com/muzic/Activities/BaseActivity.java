@@ -1,4 +1,4 @@
-package muzic.coffeemug.com.muzic;
+package muzic.coffeemug.com.muzic.Activities;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+
+import muzic.coffeemug.com.muzic.R;
 
 /**
  * Created by aditya on 07/09/15.

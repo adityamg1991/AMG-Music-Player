@@ -14,17 +14,16 @@ import android.widget.EditText;
 
 import java.util.ArrayList;
 
-import muzic.coffeemug.com.muzic.BaseActivity;
-import muzic.coffeemug.com.muzic.Constants;
+import muzic.coffeemug.com.muzic.Utilities.Constants;
 import muzic.coffeemug.com.muzic.Data.Track;
-import muzic.coffeemug.com.muzic.Fragments.SearchFragment;
+import muzic.coffeemug.com.muzic.Fragments.SearchTrackFragment;
 import muzic.coffeemug.com.muzic.R;
 
-public class SearchActivity extends BaseActivity {
+public class SearchActivity extends TrackBaseActivity {
 
     private final String LABEL_STRING = "Search";
     private final String FRAG_TAG = "frag_tag";
-    private SearchFragment mSearchFragment;
+    private SearchTrackFragment mSearchFragment;
     private EditText etSearch;
 
     private FragmentManager managerFragment;
@@ -62,7 +61,7 @@ public class SearchActivity extends BaseActivity {
 
         if(null == managerFragment.findFragmentByTag(FRAG_TAG)) {
 
-            mSearchFragment = SearchFragment.getInstance();
+            mSearchFragment = SearchTrackFragment.getInstance();
             managerFragment.beginTransaction().
                     add(R.id.ll_container, mSearchFragment, FRAG_TAG).commit();
         }
@@ -113,7 +112,7 @@ public class SearchActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-
+    @Override
     public void throwSearchedTrackBack(Track track) {
 
         Intent intent = new Intent();

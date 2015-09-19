@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import muzic.coffeemug.com.muzic.Constants;
+import muzic.coffeemug.com.muzic.Utilities.Constants;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.Dialogs.TrackOptionsDialog;
 import muzic.coffeemug.com.muzic.R;

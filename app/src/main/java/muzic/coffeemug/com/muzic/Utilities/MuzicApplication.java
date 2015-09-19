@@ -1,4 +1,4 @@
-package muzic.coffeemug.com.muzic;
+package muzic.coffeemug.com.muzic.Utilities;
 
 import android.app.Activity;
 import android.app.Application;

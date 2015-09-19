@@ -12,7 +12,7 @@ import android.provider.MediaStore;
 
 import java.util.ArrayList;
 
-import muzic.coffeemug.com.muzic.Constants;
+import muzic.coffeemug.com.muzic.Utilities.Constants;
 import muzic.coffeemug.com.muzic.Data.Track;
 
 /**

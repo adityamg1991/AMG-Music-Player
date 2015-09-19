@@ -1,4 +1,4 @@
-package muzic.coffeemug.com.muzic;
+package muzic.coffeemug.com.muzic.Utilities;
 
 /**
  * Created by aditya on 07/09/15.
