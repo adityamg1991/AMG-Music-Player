@@ -84,4 +84,25 @@ public class MuzicApplication extends Application {
 
         return bmp;
     }
+
+
+    public Bitmap getHighResAlbumArt(String _id, Activity activity) throws Exception{
+
+        Bitmap bmp = null;
+
+        Cursor cursor = activity.managedQuery(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
+                new String[]{MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM_ART},
+                MediaStore.Audio.Albums._ID + "=?",
+                new String[]{_id},
+                null);
+
+        if (cursor.moveToFirst()) {
+            String path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
+
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+            bmp = BitmapFactory.decodeFile(path,bmOptions);
+        }
+
+        return bmp;
+    }
 }

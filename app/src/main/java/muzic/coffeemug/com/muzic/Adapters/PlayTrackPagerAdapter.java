@@ -2,6 +2,7 @@ package muzic.coffeemug.com.muzic.Adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import muzic.coffeemug.com.muzic.Fragments.AlbumArtFragment;
@@ -10,7 +11,7 @@ import muzic.coffeemug.com.muzic.Fragments.SearchTrackFragment;
 /**
  * Created by Aditya on 9/20/2015.
  */
-public class PlayTrackPagerAdapter extends FragmentStatePagerAdapter {
+public class PlayTrackPagerAdapter extends FragmentPagerAdapter {
 
     private static final int NUM_OF_PAGES = 2;
 

@@ -10,6 +10,8 @@ public class Track implements Parcelable {
 
     private String ID;
     private String ARTIST;
+
+    // The name of the song
     private String TITLE;
 
     /**
@@ -20,6 +22,8 @@ public class Track implements Parcelable {
     private String DISPLAY_NAME;
     private String DURATION;
     private String ALBUM_NAME;
+
+    // Use this to get Album Art
     private String ALBUM_ID;
 
 

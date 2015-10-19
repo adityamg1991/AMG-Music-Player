@@ -19,7 +19,7 @@
         android:layout_height="40dp"
         android:scaleType="fitCenter"
         android:layout_centerVertical="true"
-        android:src="@drawable/no_album_art_small"
+        android:src="@drawable/no_album_art_black_small"
         android:layout_marginLeft="15dp"/>
 
     <LinearLayout

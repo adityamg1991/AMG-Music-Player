@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 
+import muzic.coffeemug.com.muzic.Data.SharedPrefs;
+import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.R;
 
 /**
@@ -62,5 +64,10 @@ public class BaseActivity extends AppCompatActivity {
         final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         upArrow.setColorFilter(getResources().getColor(android.R.color.white), PorterDuff.Mode.SRC_ATOP);
         getSupportActionBar().setHomeAsUpIndicator(upArrow);
+    }
+
+
+    protected void saveTrackInSharedPrefs(Track track) {
+        SharedPrefs.getInstance(this).storeTrack(track);
     }
 }

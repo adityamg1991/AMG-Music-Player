@@ -5,7 +5,9 @@
 
     <ImageView
         android:id="@+id/iv_album_art"
-        android:scaleType="center"
+        android:scaleType="fitXY"
+        android:padding="40dp"
+        android:src="@drawable/no_album_art"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

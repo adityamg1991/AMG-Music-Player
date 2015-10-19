@@ -11,6 +11,7 @@ import muzic.coffeemug.com.muzic.R;
 public class PlayTrackActivity extends TrackBaseActivity {
 
     private final String FRAG_TAG = "frag_tag";
+    private PlayTrackFragment playTrackFragment;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +21,7 @@ public class PlayTrackActivity extends TrackBaseActivity {
         FragmentManager managerFragment = getSupportFragmentManager();
         if(null == managerFragment.findFragmentByTag(FRAG_TAG)) {
 
-            PlayTrackFragment playTrackFragment = PlayTrackFragment.getInstance();
+            playTrackFragment = PlayTrackFragment.getInstance();
             managerFragment.beginTransaction().
                     add(android.R.id.content, playTrackFragment, FRAG_TAG).commit();
         }
@@ -36,5 +37,10 @@ public class PlayTrackActivity extends TrackBaseActivity {
     @Override
     public void throwSearchedTrackBack(Track track) {
 
+        saveTrackInSharedPrefs(track);
+
+        if(null != playTrackFragment) {
+            playTrackFragment.setSelectedTrack();
+        }
     }
 }

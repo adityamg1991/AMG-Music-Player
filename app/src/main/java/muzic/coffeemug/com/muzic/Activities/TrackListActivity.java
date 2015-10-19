@@ -58,7 +58,7 @@ public class TrackListActivity extends BaseActivity {
         setContentView(R.layout.activity_start);
         mContext = this;
 
-        bmpNoAlbumArt = BitmapFactory.decodeResource(getResources(), R.drawable.no_album_art_small);
+        bmpNoAlbumArt = BitmapFactory.decodeResource(getResources(), R.drawable.no_album_art_black_small);
         mTrackResultReceiver = new TrackResultReceiver(new Handler());
         pixelsToMove = MuzicApplication.pxFromDp(mContext, 60);
 
@@ -250,7 +250,7 @@ public class TrackListActivity extends BaseActivity {
 
     private void saveAndShowTrack(Track track) {
 
-        SharedPrefs.getInstance(mContext).storeTrack(track);
+        saveTrackInSharedPrefs(track);
         initialiseBottomBar();
     }
 
