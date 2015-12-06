@@ -6,6 +6,8 @@ import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
 
+import muzic.coffeemug.com.muzic.MusicPlayback.MusicPlaybackController;
+
 /**
  * Created by aditya on 08/09/15.
  */
@@ -15,10 +17,13 @@ public class SharedPrefs {
     private static SharedPreferences sharedPreferences;
     private Gson gson = new Gson();
     private final String GSON_KEY = "gson_key";
+    private static MusicPlaybackController musicServiceController;
+    private Context mContext;
 
 
     private SharedPrefs(Context context){
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        mContext = context;
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
     }
 
 
@@ -26,6 +31,7 @@ public class SharedPrefs {
 
         if(null == instance) {
             instance = new SharedPrefs(context);
+            musicServiceController = MusicPlaybackController.getInstance();
         }
         return instance;
     }
@@ -35,6 +41,8 @@ public class SharedPrefs {
 
         String str = gson.toJson(track);
         sharedPreferences.edit().putString(GSON_KEY, str).commit();
+
+        musicServiceController.playTrack(track, mContext);
     }
 
 

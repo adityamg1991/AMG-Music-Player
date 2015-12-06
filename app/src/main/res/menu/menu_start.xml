@@ -9,6 +9,12 @@
         android:title="@string/search_text"
         app:showAsAction="always"/>
 
+    <item
+        android:id="@+id/voice_play"
+        android:title="@string/voice_play"
+        android:icon="@drawable/voice_play"
+        app:showAsAction="always"/>
+
 
     <item
         android:id="@+id/scroll_to_top"

@@ -19,6 +19,7 @@ import muzic.coffeemug.com.muzic.Utilities.MuzicApplication;
  */
 public class AlbumArtFragment extends BaseFragment {
 
+    private ImageView ivAlbumArt;
 
     public static AlbumArtFragment getInstance() {
         return new AlbumArtFragment();
@@ -33,20 +34,19 @@ public class AlbumArtFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        ivAlbumArt = (ImageView) getActivity().findViewById(R.id.iv_album_art);
         setAlbumArt();
     }
 
+    public void setAlbumArt() {
 
-    private void setAlbumArt() {
-
-        ImageView iv = (ImageView) getActivity().findViewById(R.id.iv_album_art);
         Track track = SharedPrefs.getInstance(getActivity()).getStoredTrack();
 
         if(null != track) {
             try {
                 Bitmap bmp = MuzicApplication.getInstance().getHighResAlbumArt(track.getAlbumID(), getActivity());
                 if(null != bmp) {
-                    iv.setImageBitmap(bmp);
+                    ivAlbumArt.setImageBitmap(bmp);
                     return;
                 }
             } catch(Exception e) {
@@ -54,6 +54,6 @@ public class AlbumArtFragment extends BaseFragment {
             }
         }
 
-        iv.setImageResource(R.drawable.no_album_art);
+        ivAlbumArt.setImageResource(R.drawable.no_album_art);
     }
 }

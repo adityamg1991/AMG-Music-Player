@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="muzic.coffeemug.com.muzic" >
+    package="muzic.coffeemug.com.muzic">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -9,10 +9,10 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.App.Base" >
+        android:theme="@style/Theme.App.Base">
         <activity
             android:name=".Activities.TrackListActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,12 +22,20 @@
         <activity
             android:name=".Activities.SearchActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.App.Base" >
-        </activity>
+            android:theme="@style/Theme.App.Base" />
         <activity
             android:name=".Activities.PlayTrackActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait" />
+
+        <service
+            android:name=".MusicPlayback.MusicPlaybackService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <receiver
+            android:name=".MusicPlayback.NotificationButtonClickListener"
+            android:enabled="true"
+            android:exported="false"></receiver>
     </application>
 
 </manifest>

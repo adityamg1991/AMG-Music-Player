@@ -89,6 +89,29 @@ public class TrackStore {
     }
 
 
+    /**
+     * Returns the Track which contains the string passed as an argument
+     */
+    public Track getTrackByHint(String hint) {
+
+        if(null != mTrackList && !mTrackList.isEmpty()) {
+
+            for(Track track : mTrackList) {
+
+                if(track.getDisplayName().toLowerCase().contains(hint)
+                        || track.getArtist().toLowerCase().contains(hint)
+                        || track.getAlbumName().toLowerCase().contains(hint)
+                        || track.getTitle().toLowerCase().contains(hint)) {
+
+                    return track;
+                }
+            }
+        }
+
+        return null;
+    }
+
+
     public ArrayList<Track> getTrackList() {
         return mTrackList;
     }

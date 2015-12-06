@@ -12,4 +12,6 @@ public class Constants {
     public static final String DELETED_TRACK = "i_have_almost_given_up";
 
     public static final String TRACK_LIST = "track_list";
+
+    public static final String FROM_NOTIFICATION = "captain_price";
 }

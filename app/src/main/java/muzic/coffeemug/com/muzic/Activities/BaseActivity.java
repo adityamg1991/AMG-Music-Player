@@ -5,6 +5,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +20,8 @@ import muzic.coffeemug.com.muzic.R;
  * Created by aditya on 07/09/15.
  */
 public class BaseActivity extends AppCompatActivity {
+
+    protected static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,5 +72,17 @@ public class BaseActivity extends AppCompatActivity {
 
     protected void saveTrackInSharedPrefs(Track track) {
         SharedPrefs.getInstance(this).storeTrack(track);
+    }
+
+
+    protected void openSearchDialog(String msg) {
+
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getClass().getPackage().getName());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, msg);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"en-US");
+        startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
     }
 }

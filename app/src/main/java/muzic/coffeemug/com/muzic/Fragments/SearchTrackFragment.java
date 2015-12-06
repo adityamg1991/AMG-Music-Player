@@ -1,5 +1,6 @@
 package muzic.coffeemug.com.muzic.Fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -84,6 +85,7 @@ public class SearchTrackFragment extends BaseFragment {
     }
 
 
+    @SuppressLint("ParcelCreator")
     private class MyResultReceiver extends ResultReceiver {
 
         public MyResultReceiver(Handler handler) {

@@ -2,15 +2,22 @@ package muzic.coffeemug.com.muzic.Utilities;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 /**
  * Created by aditya on 01/09/15.
@@ -22,7 +29,6 @@ public class MuzicApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        instance = new MuzicApplication();
     }
 
 
@@ -61,6 +67,25 @@ public class MuzicApplication extends Application {
 
     public void showToast(String msg, Context con) {
         Toast.makeText(con, msg, Toast.LENGTH_SHORT).show();
+    }
+
+
+    public static Bitmap getSongCoverArt(Context context, long album_id){
+
+        Bitmap bmp = null;
+
+        Uri songCover = Uri.parse("content://media/external/audio/albumart");
+        Uri uriSongCover = ContentUris.withAppendedId(songCover, album_id);
+
+        ContentResolver res = context.getContentResolver();
+        try {
+            InputStream in = res.openInputStream(uriSongCover);
+            bmp = BitmapFactory.decodeStream(in);
+        }catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
+
+        return bmp;
     }
 
 

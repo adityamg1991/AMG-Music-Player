@@ -18,16 +18,22 @@ public class PlayTrackPagerAdapter extends FragmentPagerAdapter {
     public static final int POS_ALBUM_ART = 0;
     public static final int POS_TRACK_LIST = 1;
 
+    private AlbumArtFragment albumArtFragment;
+    private SearchTrackFragment searchTrackFragment;
+
     public PlayTrackPagerAdapter(FragmentManager fm) {
         super(fm);
+
+        albumArtFragment = AlbumArtFragment.getInstance();
+        searchTrackFragment = SearchTrackFragment.getInstance();
     }
 
     public Fragment getItem(int position) {
 
         if(position == POS_ALBUM_ART) {
-            return AlbumArtFragment.getInstance();
+            return albumArtFragment;
         } else if(position == POS_TRACK_LIST) {
-            return SearchTrackFragment.getInstance();
+            return searchTrackFragment;
         }
 
         return null;

@@ -27,7 +27,6 @@ public class SearchActivity extends TrackBaseActivity {
     private EditText etSearch;
 
     private FragmentManager managerFragment;
-    private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,22 +78,10 @@ public class SearchActivity extends TrackBaseActivity {
         if(id == android.R.id.home) {
             onBackPressed();
         } else if (id == R.id.voice_search) {
-            openSearchDialog();
+            openSearchDialog(getString(R.string.voice_search_text));
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-
-    public void openSearchDialog() {
-
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getClass().getPackage().getName());
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak 'Song/Artist/Album' Name");
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"en-US");
-        startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
     }
 
 

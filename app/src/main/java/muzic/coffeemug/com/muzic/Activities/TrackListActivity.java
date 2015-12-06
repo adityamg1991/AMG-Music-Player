@@ -1,6 +1,7 @@
 package muzic.coffeemug.com.muzic.Activities;
 
 import android.animation.Animator;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +10,8 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.speech.RecognizerIntent;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -18,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -75,12 +79,18 @@ public class TrackListActivity extends BaseActivity {
         ivAlbumArt = (ImageView) bottomBar.findViewById(R.id.iv_album_art);
         bottomBar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                startActivity(new Intent(TrackListActivity.this, PlayTrackActivity.class));
-                overridePendingTransition(R.anim.pull_up_from_bottom, android.R.anim.fade_out);
+                startPlayTrackActivity();
             }
         });
 
         TrackStore.getInstance().readyTracks(this, mTrackResultReceiver);
+    }
+
+
+    private void startPlayTrackActivity() {
+
+        startActivity(new Intent(TrackListActivity.this, PlayTrackActivity.class));
+        overridePendingTransition(R.anim.pull_up_from_bottom, android.R.anim.fade_out);
     }
 
 
@@ -131,8 +141,17 @@ public class TrackListActivity extends BaseActivity {
                 startActivityForResult(new Intent(mContext, SearchActivity.class), SEARCH_REQUEST_CODE);
                 break;
             }
+            case R.id.voice_play: {
+                voicePlay();
+                break;
+            }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private void voicePlay() {
+        openSearchDialog(getString(R.string.voice_play));
     }
 
 
@@ -205,6 +224,7 @@ public class TrackListActivity extends BaseActivity {
     }
 
 
+    @SuppressLint("ParcelCreator")
     private class TrackResultReceiver extends ResultReceiver {
 
         public TrackResultReceiver(Handler handler) {
@@ -299,6 +319,18 @@ public class TrackListActivity extends BaseActivity {
                 if(null != track) {
                     saveAndShowTrack(track);
                 }
+            }
+        } else if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+
+            ArrayList<String> matches = data.getStringArrayListExtra(
+                    RecognizerIntent.EXTRA_RESULTS);
+
+            String match = matches.get(0);
+            Track track = TrackStore.getInstance().getTrackByHint(match);
+            if(null == track) {
+                Toast.makeText(this, "No Track found", Toast.LENGTH_SHORT).show();
+            } else {
+                saveAndShowTrack(track);
             }
         }
     }
