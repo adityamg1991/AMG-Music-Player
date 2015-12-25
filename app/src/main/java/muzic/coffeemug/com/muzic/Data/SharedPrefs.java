@@ -17,8 +17,11 @@ public class SharedPrefs {
     private static SharedPreferences sharedPreferences;
     private Gson gson = new Gson();
     private final String GSON_KEY = "gson_key";
-    private static MusicPlaybackController musicServiceController;
     private Context mContext;
+
+    private final String IS_PLAYING_KEY = "is_playing_key";
+
+    private static TrackCurrentPosition trackCurrentPosition;
 
 
     private SharedPrefs(Context context){
@@ -27,22 +30,33 @@ public class SharedPrefs {
     }
 
 
+    public void saveIsPlaying(boolean b) {
+        sharedPreferences.edit().putBoolean(IS_PLAYING_KEY, b).commit();
+    }
+
+
+    public boolean getIsPlaying() {
+        return sharedPreferences.getBoolean(IS_PLAYING_KEY, false);
+    }
+
+
     public static SharedPrefs getInstance(Context context) {
 
         if(null == instance) {
             instance = new SharedPrefs(context);
-            musicServiceController = MusicPlaybackController.getInstance();
+            trackCurrentPosition = new TrackCurrentPosition();
         }
         return instance;
     }
 
-
+    /**
+     * Stores the track info in SharedPrefs.
+     * @param track
+     */
     public void storeTrack(Track track) {
 
         String str = gson.toJson(track);
         sharedPreferences.edit().putString(GSON_KEY, str).commit();
-
-        musicServiceController.playTrack(track, mContext);
     }
 
 
@@ -58,6 +72,34 @@ public class SharedPrefs {
         }
 
         return gson.fromJson(str, Track.class);
+    }
+
+
+    public void saveTrackCurrentPosition(int pos) {
+        trackCurrentPosition.saveTrackCurrentPosition(pos);
+    }
+
+    /**
+     * In case no song is present, -1 will be returned.
+     * @return
+     */
+    public int getTrackCurrentPosition() {
+        return trackCurrentPosition.getTrackCurrentPosition();
+    }
+
+
+    private static class TrackCurrentPosition {
+
+        private static final String KEY = "track_current_pos_key";
+
+        protected void saveTrackCurrentPosition(int currentPosition) {
+            sharedPreferences.edit().putInt(KEY, currentPosition).commit();
+        }
+
+        protected int getTrackCurrentPosition() {
+            return sharedPreferences.getInt(KEY, -1);
+        }
+
     }
 
 }

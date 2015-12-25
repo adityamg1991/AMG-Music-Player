@@ -69,7 +69,7 @@ public class TrackStore {
                     String title = cursor.getString(2);
                     String data = cursor.getString(3);
                     String name = cursor.getString(4);
-                    String duration = cursor.getString(5);
+                    long duration = cursor.getLong(5);
                     String albumName = cursor.getString(6);
                     String albumID = cursor.getString(7);
 
@@ -94,8 +94,9 @@ public class TrackStore {
      */
     public Track getTrackByHint(String hint) {
 
-        if(null != mTrackList && !mTrackList.isEmpty()) {
+        if(null != mTrackList && !mTrackList.isEmpty() && null != hint) {
 
+            hint = hint.toLowerCase();
             for(Track track : mTrackList) {
 
                 if(track.getDisplayName().toLowerCase().contains(hint)
@@ -109,6 +110,21 @@ public class TrackStore {
         }
 
         return null;
+    }
+
+    /**
+     * Returns the first track in the list. Might also return NULL if no tracks are present
+     * @return
+     */
+    public Track getFirstTrack() {
+
+        Track track = null;
+
+        if(null != mTrackList && !mTrackList.isEmpty()) {
+            track = mTrackList.get(0);
+        }
+
+        return track;
     }
 
 

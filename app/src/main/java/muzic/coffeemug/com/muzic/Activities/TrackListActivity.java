@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.speech.RecognizerIntent;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -26,13 +25,13 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import muzic.coffeemug.com.muzic.Adapters.TrackListAdapter;
-import muzic.coffeemug.com.muzic.Utilities.Constants;
 import muzic.coffeemug.com.muzic.Data.ScrollData;
 import muzic.coffeemug.com.muzic.Data.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
-import muzic.coffeemug.com.muzic.Utilities.MuzicApplication;
 import muzic.coffeemug.com.muzic.R;
 import muzic.coffeemug.com.muzic.Store.TrackStore;
+import muzic.coffeemug.com.muzic.Utilities.Constants;
+import muzic.coffeemug.com.muzic.Utilities.MuzicApplication;
 
 
 public class TrackListActivity extends BaseActivity {

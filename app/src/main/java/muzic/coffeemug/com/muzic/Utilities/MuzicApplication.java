@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +19,9 @@ import android.widget.Toast;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+
+import muzic.coffeemug.com.muzic.Data.SharedPrefs;
+import muzic.coffeemug.com.muzic.Data.Track;
 
 /**
  * Created by aditya on 01/09/15.
@@ -125,9 +129,40 @@ public class MuzicApplication extends Application {
             String path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
 
             BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-            bmp = BitmapFactory.decodeFile(path,bmOptions);
+            bmp = BitmapFactory.decodeFile(path, bmOptions);
         }
 
         return bmp;
+    }
+
+    /**
+     * Shares the track you pass as a parameter
+     * @param mContext
+     * @param mTrack
+     */
+    public void shareTrack(Context mContext, Track mTrack) {
+
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("audio/*");
+        share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file:///" + mTrack.getData()));
+        mContext.startActivity(Intent.createChooser(share, "Share " + mTrack.getTitle()));
+    }
+
+    /**
+     * Shares the stored track From SharedPrefs
+     * @param mContext
+     */
+    public void shareTrack(Context mContext) {
+
+        SharedPrefs prefs = SharedPrefs.getInstance(mContext);
+        Track track = prefs.getStoredTrack();
+        if(null != track) {
+            Intent share = new Intent(Intent.ACTION_SEND);
+            share.setType("audio/*");
+            share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file:///" + track.getData()));
+            mContext.startActivity(Intent.createChooser(share, "Share " + track.getTitle()));
+        } else {
+            Toast.makeText(mContext, "Oops, some error occurred", Toast.LENGTH_SHORT).show();
+        }
     }
 }

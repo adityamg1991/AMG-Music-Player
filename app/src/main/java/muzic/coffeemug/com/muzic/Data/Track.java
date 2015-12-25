@@ -20,7 +20,11 @@ public class Track implements Parcelable {
     private String DATA;
 
     private String DISPLAY_NAME;
-    private String DURATION;
+
+    /**
+     * The duration of the audio file, in ms
+     */
+    private long DURATION;
     private String ALBUM_NAME;
 
     // Use this to get Album Art
@@ -28,7 +32,7 @@ public class Track implements Parcelable {
 
 
     public Track(String ID, String ARTIST, String TITLE,
-                 String DATA, String DISPLAY_NAME, String DURATION, String ALBUM_NAME, String ALBUM_ID) {
+                 String DATA, String DISPLAY_NAME, long DURATION, String ALBUM_NAME, String ALBUM_ID) {
         this.ID = ID;
         this.ARTIST = ARTIST;
         this.TITLE = TITLE;
@@ -72,7 +76,7 @@ public class Track implements Parcelable {
         return DISPLAY_NAME;
     }
 
-    public String getDuration() {
+    public long getDuration() {
         return DURATION;
     }
 
@@ -99,7 +103,7 @@ public class Track implements Parcelable {
         TITLE = parcel.readString();
         DATA = parcel.readString();
         DISPLAY_NAME = parcel.readString();
-        DURATION = parcel.readString();
+        DURATION = parcel.readLong();
         ALBUM_NAME = parcel.readString();
         ALBUM_ID = parcel.readString();
     }
@@ -116,7 +120,7 @@ public class Track implements Parcelable {
         dest.writeString(TITLE);
         dest.writeString(DATA);
         dest.writeString(DISPLAY_NAME);
-        dest.writeString(DURATION);
+        dest.writeLong(DURATION);
         dest.writeString(ALBUM_NAME);
         dest.writeString(ALBUM_ID);
     }

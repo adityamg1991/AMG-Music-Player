@@ -1,7 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+    
+    <RelativeLayout
+        android:id="@+id/rl_settings"
+        android:layout_width="wrap_content"
+        android:alpha="0"
+        android:padding="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerInParent="true"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_sound_settings"
+                android:clickable="true"
+                android:layout_width="40dp"
+                android:src="@drawable/selector_sound_settings"
+                android:layout_height="40dp" />
+
+            <ImageView
+                android:id="@+id/iv_share"
+                android:clickable="true"
+                android:layout_width="40dp"
+                android:src="@drawable/selector_share_track"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_height="40dp" />
+
+            <ImageView
+                android:id="@+id/iv_play_meth"
+                android:layout_width="40dp"
+                android:src="@android:drawable/ic_menu_share"
+                android:layout_height="40dp" />
+
+        </LinearLayout>
+        
+    </RelativeLayout>
 
     <ImageView
         android:id="@+id/iv_album_art"
@@ -11,4 +51,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-</LinearLayout>
+</RelativeLayout>

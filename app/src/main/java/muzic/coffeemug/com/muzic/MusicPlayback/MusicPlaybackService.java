@@ -3,31 +3,44 @@ package muzic.coffeemug.com.muzic.MusicPlayback;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.service.notification.NotificationListenerService;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 import android.widget.RemoteViews;
-import android.widget.TextView;
 
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import muzic.coffeemug.com.muzic.Activities.PlayTrackActivity;
-import muzic.coffeemug.com.muzic.Activities.TrackListActivity;
+import muzic.coffeemug.com.muzic.Data.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.R;
+import muzic.coffeemug.com.muzic.Store.TrackStore;
 import muzic.coffeemug.com.muzic.Utilities.Constants;
 import muzic.coffeemug.com.muzic.Utilities.MuzicApplication;
 
-public class MusicPlaybackService extends Service {
+public class MusicPlaybackService extends Service implements MusicPlaybackController.TrackPlayingObserver {
 
-    private MediaPlayer mediaPlayer;
-    MuzicApplication muzicApplication;
+    private static MediaPlayer mediaPlayer;
+    private static MuzicApplication muzicApplication;
+    private static SharedPrefs prefs;
+    private static TrackStore mTrackStore;
+    private MusicPlaybackController musicPlaybackController;
+
+    private ScheduledExecutorService service;
+    private static boolean isPlayTrackActivityListening;
 
 
     public MusicPlaybackService() {
@@ -38,8 +51,40 @@ public class MusicPlaybackService extends Service {
     public void onCreate() {
         super.onCreate();
         mediaPlayer = new MediaPlayer();
+
         muzicApplication = MuzicApplication.getInstance();
+        prefs = SharedPrefs.getInstance(this);
+        mTrackStore = TrackStore.getInstance();
+
+        LocalBroadcastManager.getInstance(this).
+                registerReceiver(broadcastReceiver, new IntentFilter(Constants.PLAY_TRACK_ACT_LISTENING));
+
+        musicPlaybackController = MusicPlaybackController.getInstance(this);
+        mediaPlayer.setOnErrorListener(new MediaPlayerErrorListener());
     }
+
+
+    /**
+     * Listens if PlayTrackActivity is visible, if it is, then only publish track progress.
+     */
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if(null != intent) {
+                isPlayTrackActivityListening =
+                        intent.getBooleanExtra(Constants.IS_LISTENING_FOR_TRACK_UPDATES, false);
+
+                if(isPlayTrackActivityListening) {
+                    publishTrackProgress();
+                } else {
+                    if(mediaPlayer.isPlaying()) {
+                        pausePublishingTrackProgress();
+                    }
+                }
+            }
+        }
+    };
 
 
     @Override
@@ -47,27 +92,114 @@ public class MusicPlaybackService extends Service {
 
         if(null != intent) {
 
-            Bundle bundle = intent.getExtras();
-            if(null != bundle) {
-                try {
+            try {
 
-                    Track trackToBePlayed = bundle.getParcelable(MusicPlaybackConstants.TRACK_TO_BE_PLAYED);
-                    mediaPlayer.reset();
-                    mediaPlayer.setDataSource(trackToBePlayed.getData());
-                    mediaPlayer.prepare();
-                    mediaPlayer.start();
+                Bundle args = intent.getExtras();
+                if(null != args) {
 
-                    startForeground(MusicPlaybackConstants.NOTI_ID, getNotification(trackToBePlayed));
+                    int action = args.getInt(MusicPlaybackConstants.ACTION);
+                    stopForeground(true);
+                    Track trackToBePlayed = SharedPrefs.getInstance(this).getStoredTrack();
 
-                } catch(IOException e) {
-                    e.printStackTrace();
+                    if(null != trackToBePlayed) {
+
+                        if(MusicPlaybackConstants.ACTION_PLAY == action) {
+
+                            prefs.saveIsPlaying(true);
+
+                            mediaPlayer.reset();
+                            mediaPlayer.setDataSource(trackToBePlayed.getData());
+                            mediaPlayer.prepareAsync();
+
+                            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                                @Override
+                                public void onPrepared(MediaPlayer mp) {
+                                    mp.start();
+                                }
+                            });
+
+                            startForeground(MusicPlaybackConstants.NOTI_ID, getNotification(trackToBePlayed));
+                            publishTrackProgress();
+
+                        } else if(MusicPlaybackConstants.ACTION_PAUSE == action) {
+                            mediaPlayer.pause();
+                            prefs.saveIsPlaying(false);
+                            pausePublishingTrackProgress();
+
+                            // TODO Notification
+
+                        } else if(MusicPlaybackConstants.ACTION_CONTINUE == action) {
+
+                            // Start from beginning if no track is present in SharedPrefs
+                            Track track = prefs.getStoredTrack();
+                            if(null == track) {
+                                Track firstTrack = mTrackStore.getFirstTrack();
+                                if(null != firstTrack) {
+                                    prefs.storeTrack(firstTrack);
+
+                                    // Start playing the song
+                                    Intent serviceIntent = new Intent(this, MusicPlaybackService.class);
+                                    serviceIntent.putExtra(MusicPlaybackConstants.ACTION, MusicPlaybackConstants.ACTION_PLAY);
+                                    startService(serviceIntent);
+
+                                    // Tell PlayTrackActivity that new song is stored in SharedPrefs now
+                                    Intent i = new Intent(Constants.TRACK_UPDATE_FROM_SERVICE);
+                                    i.putExtra(Constants.UPDATE_TRACK, true);
+                                    LocalBroadcastManager.getInstance(MusicPlaybackService.this).sendBroadcast(i);
+
+                                } else {
+                                    // Nothing can help you now.
+                                }
+                            } else {
+                                mediaPlayer.start();
+                                prefs.saveIsPlaying(true);
+                                publishTrackProgress();
+                            }
+
+                            // TODO Notification
+                        }
+
+                    }
                 }
-
+            } catch(IOException e) {
+                e.printStackTrace();
             }
         }
 
 
         return START_NOT_STICKY;
+    }
+
+
+
+
+    /**
+     * Publishes Track progress update ( in milliseconds) to any body who is listening.
+     */
+    private void publishTrackProgress() {
+
+        if(null == mediaPlayer || !mediaPlayer.isPlaying()) {
+            return;
+        }
+
+        service = Executors.newScheduledThreadPool(1);
+        service.scheduleWithFixedDelay(new Runnable() {
+            public void run() {
+
+                Intent i = new Intent(Constants.TRACK_UPDATE_FROM_SERVICE);
+                i.putExtra(Constants.TRACK_PROGRESSION_UPDATE_KEY, mediaPlayer.getCurrentPosition());
+                LocalBroadcastManager.getInstance(MusicPlaybackService.this).sendBroadcast(i);
+            }
+        }, 1, 1, TimeUnit.MICROSECONDS);
+    }
+
+
+    private void pausePublishingTrackProgress() {
+
+        if(null != service) {
+            service.shutdownNow();
+            service = null;
+        }
     }
 
 
@@ -102,7 +234,7 @@ public class MusicPlaybackService extends Service {
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
-        Notification notification=new NotificationCompat.Builder(this)
+        Notification notification = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.play_icon)
                 .setContent(remoteViews)
                 .setContentIntent(pendingIntent).build();
@@ -111,7 +243,13 @@ public class MusicPlaybackService extends Service {
     }
 
 
+    @Override
+    public void onDestroy() {
 
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+        prefs.saveIsPlaying(false);
+        super.onDestroy();
+    }
 
 
     @Nullable
@@ -119,4 +257,30 @@ public class MusicPlaybackService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
+
+
+    @Override
+    public boolean isTrackPlaying() {
+
+        if(null != mediaPlayer) {
+            return mediaPlayer.isPlaying();
+        } else {
+            return false;
+        }
+    }
+
+
+    /**
+     * Handles the error thrown by Media Player
+     * For now : If error found, restarting the track
+     */
+    private class MediaPlayerErrorListener implements MediaPlayer.OnErrorListener {
+        @Override
+        public boolean onError(MediaPlayer mp, int what, int extra) {
+
+            musicPlaybackController.playTrack();
+            return false;
+        }
+    }
 }
+

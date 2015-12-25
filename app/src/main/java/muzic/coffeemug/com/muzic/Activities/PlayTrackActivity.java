@@ -1,35 +1,130 @@
 package muzic.coffeemug.com.muzic.Activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import muzic.coffeemug.com.muzic.Adapters.PlayTrackPagerAdapter;
 import muzic.coffeemug.com.muzic.Data.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.Fragments.AlbumArtFragment;
+import muzic.coffeemug.com.muzic.MusicPlayback.MusicPlaybackController;
 import muzic.coffeemug.com.muzic.R;
+import muzic.coffeemug.com.muzic.Utilities.Constants;
 
 public class PlayTrackActivity extends TrackBaseActivity implements View.OnClickListener{
 
     private Track currentTrack;
     private PlayTrackPagerAdapter adapter;
+    private ImageView ivPlayPause;
+    private MusicPlaybackController controller;
 
+    private TextView tvTotalTime, tvCurrentTime, tvTrackName, tvAdditionalInfo;
+    private SeekBar seekBar;
+
+    private SharedPrefs prefs;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_track);
+        prefs = SharedPrefs.getInstance(this);
+        controller = MusicPlaybackController.getInstance(this);
 
         ViewPager mPager = (ViewPager) findViewById(R.id.vp_player);
         adapter = new PlayTrackPagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(adapter);
 
         mPager.addOnPageChangeListener(new MyPagerChangeListener());
-        retrieveTrackFromMemoryAndSetUpTrackInfo();
         findViewById(R.id.iv_drop_down).setOnClickListener(this);
+
+        seekBar = (SeekBar) findViewById(R.id.seekBarDistance);
+        tvTrackName = (TextView) findViewById(R.id.tv_track_title);
+        tvAdditionalInfo = (TextView) findViewById(R.id.tv_add_info);
+
+        tvCurrentTime = (TextView) findViewById(R.id.tv_current_time);
+        tvTotalTime = (TextView) findViewById(R.id.tv_total_time);
+        ivPlayPause = (ImageView) findViewById(R.id.iv_play_pause);
+        ivPlayPause.setOnClickListener(this);
+
+        retrieveTrackFromMemoryAndSetUpTrackInfo();
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        playPauseButtonDecider();
+        LocalBroadcastManager.getInstance(this).
+                registerReceiver(broadcastReceiver, new IntentFilter(Constants.TRACK_UPDATE_FROM_SERVICE));
+        broadcastIfListening(true);
+    }
+
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+        broadcastIfListening(false);
+        super.onPause();
+    }
+
+
+    /**
+     * Tells MusicPlaybackService if it is listening for Track Progression Updates or not.
+     */
+    private void broadcastIfListening(boolean isListening) {
+
+        Intent i = new Intent(Constants.PLAY_TRACK_ACT_LISTENING);
+        i.putExtra(Constants.IS_LISTENING_FOR_TRACK_UPDATES, isListening);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(i);
+    }
+
+
+    /**
+     * Receives updates from Music Playback Service about Track progress
+     */
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if(null != intent) {
+
+                if(intent.hasExtra(Constants.TRACK_PROGRESSION_UPDATE_KEY)) {
+                    int trackProgression = intent.getIntExtra(Constants.TRACK_PROGRESSION_UPDATE_KEY, -1);
+                    if(-1 != trackProgression) {
+                        seekBar.setProgress(trackProgression);
+                        String strCurrentTime = getTimeString(trackProgression / 1000);
+                        tvCurrentTime.setText(strCurrentTime);
+                    }
+                } else if(intent.hasExtra(Constants.UPDATE_TRACK)){
+                    // Use case : User opens app for the first time. Directly clicks on Play Button.
+                    retrieveTrackFromMemoryAndSetUpTrackInfo();
+                }
+            }
+        }
+    };
+
+
+    /**
+     * Decides which button should be visible, Play or Pause.
+     */
+    private void playPauseButtonDecider() {
+
+        ivPlayPause.setImageResource(android.R.color.transparent);
+        if(controller.getIsPlaying()) {
+            ivPlayPause.setImageResource(R.drawable.selector_pause);
+        } else {
+            ivPlayPause.setImageResource(R.drawable.selector_play);
+        }
     }
 
 
@@ -42,6 +137,27 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
                 onBackPressed();
                 break;
             }
+
+            case R.id.iv_play_pause : {
+                handlePlayPause();
+                break;
+            }
+        }
+    }
+
+
+    private void handlePlayPause() {
+
+        ivPlayPause.setImageResource(android.R.color.transparent);
+
+        if(controller.getIsPlaying()) {
+            // It was playing, pausing it
+            ivPlayPause.setImageResource(R.drawable.selector_play);
+            controller.pauseTrack();
+        } else {
+            // It was paused, resuming
+            ivPlayPause.setImageResource(R.drawable.selector_pause);
+            controller.resumeTrack();
         }
     }
 
@@ -49,9 +165,6 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
     private void retrieveTrackFromMemoryAndSetUpTrackInfo() {
 
         currentTrack = SharedPrefs.getInstance(this).getStoredTrack();
-
-        TextView tvTrackName = (TextView) findViewById(R.id.tv_track_title);
-        TextView tvAdditionalInfo = (TextView) findViewById(R.id.tv_add_info);
         tvTrackName.setSelected(true);
 
         if(null != currentTrack) {
@@ -66,13 +179,24 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
             if(!TextUtils.isEmpty(strInfo)) {
                 tvAdditionalInfo.setText(strInfo);
             }
+
+            try {
+                tvCurrentTime.setText("00:00");
+                seekBar.setMax((int) currentTrack.getDuration());
+                long durationInSec = currentTrack.getDuration() / 1000;
+                String strTrackDuration = getTimeString(durationInSec);
+                tvTotalTime.setText(strTrackDuration);
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
     @Override
     public void throwSearchedTrackBack(Track track) {
-        SharedPrefs.getInstance(this).storeTrack(track);
+        saveTrackInSharedPrefs(track);
         retrieveTrackFromMemoryAndSetUpTrackInfo();
+        ivPlayPause.setImageResource(R.drawable.selector_pause);
 
         ((AlbumArtFragment) adapter.getItem(0)).setAlbumArt();
     }
@@ -114,5 +238,29 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(android.R.anim.fade_in, R.anim.push_out_to_bottom);
+    }
+
+
+    private String getTimeString(long durationInSec) {
+
+        String str = "";
+
+        try {
+            String strMins = String.valueOf(durationInSec / 60);
+            if(strMins.length() == 1) {
+                strMins = "0" + strMins;
+            }
+
+            String strSecs = String.valueOf(durationInSec % 60);
+            if(strSecs.length() == 1) {
+                strSecs = "0" + strSecs;
+            }
+
+            str = strMins + ":" + strSecs;
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return str;
     }
 }

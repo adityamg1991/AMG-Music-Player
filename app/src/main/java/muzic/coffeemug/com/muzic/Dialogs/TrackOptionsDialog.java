@@ -30,6 +30,7 @@ public class TrackOptionsDialog {
     private Context mContext;
     private boolean isDataAvailable = true;
     private ResultReceiver mResultReceiver;
+    private MuzicApplication muzicApplication;
 
 
     public TrackOptionsDialog(Track track, Context context, ResultReceiver resultReceiver) {
@@ -37,6 +38,7 @@ public class TrackOptionsDialog {
         this.mTrack = track;
         this.mContext = context;
         this.mResultReceiver = resultReceiver;
+        muzicApplication = MuzicApplication.getInstance();
         if(TextUtils.isEmpty(mTrack.getData())) {
             isDataAvailable = false;
         }
@@ -109,10 +111,7 @@ public class TrackOptionsDialog {
     private void shareTrack() {
 
         if(isDataAvailable) {
-            Intent share = new Intent(Intent.ACTION_SEND);
-            share.setType("audio/*");
-            share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file:///" + mTrack.getData()));
-            mContext.startActivity(Intent.createChooser(share, "Share " + mTrack.getTitle()));
+            muzicApplication.shareTrack(mContext, mTrack);
         }
     }
 

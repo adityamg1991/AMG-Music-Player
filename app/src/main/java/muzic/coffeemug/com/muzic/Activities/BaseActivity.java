@@ -14,6 +14,7 @@ import android.text.Html;
 
 import muzic.coffeemug.com.muzic.Data.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
+import muzic.coffeemug.com.muzic.MusicPlayback.MusicPlaybackController;
 import muzic.coffeemug.com.muzic.R;
 
 /**
@@ -22,10 +23,13 @@ import muzic.coffeemug.com.muzic.R;
 public class BaseActivity extends AppCompatActivity {
 
     protected static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
+    private MusicPlaybackController musicPlaybackController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        musicPlaybackController = MusicPlaybackController.getInstance(this);
     }
 
     protected void initActionBar() {
@@ -72,6 +76,7 @@ public class BaseActivity extends AppCompatActivity {
 
     protected void saveTrackInSharedPrefs(Track track) {
         SharedPrefs.getInstance(this).storeTrack(track);
+        musicPlaybackController.playTrack();
     }
 
 

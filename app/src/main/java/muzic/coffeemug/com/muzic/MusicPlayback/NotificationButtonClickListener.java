@@ -18,7 +18,17 @@ public class NotificationButtonClickListener extends BroadcastReceiver {
         if(null != intent) {
 
             String strAction = intent.getAction();
-            Log.e("Aditya", strAction);
+
+            if(strAction.equalsIgnoreCase(MusicPlaybackConstants.NOTIFICATION_PLAY_PAUSE)) {
+
+                // Play/Pause current Track
+                MusicPlaybackController instance = MusicPlaybackController.getInstance(context);
+
+
+            } else if(strAction.equalsIgnoreCase(MusicPlaybackConstants.NOTIFICATION_NEXT_TRACK)) {
+
+                // Play the next Track
+            }
         }
     }
 
