@@ -15,6 +15,7 @@ import android.text.Html;
 import muzic.coffeemug.com.muzic.Data.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.MusicPlayback.MusicPlaybackController;
+import muzic.coffeemug.com.muzic.MusicPlayback.MusicPlaybackService;
 import muzic.coffeemug.com.muzic.R;
 
 /**
@@ -74,9 +75,9 @@ public class BaseActivity extends AppCompatActivity {
     }
 
 
-    protected void saveTrackInSharedPrefs(Track track) {
+    protected void saveInPrefsAndPlayTrack(Track track) {
         SharedPrefs.getInstance(this).storeTrack(track);
-        musicPlaybackController.playTrack();
+        musicPlaybackController.playTrack(this);
     }
 
 

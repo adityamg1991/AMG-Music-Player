@@ -19,24 +19,12 @@ public class SharedPrefs {
     private final String GSON_KEY = "gson_key";
     private Context mContext;
 
-    private final String IS_PLAYING_KEY = "is_playing_key";
-
     private static TrackCurrentPosition trackCurrentPosition;
 
 
     private SharedPrefs(Context context){
         mContext = context;
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-    }
-
-
-    public void saveIsPlaying(boolean b) {
-        sharedPreferences.edit().putBoolean(IS_PLAYING_KEY, b).commit();
-    }
-
-
-    public boolean getIsPlaying() {
-        return sharedPreferences.getBoolean(IS_PLAYING_KEY, false);
     }
 
 

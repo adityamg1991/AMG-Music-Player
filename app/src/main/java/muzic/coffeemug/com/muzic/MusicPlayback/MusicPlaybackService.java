@@ -37,7 +37,6 @@ public class MusicPlaybackService extends Service implements MusicPlaybackContro
     private static MuzicApplication muzicApplication;
     private static SharedPrefs prefs;
     private static TrackStore mTrackStore;
-    private MusicPlaybackController musicPlaybackController;
 
     private ScheduledExecutorService service;
     private static boolean isPlayTrackActivityListening;
@@ -59,7 +58,6 @@ public class MusicPlaybackService extends Service implements MusicPlaybackContro
         LocalBroadcastManager.getInstance(this).
                 registerReceiver(broadcastReceiver, new IntentFilter(Constants.PLAY_TRACK_ACT_LISTENING));
 
-        musicPlaybackController = MusicPlaybackController.getInstance(this);
         mediaPlayer.setOnErrorListener(new MediaPlayerErrorListener());
     }
 
@@ -105,8 +103,6 @@ public class MusicPlaybackService extends Service implements MusicPlaybackContro
 
                         if(MusicPlaybackConstants.ACTION_PLAY == action) {
 
-                            prefs.saveIsPlaying(true);
-
                             mediaPlayer.reset();
                             mediaPlayer.setDataSource(trackToBePlayed.getData());
                             mediaPlayer.prepareAsync();
@@ -123,7 +119,6 @@ public class MusicPlaybackService extends Service implements MusicPlaybackContro
 
                         } else if(MusicPlaybackConstants.ACTION_PAUSE == action) {
                             mediaPlayer.pause();
-                            prefs.saveIsPlaying(false);
                             pausePublishingTrackProgress();
 
                             // TODO Notification
@@ -152,7 +147,6 @@ public class MusicPlaybackService extends Service implements MusicPlaybackContro
                                 }
                             } else {
                                 mediaPlayer.start();
-                                prefs.saveIsPlaying(true);
                                 publishTrackProgress();
                             }
 
@@ -198,7 +192,6 @@ public class MusicPlaybackService extends Service implements MusicPlaybackContro
 
         if(null != service) {
             service.shutdownNow();
-            service = null;
         }
     }
 
@@ -247,7 +240,6 @@ public class MusicPlaybackService extends Service implements MusicPlaybackContro
     public void onDestroy() {
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
-        prefs.saveIsPlaying(false);
         super.onDestroy();
     }
 
@@ -278,7 +270,8 @@ public class MusicPlaybackService extends Service implements MusicPlaybackContro
         @Override
         public boolean onError(MediaPlayer mp, int what, int extra) {
 
-            musicPlaybackController.playTrack();
+            //musicPlaybackController.playTrack(MusicPlaybackService.this);
+            Log.d("Aditya", "Error : " + what);
             return false;
         }
     }

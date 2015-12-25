@@ -269,7 +269,7 @@ public class TrackListActivity extends BaseActivity {
 
     private void saveAndShowTrack(Track track) {
 
-        saveTrackInSharedPrefs(track);
+        saveInPrefsAndPlayTrack(track);
         initialiseBottomBar();
     }
 

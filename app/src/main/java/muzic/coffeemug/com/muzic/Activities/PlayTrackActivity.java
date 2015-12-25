@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -194,7 +193,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
 
     @Override
     public void throwSearchedTrackBack(Track track) {
-        saveTrackInSharedPrefs(track);
+        saveInPrefsAndPlayTrack(track);
         retrieveTrackFromMemoryAndSetUpTrackInfo();
         ivPlayPause.setImageResource(R.drawable.selector_pause);
 

@@ -26,7 +26,7 @@ public class MusicPlaybackController {
     }
 
 
-    public void playTrack() {
+    public void playTrack(Context c) {
 
         Intent serviceIntent = new Intent(mContext, MusicPlaybackService.class);
         serviceIntent.putExtra(MusicPlaybackConstants.ACTION, MusicPlaybackConstants.ACTION_PLAY);
