@@ -31,12 +31,9 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
     private TextView tvTotalTime, tvCurrentTime, tvTrackName, tvAdditionalInfo;
     private SeekBar seekBar;
 
-    private SharedPrefs prefs;
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_track);
-        prefs = SharedPrefs.getInstance(this);
         controller = MusicPlaybackController.getInstance(this);
 
         ViewPager mPager = (ViewPager) findViewById(R.id.vp_player);
