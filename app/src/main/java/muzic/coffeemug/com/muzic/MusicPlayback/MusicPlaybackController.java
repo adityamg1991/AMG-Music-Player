@@ -1,5 +1,6 @@
 package muzic.coffeemug.com.muzic.MusicPlayback;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 
@@ -49,8 +50,16 @@ public class MusicPlaybackController {
     }
 
 
-    public boolean getIsPlaying() {
-        return trackPlayingObserver.isTrackPlaying();
+    public boolean getIsPlaying(Context context) {
+
+        //return trackPlayingObserver.isTrackPlaying();
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (MusicPlaybackService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

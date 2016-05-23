@@ -33,14 +33,13 @@ import muzic.coffeemug.com.muzic.Utilities.MuzicApplication;
 
 public class MusicPlaybackService extends Service implements MusicPlaybackController.TrackPlayingObserver {
 
-    private static MediaPlayer mediaPlayer;
+    private MediaPlayer mediaPlayer;
     private static MuzicApplication muzicApplication;
     private static SharedPrefs prefs;
     private static TrackStore mTrackStore;
+    private PrefTrackUpdater prefTrackUpdater;
 
     private ScheduledExecutorService service;
-    private static boolean isPlayTrackActivityListening;
-
 
     public MusicPlaybackService() {
     }
@@ -49,40 +48,18 @@ public class MusicPlaybackService extends Service implements MusicPlaybackContro
     @Override
     public void onCreate() {
         super.onCreate();
+
         mediaPlayer = new MediaPlayer();
+        service = Executors.newScheduledThreadPool(1);
+
+        prefTrackUpdater = PrefTrackUpdater.getInstance(mediaPlayer);
 
         muzicApplication = MuzicApplication.getInstance();
         prefs = SharedPrefs.getInstance(this);
         mTrackStore = TrackStore.getInstance();
 
-        LocalBroadcastManager.getInstance(this).
-                registerReceiver(broadcastReceiver, new IntentFilter(Constants.PLAY_TRACK_ACT_LISTENING));
-
         mediaPlayer.setOnErrorListener(new MediaPlayerErrorListener());
     }
-
-
-    /**
-     * Listens if PlayTrackActivity is visible, if it is, then only publish track progress.
-     */
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            if(null != intent) {
-                isPlayTrackActivityListening =
-                        intent.getBooleanExtra(Constants.IS_LISTENING_FOR_TRACK_UPDATES, false);
-
-                if(isPlayTrackActivityListening) {
-                    publishTrackProgress();
-                } else {
-                    if(mediaPlayer.isPlaying()) {
-                        pausePublishingTrackProgress();
-                    }
-                }
-            }
-        }
-    };
 
 
     @Override
@@ -116,12 +93,16 @@ public class MusicPlaybackService extends Service implements MusicPlaybackContro
 
                             startForeground(MusicPlaybackConstants.NOTI_ID, getNotification(trackToBePlayed));
                             publishTrackProgress();
+                            prefTrackUpdater.store();
 
                         } else if(MusicPlaybackConstants.ACTION_PAUSE == action) {
-                            mediaPlayer.pause();
-                            pausePublishingTrackProgress();
 
-                            // TODO Notification
+                            mediaPlayer.stop();
+                            mediaPlayer.reset();
+                            pausePublishingTrackProgress();
+                            prefTrackUpdater.stopStoring();
+                            prefTrackUpdater = null;
+                            stopSelf();
 
                         } else if(MusicPlaybackConstants.ACTION_CONTINUE == action) {
 
@@ -146,11 +127,25 @@ public class MusicPlaybackService extends Service implements MusicPlaybackContro
                                     // Nothing can help you now.
                                 }
                             } else {
-                                mediaPlayer.start();
-                                publishTrackProgress();
-                            }
 
-                            // TODO Notification
+                                final int progress = prefs.getTrackCurrentPosition();
+
+                                mediaPlayer.reset();
+                                mediaPlayer.setDataSource(trackToBePlayed.getData());
+                                mediaPlayer.prepareAsync();
+
+                                mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                                    @Override
+                                    public void onPrepared(MediaPlayer mp) {
+                                        mp.start();
+                                        mp.seekTo(progress * 1000);
+                                    }
+                                });
+
+                                startForeground(MusicPlaybackConstants.NOTI_ID, getNotification(trackToBePlayed));
+                                publishTrackProgress();
+                                prefTrackUpdater.store();
+                            }
                         }
 
                     }
@@ -175,8 +170,6 @@ public class MusicPlaybackService extends Service implements MusicPlaybackContro
         if(null == mediaPlayer || !mediaPlayer.isPlaying()) {
             return;
         }
-
-        service = Executors.newScheduledThreadPool(1);
         service.scheduleWithFixedDelay(new Runnable() {
             public void run() {
 
@@ -236,14 +229,6 @@ public class MusicPlaybackService extends Service implements MusicPlaybackContro
     }
 
 
-    @Override
-    public void onDestroy() {
-
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
-        super.onDestroy();
-    }
-
-
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -270,10 +255,54 @@ public class MusicPlaybackService extends Service implements MusicPlaybackContro
         @Override
         public boolean onError(MediaPlayer mp, int what, int extra) {
 
-            //musicPlaybackController.playTrack(MusicPlaybackService.this);
             Log.d("Aditya", "Error : " + what);
             return false;
         }
+    }
+
+
+    private static class PrefTrackUpdater {
+
+        private static PrefTrackUpdater instance;
+        private static ScheduledExecutorService innerService;
+        private static MediaPlayer mpGlobal;
+
+        private PrefTrackUpdater(){};
+
+        private static PrefTrackUpdater getInstance(MediaPlayer mp) {
+
+            innerService = Executors.newScheduledThreadPool(1);
+
+            if(null == instance) {
+                instance = new PrefTrackUpdater();
+                mpGlobal = mp;
+            }
+            return instance;
+        }
+
+        /**
+         * Stores track progress in Shared Preferences every 3 seconds.
+         */
+        private void store() {
+
+            if(null != innerService) {
+
+                innerService.scheduleWithFixedDelay(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("Aditya", "Saving track progress to Shared prefs : " + mpGlobal.getCurrentPosition()/1000);
+                        prefs.setTrackCurrentPosition(mpGlobal.getCurrentPosition()/1000);
+                    }
+                }, 3, 3, TimeUnit.SECONDS);
+            }
+        }
+
+        private void stopStoring() {
+            if(null != innerService) {
+                innerService.shutdownNow();
+            }
+        }
+
     }
 }
 

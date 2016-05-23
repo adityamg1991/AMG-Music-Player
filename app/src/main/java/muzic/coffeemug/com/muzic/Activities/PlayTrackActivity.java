@@ -23,6 +23,7 @@ import muzic.coffeemug.com.muzic.Utilities.Constants;
 
 public class PlayTrackActivity extends TrackBaseActivity implements View.OnClickListener{
 
+    private Context mContext;
     private Track currentTrack;
     private PlayTrackPagerAdapter adapter;
     private ImageView ivPlayPause;
@@ -34,6 +35,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_track);
+        mContext = this;
         controller = MusicPlaybackController.getInstance(this);
 
         ViewPager mPager = (ViewPager) findViewById(R.id.vp_player);
@@ -62,26 +64,13 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
         playPauseButtonDecider();
         LocalBroadcastManager.getInstance(this).
                 registerReceiver(broadcastReceiver, new IntentFilter(Constants.TRACK_UPDATE_FROM_SERVICE));
-        broadcastIfListening(true);
     }
 
 
     @Override
     protected void onPause() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
-        broadcastIfListening(false);
         super.onPause();
-    }
-
-
-    /**
-     * Tells MusicPlaybackService if it is listening for Track Progression Updates or not.
-     */
-    private void broadcastIfListening(boolean isListening) {
-
-        Intent i = new Intent(Constants.PLAY_TRACK_ACT_LISTENING);
-        i.putExtra(Constants.IS_LISTENING_FOR_TRACK_UPDATES, isListening);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(i);
     }
 
 
@@ -116,7 +105,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
     private void playPauseButtonDecider() {
 
         ivPlayPause.setImageResource(android.R.color.transparent);
-        if(controller.getIsPlaying()) {
+        if(controller.getIsPlaying(mContext)) {
             ivPlayPause.setImageResource(R.drawable.selector_pause);
         } else {
             ivPlayPause.setImageResource(R.drawable.selector_play);
@@ -146,7 +135,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
 
         ivPlayPause.setImageResource(android.R.color.transparent);
 
-        if(controller.getIsPlaying()) {
+        if(controller.getIsPlaying(mContext)) {
             // It was playing, pausing it
             ivPlayPause.setImageResource(R.drawable.selector_play);
             controller.pauseTrack();

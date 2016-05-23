@@ -29,7 +29,6 @@ public class SearchTrackFragment extends BaseFragment {
     private ArrayList<Track> completeTrackList;
     private ArrayList<Track> listSetInAdapter;
     private TrackListAdapter listAdapter;
-    private Context mContext;
     private MyResultReceiver resultReceiver;
     private TrackBaseActivity activity;
 
@@ -48,13 +47,6 @@ public class SearchTrackFragment extends BaseFragment {
 
         SearchTrackFragment instance = new SearchTrackFragment();
         return instance;
-    }
-
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mContext = context;
     }
 
     public View onCreateView(LayoutInflater inflater,
@@ -78,9 +70,9 @@ public class SearchTrackFragment extends BaseFragment {
         }
 
         recyclerView.setHasFixedSize(true);
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(mContext);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(activity);
         recyclerView.setLayoutManager(mLayoutManager);
-        listAdapter = new TrackListAdapter(mContext, listSetInAdapter, resultReceiver, false);
+        listAdapter = new TrackListAdapter(activity, listSetInAdapter, resultReceiver, false);
         recyclerView.setAdapter(listAdapter);
     }
 

@@ -20,6 +20,4 @@ public class Constants {
     public static final String UPDATE_TRACK = "update_track_stored_in_prefs";
 
     public static final String PLAY_TRACK_ACT_LISTENING = "play_track_activity_is_listening_for_song_progression_updates";
-
-    public static final String IS_LISTENING_FOR_TRACK_UPDATES = "is_listening_for_track_updates";
 }

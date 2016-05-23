@@ -63,8 +63,13 @@ public class SharedPrefs {
     }
 
 
-    public void saveTrackCurrentPosition(int pos) {
-        trackCurrentPosition.saveTrackCurrentPosition(pos);
+    public void setTrackCurrentPosition(int pos) {
+        trackCurrentPosition.setTrackCurrentPosition(pos);
+    }
+
+
+    public void getTrackCurrentPosition(int pos) {
+        trackCurrentPosition.getTrackCurrentPosition();
     }
 
     /**
@@ -75,12 +80,14 @@ public class SharedPrefs {
         return trackCurrentPosition.getTrackCurrentPosition();
     }
 
-
+    /**
+     * Data stored in seconds
+     */
     private static class TrackCurrentPosition {
 
         private static final String KEY = "track_current_pos_key";
 
-        protected void saveTrackCurrentPosition(int currentPosition) {
+        protected void setTrackCurrentPosition(int currentPosition) {
             sharedPreferences.edit().putInt(KEY, currentPosition).commit();
         }
 
@@ -89,5 +96,7 @@ public class SharedPrefs {
         }
 
     }
+
+
 
 }

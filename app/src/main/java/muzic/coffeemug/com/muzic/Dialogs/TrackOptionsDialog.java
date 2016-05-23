@@ -2,15 +2,16 @@ package muzic.coffeemug.com.muzic.Dialogs;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.io.File;
 
@@ -25,7 +26,7 @@ import muzic.coffeemug.com.muzic.R;
 public class TrackOptionsDialog {
 
     private String arrOptions[] = {"Share", "Delete"};
-    private MaterialDialog.Builder mBuilder;
+    private AlertDialog.Builder mBuilder;
     private Track mTrack;
     private Context mContext;
     private boolean isDataAvailable = true;
@@ -39,17 +40,15 @@ public class TrackOptionsDialog {
         this.mContext = context;
         this.mResultReceiver = resultReceiver;
         muzicApplication = MuzicApplication.getInstance();
-        if(TextUtils.isEmpty(mTrack.getData())) {
+        if (TextUtils.isEmpty(mTrack.getData())) {
             isDataAvailable = false;
         }
 
-        mBuilder= new MaterialDialog.Builder(context);
-        mBuilder.title(track.getTitle());
-        mBuilder.items(arrOptions);
-        mBuilder.itemsCallback(new MaterialDialog.ListCallback() {
+        mBuilder = new AlertDialog.Builder(context);
+        mBuilder.setTitle(track.getTitle());
+        mBuilder.setItems(arrOptions, new DialogInterface.OnClickListener() {
             @Override
-            public void onSelection(MaterialDialog dialog, View view,
-                                    int which, CharSequence text) {
+            public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
 
                     case 0: {
@@ -61,7 +60,6 @@ public class TrackOptionsDialog {
                         break;
                     }
                 }
-
             }
         });
 
@@ -70,18 +68,14 @@ public class TrackOptionsDialog {
 
     private void deleteTrack() {
 
-        if(isDataAvailable) {
+        if (isDataAvailable) {
 
-            new MaterialDialog.Builder(mContext)
-                    .title(mTrack.getTitle())
-                    .content("Are you sure you want to delete this song ?")
-                    .positiveText("Yes")
-                    .positiveColorRes(R.color.app_theme)
-                    .negativeText("No")
-                    .callback(new MaterialDialog.ButtonCallback() {
+            new AlertDialog.Builder(mContext)
+                    .setTitle(mTrack.getTitle())
+                    .setMessage("Are you sure you want to delete this song ?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
-                        public void onPositive(MaterialDialog dialog) {
-
+                        public void onClick(DialogInterface dialog, int which) {
                             File file = new File(mTrack.getData());
                             if (file.exists()) {
 
@@ -98,26 +92,26 @@ public class TrackOptionsDialog {
 
                             MuzicApplication.getInstance().showToast("Error occurred while deleting File", mContext);
                         }
-
-                        @Override
-                        public void onNegative(MaterialDialog dialog) {
-                            dialog.dismiss();
-                        }
-                    }).show();
+                    }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            }).show();
         }
     }
 
 
     private void shareTrack() {
 
-        if(isDataAvailable) {
+        if (isDataAvailable) {
             muzicApplication.shareTrack(mContext, mTrack);
         }
     }
 
 
     public void show() {
-        if(null != mBuilder) {
+        if (null != mBuilder) {
             mBuilder.show();
         }
     }
