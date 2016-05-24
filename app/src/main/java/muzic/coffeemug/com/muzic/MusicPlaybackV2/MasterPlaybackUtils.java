@@ -30,4 +30,18 @@ public class MasterPlaybackUtils {
         return false;
     }
 
+
+    interface Constants {
+
+        String ACTION = "ACTION";
+
+    }
+
+
+    interface Values {
+
+        String PLAY_TRACK = "PLAY_TRACK";
+
+    }
+
 }

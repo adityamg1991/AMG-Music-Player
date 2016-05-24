@@ -17,7 +17,7 @@ import muzic.coffeemug.com.muzic.Adapters.PlayTrackPagerAdapter;
 import muzic.coffeemug.com.muzic.Data.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.Fragments.AlbumArtFragment;
-import muzic.coffeemug.com.muzic.MusicPlayback.MusicPlaybackController;
+import muzic.coffeemug.com.muzic.MusicPlaybackV2.MasterPlaybackUtils;
 import muzic.coffeemug.com.muzic.R;
 import muzic.coffeemug.com.muzic.Utilities.Constants;
 
@@ -27,7 +27,6 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
     private Track currentTrack;
     private PlayTrackPagerAdapter adapter;
     private ImageView ivPlayPause;
-    private MusicPlaybackController controller;
 
     private TextView tvTotalTime, tvCurrentTime, tvTrackName, tvAdditionalInfo;
     private SeekBar seekBar;
@@ -36,7 +35,6 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_track);
         mContext = this;
-        controller = MusicPlaybackController.getInstance(this);
 
         ViewPager mPager = (ViewPager) findViewById(R.id.vp_player);
         adapter = new PlayTrackPagerAdapter(getSupportFragmentManager());
@@ -62,41 +60,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
     protected void onResume() {
         super.onResume();
         playPauseButtonDecider();
-        LocalBroadcastManager.getInstance(this).
-                registerReceiver(broadcastReceiver, new IntentFilter(Constants.TRACK_UPDATE_FROM_SERVICE));
     }
-
-
-    @Override
-    protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
-        super.onPause();
-    }
-
-
-    /**
-     * Receives updates from Music Playback Service about Track progress
-     */
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            if(null != intent) {
-
-                if(intent.hasExtra(Constants.TRACK_PROGRESSION_UPDATE_KEY)) {
-                    int trackProgression = intent.getIntExtra(Constants.TRACK_PROGRESSION_UPDATE_KEY, -1);
-                    if(-1 != trackProgression) {
-                        seekBar.setProgress(trackProgression);
-                        String strCurrentTime = getTimeString(trackProgression / 1000);
-                        tvCurrentTime.setText(strCurrentTime);
-                    }
-                } else if(intent.hasExtra(Constants.UPDATE_TRACK)){
-                    // Use case : User opens app for the first time. Directly clicks on Play Button.
-                    retrieveTrackFromMemoryAndSetUpTrackInfo();
-                }
-            }
-        }
-    };
 
 
     /**
@@ -105,7 +69,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
     private void playPauseButtonDecider() {
 
         ivPlayPause.setImageResource(android.R.color.transparent);
-        if(controller.getIsPlaying(mContext)) {
+        if(MasterPlaybackUtils.getInstance().isMasterPlaybackServiceRunning(this)) {
             ivPlayPause.setImageResource(R.drawable.selector_pause);
         } else {
             ivPlayPause.setImageResource(R.drawable.selector_play);
@@ -135,7 +99,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
 
         ivPlayPause.setImageResource(android.R.color.transparent);
 
-        if(controller.getIsPlaying(mContext)) {
+        /*if(controller.getIsPlaying(mContext)) {
             // It was playing, pausing it
             ivPlayPause.setImageResource(R.drawable.selector_play);
             controller.pauseTrack();
@@ -143,7 +107,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
             // It was paused, resuming
             ivPlayPause.setImageResource(R.drawable.selector_pause);
             controller.resumeTrack();
-        }
+        }*/
     }
 
 

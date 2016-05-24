@@ -1,8 +1,11 @@
+/*
 package muzic.coffeemug.com.muzic.MusicPlayback;
 
+*/
 /**
  * Created by PAVILION on 12/5/2015.
- */
+ *//*
+
 public class MusicPlaybackConstants {
 
     public static final int NOTI_ID = 1991;
@@ -21,3 +24,4 @@ public class MusicPlaybackConstants {
 
 }
 
+*/

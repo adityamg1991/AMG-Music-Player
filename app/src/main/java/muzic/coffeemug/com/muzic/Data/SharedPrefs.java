@@ -6,7 +6,6 @@ import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
 
-import muzic.coffeemug.com.muzic.MusicPlayback.MusicPlaybackController;
 
 /**
  * Created by aditya on 08/09/15.

@@ -27,14 +27,11 @@ public class MasterPlaybackController {
     }
 
 
-    public void saveAndPlayTrack(Track track) {
+    public void playTrack() {
 
-        if (MasterPlaybackUtils.getInstance().isMasterPlaybackServiceRunning(context)) {
-            // Already some song is playing.
-        } else {
-            // No song is playing, start afresh
-            context.startService(new Intent(context, MasterPlaybackService.class));
-        }
+        Intent intent = new Intent(context, MasterPlaybackService.class);
+        intent.putExtra(MasterPlaybackUtils.Constants.ACTION, MasterPlaybackUtils.Values.PLAY_TRACK);
+        context.startService(intent);
 
     }
 }

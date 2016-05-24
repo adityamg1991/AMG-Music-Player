@@ -3,10 +3,9 @@ package muzic.coffeemug.com.muzic.Adapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 
 import muzic.coffeemug.com.muzic.Fragments.AlbumArtFragment;
-import muzic.coffeemug.com.muzic.Fragments.SearchTrackFragment;
+import muzic.coffeemug.com.muzic.Fragments.TrackListFragment;
 
 /**
  * Created by Aditya on 9/20/2015.
@@ -19,13 +18,13 @@ public class PlayTrackPagerAdapter extends FragmentPagerAdapter {
     public static final int POS_TRACK_LIST = 1;
 
     private AlbumArtFragment albumArtFragment;
-    private SearchTrackFragment searchTrackFragment;
+    private TrackListFragment searchTrackFragment;
 
     public PlayTrackPagerAdapter(FragmentManager fm) {
         super(fm);
 
         albumArtFragment = AlbumArtFragment.getInstance();
-        searchTrackFragment = SearchTrackFragment.getInstance();
+        searchTrackFragment = TrackListFragment.getInstance();
     }
 
     public Fragment getItem(int position) {

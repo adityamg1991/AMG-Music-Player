@@ -2,7 +2,6 @@ package muzic.coffeemug.com.muzic.Fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
@@ -23,7 +22,7 @@ import muzic.coffeemug.com.muzic.R;
 import muzic.coffeemug.com.muzic.Store.TrackStore;
 
 
-public class SearchTrackFragment extends BaseFragment {
+public class TrackListFragment extends BaseFragment {
 
 
     private ArrayList<Track> completeTrackList;
@@ -33,7 +32,7 @@ public class SearchTrackFragment extends BaseFragment {
     private TrackBaseActivity activity;
 
 
-    public SearchTrackFragment() {
+    public TrackListFragment() {
     }
 
 
@@ -43,9 +42,9 @@ public class SearchTrackFragment extends BaseFragment {
         this.activity = (TrackBaseActivity) activity;
     }
 
-    public static SearchTrackFragment getInstance() {
+    public static TrackListFragment getInstance() {
 
-        SearchTrackFragment instance = new SearchTrackFragment();
+        TrackListFragment instance = new TrackListFragment();
         return instance;
     }
 

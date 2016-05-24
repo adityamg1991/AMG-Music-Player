@@ -13,11 +13,4 @@ public class Constants {
 
     public static final String TRACK_LIST = "track_list";
 
-    public static final String TRACK_UPDATE_FROM_SERVICE = "coffee_mug";
-
-    public static final String TRACK_PROGRESSION_UPDATE_KEY = "track_prog_update_key";
-
-    public static final String UPDATE_TRACK = "update_track_stored_in_prefs";
-
-    public static final String PLAY_TRACK_ACT_LISTENING = "play_track_activity_is_listening_for_song_progression_updates";
 }

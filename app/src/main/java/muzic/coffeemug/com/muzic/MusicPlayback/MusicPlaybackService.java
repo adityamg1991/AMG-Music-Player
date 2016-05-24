@@ -1,3 +1,4 @@
+/*
 package muzic.coffeemug.com.muzic.MusicPlayback;
 
 import android.app.Notification;
@@ -162,9 +163,11 @@ public class MusicPlaybackService extends Service implements MusicPlaybackContro
 
 
 
-    /**
+    */
+/**
      * Publishes Track progress update ( in milliseconds) to any body who is listening.
-     */
+     *//*
+
     private void publishTrackProgress() {
 
         if(null == mediaPlayer || !mediaPlayer.isPlaying()) {
@@ -247,10 +250,12 @@ public class MusicPlaybackService extends Service implements MusicPlaybackContro
     }
 
 
-    /**
+    */
+/**
      * Handles the error thrown by Media Player
      * For now : If error found, restarting the track
-     */
+     *//*
+
     private class MediaPlayerErrorListener implements MediaPlayer.OnErrorListener {
         @Override
         public boolean onError(MediaPlayer mp, int what, int extra) {
@@ -280,9 +285,11 @@ public class MusicPlaybackService extends Service implements MusicPlaybackContro
             return instance;
         }
 
-        /**
+        */
+/**
          * Stores track progress in Shared Preferences every 3 seconds.
-         */
+         *//*
+
         private void store() {
 
             if(null != innerService) {
@@ -306,3 +313,4 @@ public class MusicPlaybackService extends Service implements MusicPlaybackContro
     }
 }
 
+*/

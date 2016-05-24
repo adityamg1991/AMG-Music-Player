@@ -1,12 +1,15 @@
+/*
 package muzic.coffeemug.com.muzic.MusicPlayback;
 
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 
+*/
 /**
  * Created by PAVILION on 12/5/2015.
- */
+ *//*
+
 public class MusicPlaybackController {
 
     private static MusicPlaybackController instance;
@@ -69,3 +72,4 @@ public class MusicPlaybackController {
     }
 
 }
+*/

@@ -111,7 +111,6 @@ public class TrackListActivity extends BaseActivity {
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(mContext);
         recyclerView.setLayoutManager(mLayoutManager);
-
         mTrackListAdapter = new TrackListAdapter(mContext, mTrackList, mTrackResultReceiver, true);
         recyclerView.setAdapter(mTrackListAdapter);
     }
