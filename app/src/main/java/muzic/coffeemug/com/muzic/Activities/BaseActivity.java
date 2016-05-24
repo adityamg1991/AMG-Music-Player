@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.ActionBar;
@@ -11,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.view.Window;
+import android.view.WindowManager;
 
 import muzic.coffeemug.com.muzic.Data.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
@@ -27,6 +30,17 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Window window = this.getWindow();
+                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(this.getResources().getColor(android.R.color.black));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     protected void initActionBar() {
