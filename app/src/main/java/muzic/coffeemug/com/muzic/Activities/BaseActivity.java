@@ -15,7 +15,7 @@ import android.text.Html;
 import android.view.Window;
 import android.view.WindowManager;
 
-import muzic.coffeemug.com.muzic.Data.SharedPrefs;
+import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.MusicPlaybackV2.MasterPlaybackController;
 import muzic.coffeemug.com.muzic.R;

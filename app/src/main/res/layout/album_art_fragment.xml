@@ -34,9 +34,10 @@
                 android:layout_height="40dp" />
 
             <ImageView
-                android:id="@+id/iv_play_meth"
+                android:id="@+id/iv_play_style"
+                android:clickable="true"
                 android:layout_width="40dp"
-                android:src="@android:drawable/ic_menu_share"
+                android:src="@drawable/play_style_shuffle_white"
                 android:layout_height="40dp" />
 
         </LinearLayout>

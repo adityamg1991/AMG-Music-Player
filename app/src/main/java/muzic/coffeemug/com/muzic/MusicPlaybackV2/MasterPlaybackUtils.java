@@ -41,6 +41,8 @@ public class MasterPlaybackUtils {
     interface Values {
 
         String PLAY_TRACK = "PLAY_TRACK";
+        String PAUSE_TRACK = "PAUSE_TRACK";
+        String RESUME_TRACK = "RESUME_TRACK";
 
     }
 

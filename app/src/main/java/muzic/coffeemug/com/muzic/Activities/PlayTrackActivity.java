@@ -1,11 +1,7 @@
 package muzic.coffeemug.com.muzic.Activities;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,15 +9,19 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import muzic.coffeemug.com.muzic.Adapters.PlayTrackPagerAdapter;
-import muzic.coffeemug.com.muzic.Data.SharedPrefs;
+import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
+import muzic.coffeemug.com.muzic.Events.TrackProgressEvent;
 import muzic.coffeemug.com.muzic.Fragments.AlbumArtFragment;
+import muzic.coffeemug.com.muzic.MusicPlaybackV2.MasterPlaybackController;
 import muzic.coffeemug.com.muzic.MusicPlaybackV2.MasterPlaybackUtils;
 import muzic.coffeemug.com.muzic.R;
-import muzic.coffeemug.com.muzic.Utilities.Constants;
 
-public class PlayTrackActivity extends TrackBaseActivity implements View.OnClickListener{
+public class PlayTrackActivity extends TrackBaseActivity implements View.OnClickListener {
 
     private Context mContext;
     private Track currentTrack;
@@ -31,10 +31,29 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
     private TextView tvTotalTime, tvCurrentTime, tvTrackName, tvAdditionalInfo;
     private SeekBar seekBar;
 
+    private MasterPlaybackController masterPlaybackController;
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        playPauseButtonDecider();
+        EventBus.getDefault().register(this);
+    }
+
+
+    @Override
+    protected void onPause() {
+        EventBus.getDefault().unregister(this);
+        super.onPause();
+    }
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_track);
         mContext = this;
+        masterPlaybackController = MasterPlaybackController.getInstance(this);
 
         ViewPager mPager = (ViewPager) findViewById(R.id.vp_player);
         adapter = new PlayTrackPagerAdapter(getSupportFragmentManager());
@@ -56,13 +75,6 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
     }
 
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        playPauseButtonDecider();
-    }
-
-
     /**
      * Decides which button should be visible, Play or Pause.
      */
@@ -70,10 +82,20 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
 
         ivPlayPause.setImageResource(android.R.color.transparent);
         if(MasterPlaybackUtils.getInstance().isMasterPlaybackServiceRunning(this)) {
-            ivPlayPause.setImageResource(R.drawable.selector_pause);
+            setPausedIcon();
         } else {
-            ivPlayPause.setImageResource(R.drawable.selector_play);
+            setPlayIcon();
         }
+    }
+
+
+    private void setPlayIcon() {
+        ivPlayPause.setImageResource(R.drawable.selector_play);
+    }
+
+
+    private void setPausedIcon() {
+        ivPlayPause.setImageResource(R.drawable.selector_pause);
     }
 
 
@@ -99,15 +121,23 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
 
         ivPlayPause.setImageResource(android.R.color.transparent);
 
-        /*if(controller.getIsPlaying(mContext)) {
-            // It was playing, pausing it
-            ivPlayPause.setImageResource(R.drawable.selector_play);
-            controller.pauseTrack();
+        if(MasterPlaybackUtils.getInstance().isMasterPlaybackServiceRunning(this)) {
+            pausePlayback();
         } else {
-            // It was paused, resuming
-            ivPlayPause.setImageResource(R.drawable.selector_pause);
-            controller.resumeTrack();
-        }*/
+            resumePlayback();
+        }
+    }
+
+
+    private void resumePlayback() {
+        masterPlaybackController.resumeTrack();
+        setPausedIcon();
+    }
+
+
+    private void pausePlayback() {
+        masterPlaybackController.pauseTrack();
+        setPlayIcon();
     }
 
 
@@ -135,6 +165,12 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
                 long durationInSec = currentTrack.getDuration() / 1000;
                 String strTrackDuration = getTimeString(durationInSec);
                 tvTotalTime.setText(strTrackDuration);
+
+                int progress = SharedPrefs.getInstance(this).getTrackProgress();
+                if (SharedPrefs.Empty.progress != progress) {
+                    setTrackProgress(progress);
+                }
+
             } catch(Exception e) {
                 e.printStackTrace();
             }
@@ -211,5 +247,22 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
         }
 
         return str;
+    }
+
+
+    @Subscribe
+    public void onEvent(TrackProgressEvent event) {
+        if (null != event) {
+            int progress = event.getProgress();
+            setTrackProgress(progress);
+        }
+    }
+
+
+
+    private void setTrackProgress(int progress) {
+
+        tvCurrentTime.setText(getTimeString(progress));
+        seekBar.setProgress(progress * 1000);
     }
 }

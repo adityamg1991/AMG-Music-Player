@@ -34,4 +34,18 @@ public class MasterPlaybackController {
         context.startService(intent);
 
     }
+
+
+    public void pauseTrack() {
+        Intent intent = new Intent(context, MasterPlaybackService.class);
+        intent.putExtra(MasterPlaybackUtils.Constants.ACTION, MasterPlaybackUtils.Values.PAUSE_TRACK);
+        context.startService(intent);
+    }
+
+
+    public void resumeTrack() {
+        Intent intent = new Intent(context, MasterPlaybackService.class);
+        intent.putExtra(MasterPlaybackUtils.Constants.ACTION, MasterPlaybackUtils.Values.RESUME_TRACK);
+        context.startService(intent);
+    }
 }

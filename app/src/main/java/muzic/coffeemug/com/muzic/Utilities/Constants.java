@@ -1,5 +1,7 @@
 package muzic.coffeemug.com.muzic.Utilities;
 
+import java.util.HashMap;
+
 /**
  * Created by aditya on 07/09/15.
  */

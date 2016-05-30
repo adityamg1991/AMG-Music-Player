@@ -1,11 +1,9 @@
 package muzic.coffeemug.com.muzic.Fragments;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +12,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import muzic.coffeemug.com.muzic.Data.SharedPrefs;
+import muzic.coffeemug.com.muzic.Utilities.PlayStyle;
+import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.R;
-import muzic.coffeemug.com.muzic.Store.TrackStore;
 import muzic.coffeemug.com.muzic.Utilities.MuzicApplication;
 
 /**
@@ -30,6 +28,8 @@ public class AlbumArtFragment extends BaseFragment implements View.OnClickListen
     private RelativeLayout rlSettings;
     private int valueToAnimate = -1;
     private MuzicApplication muzicApplication;
+    private SharedPrefs prefs;
+    private ImageView ivPlayStyle;
 
     public static AlbumArtFragment getInstance() {
         AlbumArtFragment frag = new AlbumArtFragment();
@@ -46,6 +46,7 @@ public class AlbumArtFragment extends BaseFragment implements View.OnClickListen
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        prefs = SharedPrefs.getInstance(getActivity());
         muzicApplication = MuzicApplication.getInstance();
         isControlPanelVisible = false;
         ivAlbumArt = (ImageView) getActivity().findViewById(R.id.iv_album_art);
@@ -76,6 +77,15 @@ public class AlbumArtFragment extends BaseFragment implements View.OnClickListen
         // Set up clicks
         getActivity().findViewById(R.id.iv_sound_settings).setOnClickListener(this);
         getActivity().findViewById(R.id.iv_share).setOnClickListener(this);
+
+        ivPlayStyle = (ImageView) getActivity().findViewById(R.id.iv_play_style);
+        ivPlayStyle.setOnClickListener(this);
+
+        // Set up the current play style
+        int plaStyle = prefs.getPlayStyle();
+        int drawablePlayStyle = PlayStyle.getPlayStyleDrawable(plaStyle);
+        ivPlayStyle.setImageResource(drawablePlayStyle);
+
     }
 
     public void setAlbumArt() {
@@ -132,6 +142,22 @@ public class AlbumArtFragment extends BaseFragment implements View.OnClickListen
                 muzicApplication.shareTrack(getActivity());
                 break;
             }
+            case R.id.iv_play_style : {
+                togglePlayStyle();
+                break;
+            }
         }
+    }
+
+
+    private void togglePlayStyle() {
+        int playStyle = prefs.getPlayStyle();
+        playStyle++;
+        if (playStyle > 2) {
+            playStyle = 0;
+        }
+        prefs.setPlayStyle(playStyle);
+        int drawablePlayStyle = PlayStyle.getPlayStyleDrawable(playStyle);
+        ivPlayStyle.setImageResource(drawablePlayStyle);
     }
 }

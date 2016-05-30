@@ -1,0 +1,93 @@
+package muzic.coffeemug.com.muzic.Utilities;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+import com.google.gson.Gson;
+
+import muzic.coffeemug.com.muzic.Data.Track;
+
+
+/**
+ * Created by aditya on 08/09/15.
+ */
+public class SharedPrefs {
+
+
+    public interface Empty {
+        int progress = 0;
+    }
+
+
+    private static SharedPrefs instance;
+    private static SharedPreferences sharedPreferences;
+    private Gson gson = new Gson();
+
+    private Context mContext;
+
+    private static final String KEY_PLAY_STYLE = "KEY_PLAY_STYLE";
+    private static final String KEY_TRACK_PROGRESS = "KEY_TRACK_PROGRESS";
+    private static final String GSON_KEY = "gson_key";
+
+    private SharedPrefs(Context context) {
+        mContext = context;
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+    }
+
+
+    public static SharedPrefs getInstance(Context context) {
+
+        if (null == instance) {
+            instance = new SharedPrefs(context);
+        }
+        return instance;
+    }
+
+    /**
+     * Stores the track info in SharedPrefs.
+     *
+     * @param track
+     */
+    public void storeTrack(Track track) {
+
+        String str = gson.toJson(track);
+        sharedPreferences.edit().putString(GSON_KEY, str).commit();
+    }
+
+
+    /**
+     * Returned track can be NULL. Buyer Beware !
+     *
+     * @return
+     */
+    public Track getStoredTrack() {
+
+        String str = sharedPreferences.getString(GSON_KEY, null);
+        if (null == str) {
+            return null;
+        }
+
+        return gson.fromJson(str, Track.class);
+    }
+
+
+    public void saveTrackProgress(int progress) {
+        sharedPreferences.edit().putInt(KEY_TRACK_PROGRESS, progress).commit();
+    }
+
+
+    public int getTrackProgress() {
+        return sharedPreferences.getInt(KEY_TRACK_PROGRESS, Empty.progress);
+    }
+
+
+    public void setPlayStyle(int style) {
+        sharedPreferences.edit().putInt(KEY_PLAY_STYLE, style).commit();
+    }
+
+
+    public int getPlayStyle() {
+        return sharedPreferences.getInt(KEY_PLAY_STYLE, PlayStyle.REPEAT_ALL);
+    }
+}

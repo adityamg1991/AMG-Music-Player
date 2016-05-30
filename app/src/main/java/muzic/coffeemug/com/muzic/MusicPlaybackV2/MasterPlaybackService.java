@@ -3,14 +3,19 @@ package muzic.coffeemug.com.muzic.MusicPlaybackV2;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 
-import muzic.coffeemug.com.muzic.Data.SharedPrefs;
+import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
+import muzic.coffeemug.com.muzic.Events.TrackProgressEvent;
 import muzic.coffeemug.com.muzic.Store.TrackStore;
 import muzic.coffeemug.com.muzic.Utilities.MuzicApplication;
 
@@ -22,7 +27,8 @@ public class MasterPlaybackService extends Service {
     private static MuzicApplication muzicApplication;
     private static SharedPrefs prefs;
     private static TrackStore mTrackStore;
-
+    private Handler handlerProgress;
+    private RunnableProgress runnableProgress;
 
 
     public MasterPlaybackService() {
@@ -38,12 +44,21 @@ public class MasterPlaybackService extends Service {
     public void onCreate() {
         super.onCreate();
 
+        handlerProgress = new Handler();
+        runnableProgress = new RunnableProgress();
         mediaPlayer = new MediaPlayer();
 
         muzicApplication = MuzicApplication.getInstance();
         prefs = SharedPrefs.getInstance(this);
         mTrackStore = TrackStore.getInstance();
         mediaPlayer.setOnErrorListener(new MediaPlayerErrorListener());
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                // TODO : Play the next track
+                releaseResourcesAndStopSelf();
+            }
+        });
     }
 
 
@@ -54,7 +69,11 @@ public class MasterPlaybackService extends Service {
             String strAction = getAction(intent);
             if (null != strAction) {
                 if (MasterPlaybackUtils.Values.PLAY_TRACK.equals(strAction)) {
-                    playSavedTrack();
+                    playSavedTrack(false);
+                } else if (MasterPlaybackUtils.Values.PAUSE_TRACK.equals(strAction)) {
+                    releaseResourcesAndStopSelf();
+                } else if (MasterPlaybackUtils.Values.RESUME_TRACK.equals(strAction)) {
+                    playSavedTrack(true);
                 }
             } else {
                 releaseResourcesAndStopSelf();
@@ -67,7 +86,13 @@ public class MasterPlaybackService extends Service {
     }
 
 
-    private void playSavedTrack() {
+    private void moveSeekerToLastKnownPosition() {
+        int position = prefs.getTrackProgress();
+        mediaPlayer.seekTo(position * 1000);
+    }
+
+
+    private void playSavedTrack(final boolean seek) {
         Track trackToBePlayed = SharedPrefs.getInstance(this).getStoredTrack();
         if (null != trackToBePlayed) {
             try {
@@ -78,9 +103,15 @@ public class MasterPlaybackService extends Service {
                 mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                     @Override
                     public void onPrepared(MediaPlayer mp) {
+
+                        startTimer();
+                        if (seek) {
+                            moveSeekerToLastKnownPosition();
+                        }
                         mp.start();
                     }
                 });
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -89,7 +120,15 @@ public class MasterPlaybackService extends Service {
 
 
     private void releaseResourcesAndStopSelf() {
-        mediaPlayer.release();
+
+        if (null != mediaPlayer) {
+            mediaPlayer.reset();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+
+        stopTimer();
+        Toast.makeText(this, "Music stopped", Toast.LENGTH_SHORT).show();
         stopSelf();
     }
 
@@ -108,5 +147,37 @@ public class MasterPlaybackService extends Service {
             strAction = intent.getStringExtra(MasterPlaybackUtils.Constants.ACTION);
         }
         return strAction;
+    }
+
+
+    private void startTimer() {
+        handlerProgress.postDelayed(runnableProgress, 1000);
+    }
+
+
+    private class RunnableProgress implements Runnable {
+
+        @Override
+        public void run() {
+            int progress = mediaPlayer.getCurrentPosition() / 1000;
+
+            if (progress > 5 && progress % 5 == 0) {
+                prefs.saveTrackProgress(progress);
+            }
+            handlerProgress.postDelayed(this, 1000);
+            sendEvent(progress);
+        }
+    }
+
+
+    private void sendEvent(int progress) {
+        EventBus.getDefault().post(new TrackProgressEvent(progress));
+    }
+
+
+    private void stopTimer() {
+        handlerProgress.removeCallbacks(runnableProgress);
+        handlerProgress = null;
+        runnableProgress = null;
     }
 }
