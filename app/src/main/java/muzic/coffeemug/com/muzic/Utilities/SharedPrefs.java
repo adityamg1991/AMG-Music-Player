@@ -15,11 +15,6 @@ import muzic.coffeemug.com.muzic.Data.Track;
 public class SharedPrefs {
 
 
-    public interface Empty {
-        int progress = 0;
-    }
-
-
     private static SharedPrefs instance;
     private static SharedPreferences sharedPreferences;
     private Gson gson = new Gson();
@@ -78,7 +73,7 @@ public class SharedPrefs {
 
 
     public int getTrackProgress() {
-        return sharedPreferences.getInt(KEY_TRACK_PROGRESS, Empty.progress);
+        return sharedPreferences.getInt(KEY_TRACK_PROGRESS, AppConstants.SharedPref.EMPTY_PROGRESS);
     }
 
 

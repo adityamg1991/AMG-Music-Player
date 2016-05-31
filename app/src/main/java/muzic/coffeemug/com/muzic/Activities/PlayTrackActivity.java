@@ -13,6 +13,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import muzic.coffeemug.com.muzic.Adapters.PlayTrackPagerAdapter;
+import muzic.coffeemug.com.muzic.Store.TrackStore;
+import muzic.coffeemug.com.muzic.Utilities.AppConstants;
+import muzic.coffeemug.com.muzic.Utilities.MuzicApplication;
+import muzic.coffeemug.com.muzic.Utilities.PlayStyle;
 import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.Events.TrackProgressEvent;
@@ -26,7 +30,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
     private Context mContext;
     private Track currentTrack;
     private PlayTrackPagerAdapter adapter;
-    private ImageView ivPlayPause;
+    private ImageView ivPlayPause, ivForward, ivRewind;
 
     private TextView tvTotalTime, tvCurrentTime, tvTrackName, tvAdditionalInfo;
     private SeekBar seekBar;
@@ -71,6 +75,11 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
         ivPlayPause = (ImageView) findViewById(R.id.iv_play_pause);
         ivPlayPause.setOnClickListener(this);
 
+        ivForward = (ImageView) findViewById(R.id.iv_forward);
+        ivRewind = (ImageView) findViewById(R.id.iv_rewind);
+        ivForward.setOnClickListener(this);
+        ivRewind.setOnClickListener(this);
+
         retrieveTrackFromMemoryAndSetUpTrackInfo();
     }
 
@@ -113,7 +122,44 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
                 handlePlayPause();
                 break;
             }
+
+            case R.id.iv_forward : {
+                playNextTrack();
+                break;
+            }
+
+            case R.id.iv_rewind : {
+                // TODO
+                break;
+            }
         }
+    }
+
+
+    private void playNextTrack() {
+
+        final SharedPrefs prefs = SharedPrefs.getInstance(this);
+        final TrackStore trackStore = TrackStore.getInstance(this);
+
+        int playStyle = prefs.getPlayStyle();
+        Track track = null;
+
+        if (PlayStyle.REPEAT_ALL == playStyle) {
+            track = trackStore.getNextLinearTrack();
+        } else if (PlayStyle.REPEAT_ONE == playStyle) {
+            // Nothing to do, play the same track again
+        } else if (PlayStyle.SHUFFLE == playStyle) {
+            track = trackStore.getNextRandomTrack();
+        }
+
+        if (null != track) {
+            prefs.storeTrack(track);
+        }
+
+        adapter.getAlbumArtFragment().setAlbumArt();
+        retrieveTrackFromMemoryAndSetUpTrackInfo();
+        MasterPlaybackController.getInstance(this).playTrack();
+
     }
 
 
@@ -167,7 +213,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
                 tvTotalTime.setText(strTrackDuration);
 
                 int progress = SharedPrefs.getInstance(this).getTrackProgress();
-                if (SharedPrefs.Empty.progress != progress) {
+                if (AppConstants.SharedPref.EMPTY_PROGRESS != progress) {
                     setTrackProgress(progress);
                 }
 
@@ -179,7 +225,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
 
     @Override
     public void throwSearchedTrackBack(Track track) {
-        saveInPrefsAndPlayTrack(track);
+        TrackStore.getInstance(this).saveInPrefsAndPlayTrack(track);
         retrieveTrackFromMemoryAndSetUpTrackInfo();
         ivPlayPause.setImageResource(R.drawable.selector_pause);
 

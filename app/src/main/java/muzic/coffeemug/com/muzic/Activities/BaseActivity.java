@@ -85,13 +85,6 @@ public class BaseActivity extends AppCompatActivity {
     }
 
 
-    protected void saveInPrefsAndPlayTrack(Track track) {
-        SharedPrefs.getInstance(this).storeTrack(track);
-        //musicPlaybackController.playTrack(this);
-        MasterPlaybackController.getInstance(this).playTrack();
-    }
-
-
     protected void openSearchDialog(String msg) {
 
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);

@@ -14,7 +14,7 @@ import android.widget.EditText;
 
 import java.util.ArrayList;
 
-import muzic.coffeemug.com.muzic.Utilities.Constants;
+import muzic.coffeemug.com.muzic.Utilities.AppConstants;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.Fragments.TrackListFragment;
 import muzic.coffeemug.com.muzic.R;
@@ -103,7 +103,7 @@ public class SearchActivity extends TrackBaseActivity {
     public void throwSearchedTrackBack(Track track) {
 
         Intent intent = new Intent();
-        intent.putExtra(Constants.SELECTED_TRACK, track);
+        intent.putExtra(AppConstants.SELECTED_TRACK, track);
         setResult(RESULT_OK, intent);
         finish();
     }

@@ -3,22 +3,18 @@ package muzic.coffeemug.com.muzic.Dialogs;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.view.View;
 
 
 import java.io.File;
 
-import muzic.coffeemug.com.muzic.Utilities.Constants;
+import muzic.coffeemug.com.muzic.Utilities.AppConstants;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.Utilities.MuzicApplication;
-import muzic.coffeemug.com.muzic.R;
 
 /**
  * Created by aditya on 09/09/15.
@@ -84,7 +80,7 @@ public class TrackOptionsDialog {
                                             MediaStore.MediaColumns.DATA + "='" + mTrack.getData() + "'", null);
 
                                     Bundle bundle = new Bundle();
-                                    bundle.putParcelable(Constants.DELETED_TRACK, mTrack);
+                                    bundle.putParcelable(AppConstants.DELETED_TRACK, mTrack);
                                     mResultReceiver.send(Activity.RESULT_OK, bundle);
                                     return;
                                 }

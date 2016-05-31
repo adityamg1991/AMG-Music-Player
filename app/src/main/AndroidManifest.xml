@@ -33,7 +33,7 @@
             android:exported="false" />
 
         <receiver
-            android:name=".MusicPlayback.NotificationButtonClickListener"
+            android:name=".Notification.NotificationButtonClickListener"
             android:enabled="true"
             android:exported="false" />
 

@@ -10,9 +10,9 @@ import muzic.coffeemug.com.muzic.R;
 public class PlayStyle {
 
 
-    public static final int REPEAT_ALL = 0;
-    public static final int REPEAT_ONE = 1;
-    public static final int SHUFFLE = 2;
+    public static final int REPEAT_ALL  = 0;
+    public static final int REPEAT_ONE  = 1;
+    public static final int SHUFFLE     = 2;
 
     private static HashMap<Integer, Integer> map = new HashMap<>();
 

@@ -5,7 +5,7 @@ import java.util.HashMap;
 /**
  * Created by aditya on 07/09/15.
  */
-public class Constants {
+public class AppConstants {
 
     public static final int SCROLL_THRESHOLD = 20;
 
@@ -14,5 +14,20 @@ public class Constants {
     public static final String DELETED_TRACK = "i_have_almost_given_up";
 
     public static final String TRACK_LIST = "track_list";
+
+
+    public interface MusicPlayback {
+
+        int TRACK_NOTI_ID = 1991;
+        String NOTIFICATION_PLAY_PAUSE = "notification_play_pause";
+        String NOTIFICATION_NEXT_TRACK = "notification_next_track";
+        String NOTIFICATION_EXIT = "notification_exit";
+
+    }
+
+
+    public interface SharedPref {
+        int EMPTY_PROGRESS = 0;
+    }
 
 }

@@ -20,12 +20,14 @@ public class PlayTrackPagerAdapter extends FragmentPagerAdapter {
     private AlbumArtFragment albumArtFragment;
     private TrackListFragment searchTrackFragment;
 
+
     public PlayTrackPagerAdapter(FragmentManager fm) {
         super(fm);
 
         albumArtFragment = AlbumArtFragment.getInstance();
         searchTrackFragment = TrackListFragment.getInstance();
     }
+
 
     public Fragment getItem(int position) {
 
@@ -38,7 +40,13 @@ public class PlayTrackPagerAdapter extends FragmentPagerAdapter {
         return null;
     }
 
+
     public int getCount() {
         return NUM_OF_PAGES;
+    }
+
+
+    public AlbumArtFragment getAlbumArtFragment() {
+        return albumArtFragment;
     }
 }

@@ -30,7 +30,7 @@ import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.R;
 import muzic.coffeemug.com.muzic.Store.TrackStore;
-import muzic.coffeemug.com.muzic.Utilities.Constants;
+import muzic.coffeemug.com.muzic.Utilities.AppConstants;
 import muzic.coffeemug.com.muzic.Utilities.MuzicApplication;
 
 
@@ -82,7 +82,7 @@ public class TrackListActivity extends BaseActivity {
             }
         });
 
-        TrackStore.getInstance().readyTracks(this, mTrackResultReceiver);
+        TrackStore.getInstance(this).readyTracks(this, mTrackResultReceiver);
     }
 
 
@@ -171,9 +171,9 @@ public class TrackListActivity extends BaseActivity {
             int scrollDistanceBefore = ScrollData.getInstance().getScrolledDistance();
             boolean isBottomBarVisibleBefore = ScrollData.getInstance().isBottomBarVisible();
 
-            if(scrollDistanceBefore > Constants.SCROLL_THRESHOLD && isBottomBarVisibleBefore) {
+            if(scrollDistanceBefore > AppConstants.SCROLL_THRESHOLD && isBottomBarVisibleBefore) {
                 hideBottomBar();
-            } else if(scrollDistanceBefore < -Constants.SCROLL_THRESHOLD && !isBottomBarVisibleBefore) {
+            } else if(scrollDistanceBefore < -AppConstants.SCROLL_THRESHOLD && !isBottomBarVisibleBefore) {
                 showBottomBar();
             }
 
@@ -238,22 +238,22 @@ public class TrackListActivity extends BaseActivity {
 
                 if(null != resultData) {
 
-                    if(resultData.containsKey(Constants.SELECTED_TRACK)) {
+                    if(resultData.containsKey(AppConstants.SELECTED_TRACK)) {
 
-                        Track selectedTrack = resultData.getParcelable(Constants.SELECTED_TRACK);
+                        Track selectedTrack = resultData.getParcelable(AppConstants.SELECTED_TRACK);
                         if(null != selectedTrack) {
                             saveAndShowTrack(selectedTrack);
                         }
-                    } else if(resultData.containsKey(Constants.DELETED_TRACK)) {
+                    } else if(resultData.containsKey(AppConstants.DELETED_TRACK)) {
 
-                        Track deletedTrack = resultData.getParcelable(Constants.DELETED_TRACK);
+                        Track deletedTrack = resultData.getParcelable(AppConstants.DELETED_TRACK);
                         if(null != deletedTrack) {
                             mTrackList.remove(deletedTrack);
                             mTrackListAdapter.notifyDataSetChanged();
                         }
-                    } else if(resultData.containsKey(Constants.TRACK_LIST)) {
+                    } else if(resultData.containsKey(AppConstants.TRACK_LIST)) {
 
-                        mTrackList = resultData.getParcelableArrayList(Constants.TRACK_LIST);
+                        mTrackList = resultData.getParcelableArrayList(AppConstants.TRACK_LIST);
                         if(null != mTrackList) {
                             updateUI();
                         }
@@ -268,7 +268,7 @@ public class TrackListActivity extends BaseActivity {
 
     private void saveAndShowTrack(Track track) {
 
-        saveInPrefsAndPlayTrack(track);
+        TrackStore.getInstance(this).saveInPrefsAndPlayTrack(track);
         initialiseBottomBar();
     }
 
@@ -311,9 +311,9 @@ public class TrackListActivity extends BaseActivity {
         if(requestCode == SEARCH_REQUEST_CODE
                 && resultCode == RESULT_OK && null != data) {
 
-            if(data.hasExtra(Constants.SELECTED_TRACK)) {
+            if(data.hasExtra(AppConstants.SELECTED_TRACK)) {
 
-                Track track = data.getParcelableExtra(Constants.SELECTED_TRACK);
+                Track track = data.getParcelableExtra(AppConstants.SELECTED_TRACK);
                 if(null != track) {
                     saveAndShowTrack(track);
                 }
@@ -324,7 +324,7 @@ public class TrackListActivity extends BaseActivity {
                     RecognizerIntent.EXTRA_RESULTS);
 
             String match = matches.get(0);
-            Track track = TrackStore.getInstance().getTrackByHint(match);
+            Track track = TrackStore.getInstance(this).getTrackByHint(match);
             if(null == track) {
                 Toast.makeText(this, "No Track found", Toast.LENGTH_SHORT).show();
             } else {

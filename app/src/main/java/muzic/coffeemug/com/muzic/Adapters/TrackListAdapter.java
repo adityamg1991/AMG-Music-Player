@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import muzic.coffeemug.com.muzic.Utilities.Constants;
+import muzic.coffeemug.com.muzic.Utilities.AppConstants;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.Dialogs.TrackOptionsDialog;
 import muzic.coffeemug.com.muzic.R;
@@ -81,7 +81,7 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.View
                 int pos = (int) holder.llContainer.getTag();
                 Track selectedTrack = dataSet.get(pos);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(Constants.SELECTED_TRACK, selectedTrack);
+                bundle.putParcelable(AppConstants.SELECTED_TRACK, selectedTrack);
                 resultReceiver.send(Activity.RESULT_OK, bundle);
             }
         });

@@ -1,5 +1,6 @@
 package muzic.coffeemug.com.muzic.MusicPlaybackV2;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -13,6 +14,8 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 
+import muzic.coffeemug.com.muzic.Notification.NotificationsHub;
+import muzic.coffeemug.com.muzic.Utilities.AppConstants;
 import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.Events.TrackProgressEvent;
@@ -50,7 +53,7 @@ public class MasterPlaybackService extends Service {
 
         muzicApplication = MuzicApplication.getInstance();
         prefs = SharedPrefs.getInstance(this);
-        mTrackStore = TrackStore.getInstance();
+        mTrackStore = TrackStore.getInstance(this);
         mediaPlayer.setOnErrorListener(new MediaPlayerErrorListener());
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -88,7 +91,9 @@ public class MasterPlaybackService extends Service {
 
     private void moveSeekerToLastKnownPosition() {
         int position = prefs.getTrackProgress();
-        mediaPlayer.seekTo(position * 1000);
+        if (AppConstants.SharedPref.EMPTY_PROGRESS != position) {
+            mediaPlayer.seekTo(position * 1000);
+        }
     }
 
 
@@ -96,6 +101,9 @@ public class MasterPlaybackService extends Service {
         Track trackToBePlayed = SharedPrefs.getInstance(this).getStoredTrack();
         if (null != trackToBePlayed) {
             try {
+
+                Notification notification = NotificationsHub.getInstance(this).getTrackNotification(trackToBePlayed);
+                startForeground(AppConstants.MusicPlayback.TRACK_NOTI_ID, notification);
                 mediaPlayer.reset();
                 mediaPlayer.setDataSource(trackToBePlayed.getData());
                 mediaPlayer.prepareAsync();
@@ -129,6 +137,7 @@ public class MasterPlaybackService extends Service {
 
         stopTimer();
         Toast.makeText(this, "Music stopped", Toast.LENGTH_SHORT).show();
+        stopForeground(true);
         stopSelf();
     }
 

@@ -11,24 +11,35 @@ import android.os.ResultReceiver;
 import android.provider.MediaStore;
 
 import java.util.ArrayList;
+import java.util.Random;
 
-import muzic.coffeemug.com.muzic.Utilities.Constants;
+import muzic.coffeemug.com.muzic.MusicPlaybackV2.MasterPlaybackController;
+import muzic.coffeemug.com.muzic.Utilities.AppConstants;
 import muzic.coffeemug.com.muzic.Data.Track;
+import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
 
 /**
  * Created by aditya on 11/09/15.
  */
 public class TrackStore {
 
+    private Context context;
     private static TrackStore instance;
     private ArrayList<Track> mTrackList;
     private ResultReceiver resultReceiver;
+    private Random random;
 
 
-    public static TrackStore getInstance() {
+    public TrackStore(Context context) {
+        this.context = context;
+        random = new Random();
+    }
+
+
+    public static TrackStore getInstance(Context context) {
 
         if(null == instance) {
-            instance = new TrackStore();
+            instance = new TrackStore(context);
         }
         return instance;
     }
@@ -80,7 +91,7 @@ public class TrackStore {
                 cursor.close();
 
                 Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList(Constants.TRACK_LIST, mTrackList);
+                bundle.putParcelableArrayList(AppConstants.TRACK_LIST, mTrackList);
                 resultReceiver.send(Activity.RESULT_OK, bundle);
 
                 return null;
@@ -130,5 +141,37 @@ public class TrackStore {
 
     public ArrayList<Track> getTrackList() {
         return mTrackList;
+    }
+
+
+    public void saveInPrefsAndPlayTrack(Track track) {
+        SharedPrefs.getInstance(context).storeTrack(track);
+        MasterPlaybackController.getInstance(context).playTrack();
+    }
+
+    public Track getNextLinearTrack() {
+
+        Track track = SharedPrefs.getInstance(context).getStoredTrack();
+
+        int position = -1;
+
+        for (int i=0; i<mTrackList.size(); i++) {
+            Track item = mTrackList.get(i);
+            if (item.getID().equals(track.getID())) {
+                position = i;
+                break;
+            }
+        }
+
+        position++;
+        if (position == mTrackList.size()) {
+            position = 0;
+        }
+
+        return mTrackList.get(position);
+    }
+
+    public Track getNextRandomTrack() {
+        return  mTrackList.get(random.nextInt(mTrackList.size()));
     }
 }

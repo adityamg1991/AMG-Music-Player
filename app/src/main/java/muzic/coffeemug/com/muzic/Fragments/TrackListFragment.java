@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 import muzic.coffeemug.com.muzic.Activities.TrackBaseActivity;
 import muzic.coffeemug.com.muzic.Adapters.TrackListAdapter;
-import muzic.coffeemug.com.muzic.Utilities.Constants;
+import muzic.coffeemug.com.muzic.Utilities.AppConstants;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.R;
 import muzic.coffeemug.com.muzic.Store.TrackStore;
@@ -62,7 +62,7 @@ public class TrackListFragment extends BaseFragment {
         resultReceiver = new MyResultReceiver(new Handler());
         RecyclerView recyclerView = (RecyclerView) getActivity().findViewById(R.id.recycler_view);
 
-        completeTrackList = TrackStore.getInstance().getTrackList();
+        completeTrackList = TrackStore.getInstance(getActivity()).getTrackList();
         listSetInAdapter = new ArrayList<Track>();
         for(Track track : completeTrackList) {
             listSetInAdapter.add(track);
@@ -91,9 +91,9 @@ public class TrackListFragment extends BaseFragment {
 
                 if(null != resultData) {
 
-                    if(resultData.containsKey(Constants.SELECTED_TRACK)) {
+                    if(resultData.containsKey(AppConstants.SELECTED_TRACK)) {
 
-                        Track selectedTrack = resultData.getParcelable(Constants.SELECTED_TRACK);
+                        Track selectedTrack = resultData.getParcelable(AppConstants.SELECTED_TRACK);
                         if(null != selectedTrack) {
                             activity.throwSearchedTrackBack(selectedTrack);
                         }
