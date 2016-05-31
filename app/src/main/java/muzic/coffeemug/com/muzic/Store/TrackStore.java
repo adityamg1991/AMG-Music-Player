@@ -149,6 +149,7 @@ public class TrackStore {
         MasterPlaybackController.getInstance(context).playTrack();
     }
 
+
     public Track getNextLinearTrack() {
 
         Track track = SharedPrefs.getInstance(context).getStoredTrack();
@@ -170,6 +171,7 @@ public class TrackStore {
 
         return mTrackList.get(position);
     }
+
 
     public Track getNextRandomTrack() {
         return  mTrackList.get(random.nextInt(mTrackList.size()));
