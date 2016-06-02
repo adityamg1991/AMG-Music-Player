@@ -154,6 +154,10 @@ public class TrackStore {
 
         Track track = SharedPrefs.getInstance(context).getStoredTrack();
 
+        if (null == track) {
+            return null;
+        }
+
         int position = -1;
 
         for (int i=0; i<mTrackList.size(); i++) {
@@ -175,5 +179,36 @@ public class TrackStore {
 
     public Track getNextRandomTrack() {
         return  mTrackList.get(random.nextInt(mTrackList.size()));
+    }
+
+    public Track getPreviousLinearTrack() {
+
+        Track track = SharedPrefs.getInstance(context).getStoredTrack();
+
+        if (null == track) {
+            return null;
+        }
+
+        int position = -1;
+
+        for (int i=0; i<mTrackList.size(); i++) {
+            Track item = mTrackList.get(i);
+            if (item.getID().equals(track.getID())) {
+                position = i;
+                break;
+            }
+        }
+
+        position--;
+        if (position == -1) {
+            position = mTrackList.size()-1;
+        }
+
+        if (-2 != position) {
+            return mTrackList.get(position);
+        } else {
+            return null;
+        }
+
     }
 }

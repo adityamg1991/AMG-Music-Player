@@ -66,7 +66,10 @@ public class SharedPrefs {
         return gson.fromJson(str, Track.class);
     }
 
-
+    /**
+     * Progress is in seconds.
+     * @param progress
+     */
     public void saveTrackProgress(int progress) {
         sharedPreferences.edit().putInt(KEY_TRACK_PROGRESS, progress).commit();
     }

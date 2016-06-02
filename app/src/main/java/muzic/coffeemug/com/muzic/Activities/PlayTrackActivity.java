@@ -13,9 +13,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import muzic.coffeemug.com.muzic.Adapters.PlayTrackPagerAdapter;
+import muzic.coffeemug.com.muzic.Events.PlaybackStatusEvent;
 import muzic.coffeemug.com.muzic.Store.TrackStore;
 import muzic.coffeemug.com.muzic.Utilities.AppConstants;
-import muzic.coffeemug.com.muzic.Utilities.MuzicApplication;
 import muzic.coffeemug.com.muzic.Utilities.PlayStyle;
 import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
@@ -27,8 +27,6 @@ import muzic.coffeemug.com.muzic.R;
 
 public class PlayTrackActivity extends TrackBaseActivity implements View.OnClickListener {
 
-    private Context mContext;
-    private Track currentTrack;
     private PlayTrackPagerAdapter adapter;
     private ImageView ivPlayPause, ivForward, ivRewind;
 
@@ -36,6 +34,9 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
     private SeekBar seekBar;
 
     private MasterPlaybackController masterPlaybackController;
+
+    private final SharedPrefs prefs = SharedPrefs.getInstance(this);
+    private final TrackStore trackStore = TrackStore.getInstance(this);
 
 
     @Override
@@ -56,7 +57,6 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_track);
-        mContext = this;
         masterPlaybackController = MasterPlaybackController.getInstance(this);
 
         ViewPager mPager = (ViewPager) findViewById(R.id.vp_player);
@@ -91,7 +91,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
 
         ivPlayPause.setImageResource(android.R.color.transparent);
         if(MasterPlaybackUtils.getInstance().isMasterPlaybackServiceRunning(this)) {
-            setPausedIcon();
+            setPauseIcon();
         } else {
             setPlayIcon();
         }
@@ -103,7 +103,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
     }
 
 
-    private void setPausedIcon() {
+    private void setPauseIcon() {
         ivPlayPause.setImageResource(R.drawable.selector_pause);
     }
 
@@ -129,7 +129,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
             }
 
             case R.id.iv_rewind : {
-                // TODO
+                playPreviousTrack();
                 break;
             }
         }
@@ -137,9 +137,6 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
 
 
     private void playNextTrack() {
-
-        final SharedPrefs prefs = SharedPrefs.getInstance(this);
-        final TrackStore trackStore = TrackStore.getInstance(this);
 
         int playStyle = prefs.getPlayStyle();
         Track track = null;
@@ -156,10 +153,40 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
             prefs.storeTrack(track);
         }
 
-        adapter.getAlbumArtFragment().setAlbumArt();
-        retrieveTrackFromMemoryAndSetUpTrackInfo();
+        MasterPlaybackController.getInstance(this).playTrack();
+    }
+
+
+    private void playPreviousTrack() {
+
+        int playStyle = prefs.getPlayStyle();
+        Track track = null;
+
+        if (seekBar.getProgress()/1000 < 5) {
+            // If track has not progressed much, start the track over again
+        } else {
+
+            if (PlayStyle.REPEAT_ALL == playStyle) {
+                track = trackStore.getPreviousLinearTrack();
+            } else if (PlayStyle.REPEAT_ONE == playStyle) {
+                // Nothing to do, play the same track again
+            } else if (PlayStyle.SHUFFLE == playStyle) {
+                track = trackStore.getNextRandomTrack();
+            }
+
+        }
+
+        if (null != track) {
+            prefs.storeTrack(track);
+        }
+
         MasterPlaybackController.getInstance(this).playTrack();
 
+    }
+
+
+    private void setUpAlbumArt() {
+        adapter.getAlbumArtFragment().setAlbumArt();
     }
 
 
@@ -177,7 +204,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
 
     private void resumePlayback() {
         masterPlaybackController.resumeTrack();
-        setPausedIcon();
+        setPauseIcon();
     }
 
 
@@ -189,7 +216,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
 
     private void retrieveTrackFromMemoryAndSetUpTrackInfo() {
 
-        currentTrack = SharedPrefs.getInstance(this).getStoredTrack();
+        Track currentTrack = SharedPrefs.getInstance(this).getStoredTrack();
         tvTrackName.setSelected(true);
 
         if(null != currentTrack) {
@@ -304,6 +331,20 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
         }
     }
 
+
+    @Subscribe
+    public void onEvent(PlaybackStatusEvent event) {
+        if (null != event) {
+            boolean playing = event.isPlaying();
+            if (playing) {
+                setPauseIcon();
+                setUpAlbumArt();
+                retrieveTrackFromMemoryAndSetUpTrackInfo();
+            } else {
+                setPlayIcon();
+            }
+        }
+    }
 
 
     private void setTrackProgress(int progress) {

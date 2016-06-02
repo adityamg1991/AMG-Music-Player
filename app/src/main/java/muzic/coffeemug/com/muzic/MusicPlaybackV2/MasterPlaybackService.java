@@ -14,6 +14,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 
+import muzic.coffeemug.com.muzic.Events.PlaybackStatusEvent;
 import muzic.coffeemug.com.muzic.Notification.NotificationsHub;
 import muzic.coffeemug.com.muzic.Utilities.AppConstants;
 import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
@@ -98,7 +99,14 @@ public class MasterPlaybackService extends Service {
 
 
     private void playSavedTrack(final boolean seek) {
+
         Track trackToBePlayed = SharedPrefs.getInstance(this).getStoredTrack();
+
+        if (null == trackToBePlayed) {
+            trackToBePlayed = mTrackStore.getFirstTrack();
+            prefs.storeTrack(trackToBePlayed);
+        }
+
         if (null != trackToBePlayed) {
             try {
 
@@ -112,6 +120,7 @@ public class MasterPlaybackService extends Service {
                     @Override
                     public void onPrepared(MediaPlayer mp) {
 
+                        sendPlaybackStatusEvent(true);
                         startTimer();
                         if (seek) {
                             moveSeekerToLastKnownPosition();
@@ -135,6 +144,7 @@ public class MasterPlaybackService extends Service {
             mediaPlayer = null;
         }
 
+        sendPlaybackStatusEvent(false);
         stopTimer();
         Toast.makeText(this, "Music stopped", Toast.LENGTH_SHORT).show();
         stopForeground(true);
@@ -174,12 +184,12 @@ public class MasterPlaybackService extends Service {
                 prefs.saveTrackProgress(progress);
             }
             handlerProgress.postDelayed(this, 1000);
-            sendEvent(progress);
+            sendProgressEvent(progress);
         }
     }
 
 
-    private void sendEvent(int progress) {
+    private void sendProgressEvent(int progress) {
         EventBus.getDefault().post(new TrackProgressEvent(progress));
     }
 
@@ -188,5 +198,10 @@ public class MasterPlaybackService extends Service {
         handlerProgress.removeCallbacks(runnableProgress);
         handlerProgress = null;
         runnableProgress = null;
+    }
+
+
+    private void sendPlaybackStatusEvent(boolean playing) {
+        EventBus.getDefault().post(new PlaybackStatusEvent(playing));
     }
 }

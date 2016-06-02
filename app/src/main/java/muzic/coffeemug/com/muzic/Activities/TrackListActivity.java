@@ -108,6 +108,7 @@ public class TrackListActivity extends BaseActivity {
 
     private void updateUI() {
 
+        initialiseBottomBar();
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(mContext);
         recyclerView.setLayoutManager(mLayoutManager);
