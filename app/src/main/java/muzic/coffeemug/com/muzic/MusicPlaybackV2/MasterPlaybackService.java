@@ -170,7 +170,7 @@ public class MasterPlaybackService extends Service {
 
 
     private void startTimer() {
-        handlerProgress.postDelayed(runnableProgress, 1000);
+        handlerProgress.postDelayed(runnableProgress, 0);
     }
 
 
@@ -179,12 +179,9 @@ public class MasterPlaybackService extends Service {
         @Override
         public void run() {
             int progress = mediaPlayer.getCurrentPosition() / 1000;
-
-            if (progress > 5 && progress % 5 == 0) {
-                prefs.saveTrackProgress(progress);
-            }
-            handlerProgress.postDelayed(this, 1000);
+            prefs.saveTrackProgress(progress);
             sendProgressEvent(progress);
+            handlerProgress.postDelayed(this, 1000);
         }
     }
 

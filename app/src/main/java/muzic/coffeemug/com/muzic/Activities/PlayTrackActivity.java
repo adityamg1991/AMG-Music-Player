@@ -162,8 +162,8 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
         int playStyle = prefs.getPlayStyle();
         Track track = null;
 
-        if (seekBar.getProgress()/1000 < 5) {
-            // If track has not progressed much, start the track over again
+        if (prefs.getTrackProgress() < 5) {
+            // If track has not progressed much, start it all over again
         } else {
 
             if (PlayStyle.REPEAT_ALL == playStyle) {
