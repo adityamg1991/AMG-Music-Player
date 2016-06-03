@@ -66,7 +66,53 @@ public class NotificationsHub {
 
         // Setting up clicks on Notification (Play/Pause)
         Intent playIntent = new Intent(context, NotificationButtonClickListener.class);
-        playIntent.setAction(AppConstants.MusicPlayback.NOTIFICATION_PLAY_PAUSE);
+        playIntent.setAction(AppConstants.MusicPlayback.NOTIFICATION_PAUSE);
+        PendingIntent piPlayPause = PendingIntent.getBroadcast(context, 0, playIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteViews.setOnClickPendingIntent(R.id.noti_play_pause, piPlayPause);
+
+        Intent exitIntent = new Intent(context, NotificationButtonClickListener.class);
+        exitIntent.setAction(AppConstants.MusicPlayback.NOTIFICATION_EXIT);
+        PendingIntent piExit = PendingIntent.getBroadcast(context, 0, exitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteViews.setOnClickPendingIntent(R.id.noti_exit, piExit);
+
+        Intent notificationIntent = new Intent(context, PlayTrackActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+
+        Notification notification = new NotificationCompat.Builder(context)
+                .setSmallIcon(R.drawable.play_icon)
+                .setContent(remoteViews)
+                .setContentIntent(pendingIntent).build();
+
+        return notification;
+
+    }
+
+
+    public Notification getPausedTrackNotification(Track track) {
+
+        // Setting up the view of Notification
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_layout_paused);
+
+        // Adding relevant data to notification
+        Bitmap bmp = muzicApplication.getSongCoverArt(context, Long.parseLong(track.getAlbumID()));
+        if (null == bmp) {
+            bmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.no_album_art_black_small);
+        }
+        remoteViews.setImageViewBitmap(R.id.iv_noti_album_art, bmp);
+        remoteViews.setTextViewText(R.id.noti_track_name, track.getTitle());
+        remoteViews.setTextViewText(R.id.noti_artist_name, track.getArtist());
+
+        // Setting up clicks on Notification (Next track)
+        Intent nextTrackIntent = new Intent(context, NotificationButtonClickListener.class);
+        nextTrackIntent.setAction(AppConstants.MusicPlayback.NOTIFICATION_NEXT_TRACK);
+        PendingIntent piNextTrack = PendingIntent.getBroadcast(context, 0, nextTrackIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteViews.setOnClickPendingIntent(R.id.noti_next, piNextTrack);
+
+        // Setting up clicks on Notification (Play/Pause)
+        Intent playIntent = new Intent(context, NotificationButtonClickListener.class);
+        playIntent.setAction(AppConstants.MusicPlayback.NOTIFICATION_PLAY);
         PendingIntent piPlayPause = PendingIntent.getBroadcast(context, 0, playIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         remoteViews.setOnClickPendingIntent(R.id.noti_play_pause, piPlayPause);
 

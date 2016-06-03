@@ -19,7 +19,8 @@ public class AppConstants {
     public interface MusicPlayback {
 
         int TRACK_NOTI_ID = 1991;
-        String NOTIFICATION_PLAY_PAUSE = "notification_play_pause";
+        String NOTIFICATION_PLAY = "notification_play";
+        String NOTIFICATION_PAUSE = "notification_pause";
         String NOTIFICATION_NEXT_TRACK = "notification_next_track";
         String NOTIFICATION_EXIT = "notification_exit";
 

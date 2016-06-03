@@ -16,10 +16,14 @@ public class MasterPlaybackController {
 
     private static MasterPlaybackController instance;
     private Context context;
+    private TrackStore trackStore;
+    private SharedPrefs prefs;
 
 
     private MasterPlaybackController(Context context) {
         this.context = context;
+        trackStore = TrackStore.getInstance(context);
+        prefs = SharedPrefs.getInstance(context);
     }
 
 
@@ -54,4 +58,33 @@ public class MasterPlaybackController {
     }
 
 
+    public void playNextTrack() {
+
+        int playStyle = prefs.getPlayStyle();
+        Track track = null;
+
+        if (PlayStyle.REPEAT_ALL == playStyle) {
+            track = trackStore.getNextLinearTrack();
+        } else if (PlayStyle.REPEAT_ONE == playStyle) {
+            // Nothing to do, play the same track again
+        } else if (PlayStyle.SHUFFLE == playStyle) {
+            track = trackStore.getNextRandomTrack();
+        }
+
+        if (null != track) {
+            prefs.storeTrack(track);
+        }
+
+        playTrack();
+    }
+
+
+    public void moveTrackToPoint() {
+
+        if (MasterPlaybackUtils.getInstance().isMasterPlaybackServiceRunning(context)) {
+            Intent intent = new Intent(context, MasterPlaybackService.class);
+            intent.putExtra(MasterPlaybackUtils.Constants.ACTION, MasterPlaybackUtils.Values.MOVE_TRACK);
+            context.startService(intent);
+        }
+    }
 }

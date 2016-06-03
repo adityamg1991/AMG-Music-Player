@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -26,6 +27,8 @@ import muzic.coffeemug.com.muzic.MusicPlaybackV2.MasterPlaybackUtils;
 import muzic.coffeemug.com.muzic.R;
 
 public class PlayTrackActivity extends TrackBaseActivity implements View.OnClickListener {
+
+    private static final String LOG_TAG = "PlayTrackActivity";
 
     private PlayTrackPagerAdapter adapter;
     private ImageView ivPlayPause, ivForward, ivRewind;
@@ -81,6 +84,19 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
         ivRewind.setOnClickListener(this);
 
         retrieveTrackFromMemoryAndSetUpTrackInfo();
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Log.d(LOG_TAG, "From User : Finger up");
+                setTrackProgress(seekBar.getProgress()/1000);
+                prefs.saveTrackProgress(seekBar.getProgress()/1000);
+                masterPlaybackController.moveTrackToPoint();
+            }
+        });
     }
 
 
@@ -124,7 +140,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
             }
 
             case R.id.iv_forward : {
-                playNextTrack();
+                masterPlaybackController.playNextTrack();
                 break;
             }
 
@@ -133,27 +149,6 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
                 break;
             }
         }
-    }
-
-
-    private void playNextTrack() {
-
-        int playStyle = prefs.getPlayStyle();
-        Track track = null;
-
-        if (PlayStyle.REPEAT_ALL == playStyle) {
-            track = trackStore.getNextLinearTrack();
-        } else if (PlayStyle.REPEAT_ONE == playStyle) {
-            // Nothing to do, play the same track again
-        } else if (PlayStyle.SHUFFLE == playStyle) {
-            track = trackStore.getNextRandomTrack();
-        }
-
-        if (null != track) {
-            prefs.storeTrack(track);
-        }
-
-        MasterPlaybackController.getInstance(this).playTrack();
     }
 
 

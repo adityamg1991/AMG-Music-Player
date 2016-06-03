@@ -28,11 +28,12 @@ public class MasterPlaybackService extends Service {
 
     private static final String LOG_TAG = "MasterPlaybackService";
     private MediaPlayer mediaPlayer;
-    private static MuzicApplication muzicApplication;
-    private static SharedPrefs prefs;
-    private static TrackStore mTrackStore;
+    private MuzicApplication muzicApplication;
+    private SharedPrefs prefs;
+    private TrackStore mTrackStore;
     private Handler handlerProgress;
     private RunnableProgress runnableProgress;
+    private MasterPlaybackController masterPlaybackController;
 
 
     public MasterPlaybackService() {
@@ -52,6 +53,7 @@ public class MasterPlaybackService extends Service {
         runnableProgress = new RunnableProgress();
         mediaPlayer = new MediaPlayer();
 
+        masterPlaybackController = MasterPlaybackController.getInstance(this);
         muzicApplication = MuzicApplication.getInstance();
         prefs = SharedPrefs.getInstance(this);
         mTrackStore = TrackStore.getInstance(this);
@@ -59,8 +61,7 @@ public class MasterPlaybackService extends Service {
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
-                // TODO : Play the next track
-                releaseResourcesAndStopSelf();
+                masterPlaybackController.playNextTrack();
             }
         });
     }
@@ -75,18 +76,33 @@ public class MasterPlaybackService extends Service {
                 if (MasterPlaybackUtils.Values.PLAY_TRACK.equals(strAction)) {
                     playSavedTrack(false);
                 } else if (MasterPlaybackUtils.Values.PAUSE_TRACK.equals(strAction)) {
-                    releaseResourcesAndStopSelf();
+                    releaseResourcesAndStopSelf(true);
                 } else if (MasterPlaybackUtils.Values.RESUME_TRACK.equals(strAction)) {
                     playSavedTrack(true);
+                } else if (MasterPlaybackUtils.Values.MOVE_TRACK.equals(strAction)) {
+                    moveTrack();
                 }
             } else {
-                releaseResourcesAndStopSelf();
+                releaseResourcesAndStopSelf(true);
             }
         } else {
-            releaseResourcesAndStopSelf();
+            releaseResourcesAndStopSelf(true);
         }
 
         return START_NOT_STICKY;
+    }
+
+
+    private void moveTrack() {
+
+        final int progress = prefs.getTrackProgress();
+
+        if (AppConstants.SharedPref.EMPTY_PROGRESS != progress) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.seekTo(progress * 1000);
+            }
+        }
+
     }
 
 
@@ -110,7 +126,9 @@ public class MasterPlaybackService extends Service {
         if (null != trackToBePlayed) {
             try {
 
-                Notification notification = NotificationsHub.getInstance(this).getTrackNotification(trackToBePlayed);
+                Notification notification = NotificationsHub.getInstance(this).
+                        getTrackNotification(trackToBePlayed);
+
                 startForeground(AppConstants.MusicPlayback.TRACK_NOTI_ID, notification);
                 mediaPlayer.reset();
                 mediaPlayer.setDataSource(trackToBePlayed.getData());
@@ -136,7 +154,7 @@ public class MasterPlaybackService extends Service {
     }
 
 
-    private void releaseResourcesAndStopSelf() {
+    private void releaseResourcesAndStopSelf(boolean removeNotification) {
 
         if (null != mediaPlayer) {
             mediaPlayer.reset();
@@ -147,7 +165,7 @@ public class MasterPlaybackService extends Service {
         sendPlaybackStatusEvent(false);
         stopTimer();
         Toast.makeText(this, "Music stopped", Toast.LENGTH_SHORT).show();
-        stopForeground(true);
+        stopForeground(removeNotification);
         stopSelf();
     }
 
