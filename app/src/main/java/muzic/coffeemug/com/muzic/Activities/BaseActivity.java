@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
@@ -94,5 +95,10 @@ public class BaseActivity extends AppCompatActivity {
         intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"en-US");
         startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
+    }
+
+
+    protected void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

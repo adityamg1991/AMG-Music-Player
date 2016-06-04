@@ -3,6 +3,7 @@ package muzic.coffeemug.com.muzic.Activities;
 import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,11 +14,14 @@ import android.os.ResultReceiver;
 import android.speech.RecognizerIntent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,7 +38,7 @@ import muzic.coffeemug.com.muzic.Utilities.AppConstants;
 import muzic.coffeemug.com.muzic.Utilities.MuzicApplication;
 
 
-public class TrackListActivity extends BaseActivity {
+public class HomeActivity extends BaseActivity {
 
     private RecyclerView recyclerView;
     private ScrollListener scrollListener;
@@ -55,12 +59,15 @@ public class TrackListActivity extends BaseActivity {
     private final int SEARCH_REQUEST_CODE = 1;
     private Bitmap bmpNoAlbumArt;
 
+    private SharedPrefs prefs;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
         mContext = this;
 
+        prefs = SharedPrefs.getInstance(this);
         bmpNoAlbumArt = BitmapFactory.decodeResource(getResources(), R.drawable.no_album_art_black_small);
         mTrackResultReceiver = new TrackResultReceiver(new Handler());
         pixelsToMove = MuzicApplication.pxFromDp(mContext, 60);
@@ -70,7 +77,7 @@ public class TrackListActivity extends BaseActivity {
         recyclerView.addOnScrollListener(scrollListener);
 
         initActionBar();
-        setTitle(getString(R.string.track_list_activity_label));
+        setTitle(prefs.getHomeLabel());
 
         bottomBar = findViewById(R.id.bottom_bar);
         tvTrackName = (TextView) bottomBar.findViewById(R.id.tv_track_name);
@@ -88,7 +95,7 @@ public class TrackListActivity extends BaseActivity {
 
     private void startPlayTrackActivity() {
 
-        startActivity(new Intent(TrackListActivity.this, PlayTrackActivity.class));
+        startActivity(new Intent(HomeActivity.this, PlayTrackActivity.class));
         overridePendingTransition(R.anim.pull_up_from_bottom, android.R.anim.fade_out);
     }
 
@@ -144,8 +151,41 @@ public class TrackListActivity extends BaseActivity {
                 voicePlay();
                 break;
             }
+            case R.id.change_label: {
+                showChangeLabelDialog();
+                break;
+            }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private void showChangeLabelDialog() {
+
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_home_label_edit);
+        dialog.show();
+
+        dialog.getWindow()
+                .setLayout(WindowManager.LayoutParams.MATCH_PARENT
+                        , WindowManager.LayoutParams.WRAP_CONTENT);
+
+        final EditText etHomeLabel = (EditText) dialog.findViewById(R.id.et_home_label);
+        dialog.findViewById(R.id.btn_done).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String strLabel = etHomeLabel.getText().toString();
+                if (TextUtils.isEmpty(strLabel)) {
+                    showToast(getString(R.string.err_home_label_empty));
+                } else {
+                    prefs.setHomeLabel(strLabel);
+                    setTitle(strLabel);
+                    dialog.dismiss();
+                }
+            }
+        });
+
+
     }
 
 
@@ -163,7 +203,7 @@ public class TrackListActivity extends BaseActivity {
             super.onScrolled(recyclerView, dx, dy);
 
             // Have to do because of a bug in Google's Support Library
-            setTitle(getString(R.string.track_list_activity_label));
+            setTitle(prefs.getHomeLabel());
 
             if(isAnimationOngoing) {
                 return;

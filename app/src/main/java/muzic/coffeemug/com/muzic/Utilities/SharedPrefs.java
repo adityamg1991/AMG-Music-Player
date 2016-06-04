@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import com.google.gson.Gson;
 
 import muzic.coffeemug.com.muzic.Data.Track;
+import muzic.coffeemug.com.muzic.R;
 
 
 /**
@@ -24,6 +25,7 @@ public class SharedPrefs {
     private static final String KEY_PLAY_STYLE = "KEY_PLAY_STYLE";
     private static final String KEY_TRACK_PROGRESS = "KEY_TRACK_PROGRESS";
     private static final String GSON_KEY = "gson_key";
+    private static final String KEY_HOME_LABEL = "KEY_HOME_LABEL";
 
     private SharedPrefs(Context context) {
         mContext = context;
@@ -87,5 +89,16 @@ public class SharedPrefs {
 
     public int getPlayStyle() {
         return sharedPreferences.getInt(KEY_PLAY_STYLE, PlayStyle.REPEAT_ALL);
+    }
+
+
+    public void setHomeLabel(String strLabel) {
+        sharedPreferences.edit().putString(KEY_HOME_LABEL, strLabel).commit();
+    }
+
+
+    public String getHomeLabel() {
+        return sharedPreferences.getString(KEY_HOME_LABEL,
+                mContext.getString(R.string.track_list_activity_label));
     }
 }

@@ -11,7 +11,7 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.App.Base">
         <activity
-            android:name=".Activities.TrackListActivity"
+            android:name=".Activities.HomeActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
