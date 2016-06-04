@@ -157,7 +157,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
         int playStyle = prefs.getPlayStyle();
         Track track = null;
 
-        if (prefs.getTrackProgress() < 5) {
+        if (/*prefs.getTrackProgress() < 5*/false) {
             // If track has not progressed much, start it all over again
         } else {
 
