@@ -35,7 +35,7 @@ public class NotificationButtonClickListener extends BroadcastReceiver {
 
             if (strAction.equalsIgnoreCase(AppConstants.MusicPlayback.NOTIFICATION_PLAY)) {
 
-                controller.playTrack();
+                controller.resumeTrack();
 
             } else if (strAction.equalsIgnoreCase(AppConstants.MusicPlayback.NOTIFICATION_PAUSE)) {
 
