@@ -27,10 +27,6 @@
             android:name=".Activities.PlayTrackActivity"
             android:screenOrientation="portrait" />
 
-        <service
-            android:name=".MusicPlayback.MusicPlaybackService"
-            android:enabled="true"
-            android:exported="false" />
 
         <receiver
             android:name=".Notification.NotificationButtonClickListener"
@@ -41,10 +37,6 @@
             android:name=".MusicPlaybackV2.MasterPlaybackService"
             android:enabled="true"
             android:exported="false" />
-        <service
-            android:name=".MusicPlaybackV2.MusicService"
-            android:enabled="true"
-            android:exported="false"></service>
     </application>
 
 </manifest>

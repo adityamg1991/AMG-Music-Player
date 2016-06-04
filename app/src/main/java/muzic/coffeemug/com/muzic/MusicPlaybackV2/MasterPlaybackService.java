@@ -118,6 +118,11 @@ public class MasterPlaybackService extends Service {
 
         Track trackToBePlayed = SharedPrefs.getInstance(this).getStoredTrack();
 
+        if (!seek) {
+            // This is a Track being played from the beginning. Save in Database.
+            muzicApplication.getDatabaseHelper().saveTrackInDatabase();
+        }
+
         if (null == trackToBePlayed) {
             trackToBePlayed = mTrackStore.getFirstTrack();
             prefs.storeTrack(trackToBePlayed);

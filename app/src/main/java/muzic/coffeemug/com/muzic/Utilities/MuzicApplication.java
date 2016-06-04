@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import muzic.coffeemug.com.muzic.Data.Track;
+import muzic.coffeemug.com.muzic.Database.DatabaseHelper;
 
 /**
  * Created by aditya on 01/09/15.
@@ -27,10 +28,18 @@ import muzic.coffeemug.com.muzic.Data.Track;
 public class MuzicApplication extends Application {
 
     private static MuzicApplication instance;
+    private static DatabaseHelper databaseHelper;
+
 
     @Override
     public void onCreate() {
         super.onCreate();
+        databaseHelper = DatabaseHelper.getInstance(this);
+    }
+
+
+    public DatabaseHelper getDatabaseHelper() {
+        return databaseHelper;
     }
 
 
