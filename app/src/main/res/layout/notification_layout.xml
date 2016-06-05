@@ -40,7 +40,7 @@
             android:layout_weight="1"
             android:singleLine="true"
             android:text="Artist Name"
-            android:textColor="@android:color/white"
+            android:textColor="@color/light_grey"
             android:textSize="11sp" />
 
     </LinearLayout>

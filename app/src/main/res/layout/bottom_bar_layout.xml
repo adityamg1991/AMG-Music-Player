@@ -3,13 +3,14 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:clickable="true"
+    android:layout_height="wrap_content"
     android:background="@android:color/black">
 
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="2dp"
         android:alpha="0.5"
         android:background="@color/dark_grey"/>
 
