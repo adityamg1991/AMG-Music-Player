@@ -21,6 +21,11 @@
         android:title="@string/scroll_to_top"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/share_app"
+        android:title="@string/action_share_app"
+        app:showAsAction="never" />
+
 
     <item
         android:id="@+id/rate_app"

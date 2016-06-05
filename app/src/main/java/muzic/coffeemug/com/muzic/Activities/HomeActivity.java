@@ -155,8 +155,17 @@ public class HomeActivity extends BaseActivity {
                 showChangeLabelDialog();
                 break;
             }
+            case R.id.share_app: {
+                shareApp();
+                break;
+            }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private void shareApp() {
+
     }
 
 
@@ -184,7 +193,6 @@ public class HomeActivity extends BaseActivity {
                 }
             }
         });
-
 
     }
 
