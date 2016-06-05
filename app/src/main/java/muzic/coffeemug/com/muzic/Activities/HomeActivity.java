@@ -26,10 +26,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 
 import muzic.coffeemug.com.muzic.Adapters.TrackListAdapter;
 import muzic.coffeemug.com.muzic.Data.ScrollData;
+import muzic.coffeemug.com.muzic.Events.PlaybackStatusEvent;
+import muzic.coffeemug.com.muzic.MusicPlaybackV2.MasterPlaybackController;
+import muzic.coffeemug.com.muzic.MusicPlaybackV2.MasterPlaybackUtils;
 import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.R;
@@ -60,6 +66,7 @@ public class HomeActivity extends BaseActivity {
     private Bitmap bmpNoAlbumArt;
 
     private SharedPrefs prefs;
+    private ImageView ivPlayPause;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +87,7 @@ public class HomeActivity extends BaseActivity {
         setTitle(prefs.getHomeLabel());
 
         bottomBar = findViewById(R.id.bottom_bar);
+        ivPlayPause = (ImageView) bottomBar.findViewById(R.id.iv_play_pause);
         tvTrackName = (TextView) bottomBar.findViewById(R.id.tv_track_name);
         tvArtistName = (TextView) bottomBar.findViewById(R.id.tv_artist_name);
         ivAlbumArt = (ImageView) bottomBar.findViewById(R.id.iv_album_art);
@@ -89,8 +97,29 @@ public class HomeActivity extends BaseActivity {
             }
         });
 
+
+        ivPlayPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handlePlayPause();
+            }
+        });
+
         TrackStore.getInstance(this).readyTracks(this, mTrackResultReceiver);
     }
+
+
+    private void handlePlayPause() {
+
+        ivPlayPause.setImageResource(android.R.color.transparent);
+
+        if(MasterPlaybackUtils.getInstance().isMasterPlaybackServiceRunning(this)) {
+            MasterPlaybackController.getInstance(this).pauseTrack();
+        } else {
+            MasterPlaybackController.getInstance(this).resumeTrack();
+        }
+    }
+
 
 
     private void startPlayTrackActivity() {
@@ -104,6 +133,26 @@ public class HomeActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         initialiseBottomBar();
+        EventBus.getDefault().register(this);
+        playPauseButtonDecider();
+    }
+
+
+    private void playPauseButtonDecider() {
+
+        ivPlayPause.setImageResource(android.R.color.transparent);
+        if(MasterPlaybackUtils.getInstance().isMasterPlaybackServiceRunning(this)) {
+            setPauseIcon();
+        } else {
+            setPlayIcon();
+        }
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        EventBus.getDefault().unregister(this);
     }
 
 
@@ -381,4 +430,29 @@ public class HomeActivity extends BaseActivity {
             }
         }
     }
+
+
+    @Subscribe
+    public void onEvent(PlaybackStatusEvent event) {
+        if (null != event) {
+            boolean playing = event.isPlaying();
+            if (playing) {
+                setPauseIcon();
+                initialiseBottomBar();
+            } else {
+                setPlayIcon();
+            }
+        }
+    }
+
+
+    private void setPlayIcon() {
+        ivPlayPause.setImageResource(R.drawable.selector_play);
+    }
+
+
+    private void setPauseIcon() {
+        ivPlayPause.setImageResource(R.drawable.selector_pause);
+    }
+
 }
