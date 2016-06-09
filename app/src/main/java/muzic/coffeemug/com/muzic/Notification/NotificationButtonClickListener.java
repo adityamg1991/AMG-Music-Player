@@ -58,6 +58,8 @@ public class NotificationButtonClickListener extends BroadcastReceiver {
                 // Exit the music playback service
                 controller.pauseTrack();
 
+            } else if (strAction.equalsIgnoreCase(AppConstants.MusicPlayback.NOTIFICATION_REMOVE_NOTI)) {
+                managerNotification.cancelAll();
             }
         }
     }

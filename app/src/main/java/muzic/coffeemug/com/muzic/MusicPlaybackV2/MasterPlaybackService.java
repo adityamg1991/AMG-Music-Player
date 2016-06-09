@@ -169,7 +169,6 @@ public class MasterPlaybackService extends Service {
 
         sendPlaybackStatusEvent(false);
         stopTimer();
-        Toast.makeText(this, "Music stopped", Toast.LENGTH_SHORT).show();
         stopForeground(removeNotification);
         stopSelf();
     }

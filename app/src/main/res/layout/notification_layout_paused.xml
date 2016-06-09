@@ -60,13 +60,11 @@
         android:layout_marginLeft="10dp"
         android:layout_gravity="center"
         android:src="@drawable/selector_next"
-        android:layout_marginRight="10dp"
         android:layout_height="wrap_content" />
 
     <ImageView
         android:id="@+id/noti_exit"
         android:layout_width="0dp"
-        android:visibility="gone"
         android:layout_weight="1"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"

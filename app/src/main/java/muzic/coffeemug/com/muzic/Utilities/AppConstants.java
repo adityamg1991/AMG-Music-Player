@@ -23,7 +23,7 @@ public class AppConstants {
         String NOTIFICATION_PAUSE = "notification_pause";
         String NOTIFICATION_NEXT_TRACK = "notification_next_track";
         String NOTIFICATION_EXIT = "notification_exit";
-
+        String NOTIFICATION_REMOVE_NOTI = "notification_remove_noti";
     }
 
 

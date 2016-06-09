@@ -81,7 +81,7 @@ public class NotificationsHub {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
         Notification notification = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.play_icon)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContent(remoteViews)
                 .setContentIntent(pendingIntent).build();
 
@@ -117,7 +117,7 @@ public class NotificationsHub {
         remoteViews.setOnClickPendingIntent(R.id.noti_play_pause, piPlayPause);
 
         Intent exitIntent = new Intent(context, NotificationButtonClickListener.class);
-        exitIntent.setAction(AppConstants.MusicPlayback.NOTIFICATION_EXIT);
+        exitIntent.setAction(AppConstants.MusicPlayback.NOTIFICATION_REMOVE_NOTI);
         PendingIntent piExit = PendingIntent.getBroadcast(context, 0, exitIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         remoteViews.setOnClickPendingIntent(R.id.noti_exit, piExit);
 
@@ -127,7 +127,7 @@ public class NotificationsHub {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
         Notification notification = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.play_icon)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContent(remoteViews)
                 .setContentIntent(pendingIntent).build();
 

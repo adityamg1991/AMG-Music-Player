@@ -447,12 +447,12 @@ public class HomeActivity extends BaseActivity {
 
 
     private void setPlayIcon() {
-        ivPlayPause.setImageResource(R.drawable.selector_play);
+        ivPlayPause.setImageResource(R.drawable.play_solid_white);
     }
 
 
     private void setPauseIcon() {
-        ivPlayPause.setImageResource(R.drawable.selector_pause);
+        ivPlayPause.setImageResource(R.drawable.pause_solid_white);
     }
 
 }
