@@ -28,7 +28,9 @@
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/iv_album_art"
         android:gravity="center_vertical"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_toLeftOf="@+id/iv_play_pause"
+        android:layout_toStartOf="@+id/iv_play_pause">
 
         <TextView
             android:id="@+id/tv_track_name"

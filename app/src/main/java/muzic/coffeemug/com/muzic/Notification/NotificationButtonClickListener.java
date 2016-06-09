@@ -7,8 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 
-import muzic.coffeemug.com.muzic.MusicPlaybackV2.MasterPlaybackController;
-import muzic.coffeemug.com.muzic.MusicPlaybackV2.MasterPlaybackUtils;
+import muzic.coffeemug.com.muzic.MusicPlayback.MasterPlaybackController;
 import muzic.coffeemug.com.muzic.Utilities.AppConstants;
 import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
 

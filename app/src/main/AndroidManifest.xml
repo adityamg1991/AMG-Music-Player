@@ -34,7 +34,7 @@
             android:exported="false" />
 
         <service
-            android:name=".MusicPlaybackV2.MasterPlaybackService"
+            android:name=".MusicPlayback.MasterPlaybackService"
             android:enabled="true"
             android:exported="false" />
     </application>

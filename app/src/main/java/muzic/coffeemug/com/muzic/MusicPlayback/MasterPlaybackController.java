@@ -1,11 +1,10 @@
-package muzic.coffeemug.com.muzic.MusicPlaybackV2;
+package muzic.coffeemug.com.muzic.MusicPlayback;
 
 import android.content.Context;
 import android.content.Intent;
 
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.Store.TrackStore;
-import muzic.coffeemug.com.muzic.Utilities.AppConstants;
 import muzic.coffeemug.com.muzic.Utilities.PlayStyle;
 import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
 

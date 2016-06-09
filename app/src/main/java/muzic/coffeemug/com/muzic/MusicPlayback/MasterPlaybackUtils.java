@@ -1,4 +1,4 @@
-package muzic.coffeemug.com.muzic.MusicPlaybackV2;
+package muzic.coffeemug.com.muzic.MusicPlayback;
 
 import android.app.ActivityManager;
 import android.content.Context;

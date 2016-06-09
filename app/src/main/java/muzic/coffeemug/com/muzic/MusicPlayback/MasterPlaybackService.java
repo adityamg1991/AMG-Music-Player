@@ -1,19 +1,22 @@
-package muzic.coffeemug.com.muzic.MusicPlaybackV2;
+package muzic.coffeemug.com.muzic.MusicPlayback;
 
 import android.app.Notification;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 
+import muzic.coffeemug.com.muzic.Utilities.MuzicAudioFocus;
 import muzic.coffeemug.com.muzic.Events.PlaybackStatusEvent;
 import muzic.coffeemug.com.muzic.Notification.NotificationsHub;
 import muzic.coffeemug.com.muzic.Utilities.AppConstants;
@@ -34,6 +37,7 @@ public class MasterPlaybackService extends Service {
     private Handler handlerProgress;
     private RunnableProgress runnableProgress;
     private MasterPlaybackController masterPlaybackController;
+    private HeadSetReceiver headSetReceiver;
 
 
     public MasterPlaybackService() {
@@ -52,6 +56,10 @@ public class MasterPlaybackService extends Service {
         handlerProgress = new Handler();
         runnableProgress = new RunnableProgress();
         mediaPlayer = new MediaPlayer();
+        headSetReceiver = new HeadSetReceiver();
+
+        IntentFilter filter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
+        registerReceiver(headSetReceiver, filter);
 
         masterPlaybackController = MasterPlaybackController.getInstance(this);
         muzicApplication = MuzicApplication.getInstance();
@@ -143,12 +151,15 @@ public class MasterPlaybackService extends Service {
                     @Override
                     public void onPrepared(MediaPlayer mp) {
 
-                        sendPlaybackStatusEvent(true);
-                        startTimer();
-                        if (seek) {
-                            moveSeekerToLastKnownPosition();
+                        if (MuzicAudioFocus.getInstance(MasterPlaybackService.this).getAudioFocus()) {
+
+                            sendPlaybackStatusEvent(true);
+                            startTimer();
+                            if (seek) {
+                                moveSeekerToLastKnownPosition();
+                            }
+                            mp.start();
                         }
-                        mp.start();
                     }
                 });
 
@@ -171,6 +182,9 @@ public class MasterPlaybackService extends Service {
         stopTimer();
         stopForeground(removeNotification);
         stopSelf();
+        MuzicAudioFocus.getInstance(this).abandon();
+        unregisterReceiver(headSetReceiver);
+
     }
 
 
@@ -223,4 +237,25 @@ public class MasterPlaybackService extends Service {
     private void sendPlaybackStatusEvent(boolean playing) {
         EventBus.getDefault().post(new PlaybackStatusEvent(playing));
     }
+
+
+    private class HeadSetReceiver extends BroadcastReceiver {
+        @Override public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Intent.ACTION_HEADSET_PLUG)) {
+                int state = intent.getIntExtra("state", -1);
+                switch (state) {
+                    case 0:
+                        Log.d(LOG_TAG, "Headset unplugged");
+                        if (mediaPlayer.isPlaying()) {
+                            releaseResourcesAndStopSelf(true);
+                        }
+                        break;
+                    case 1:
+                        Log.d(LOG_TAG, "Headset plugged");
+                        break;
+                }
+            }
+        }
+    }
+
 }

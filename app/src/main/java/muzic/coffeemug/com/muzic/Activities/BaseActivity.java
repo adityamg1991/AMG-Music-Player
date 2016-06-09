@@ -16,9 +16,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
-import muzic.coffeemug.com.muzic.Data.Track;
-import muzic.coffeemug.com.muzic.MusicPlaybackV2.MasterPlaybackController;
 import muzic.coffeemug.com.muzic.R;
 
 /**

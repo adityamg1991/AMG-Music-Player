@@ -1,6 +1,5 @@
 package muzic.coffeemug.com.muzic.Activities;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -22,8 +21,8 @@ import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.Events.TrackProgressEvent;
 import muzic.coffeemug.com.muzic.Fragments.AlbumArtFragment;
-import muzic.coffeemug.com.muzic.MusicPlaybackV2.MasterPlaybackController;
-import muzic.coffeemug.com.muzic.MusicPlaybackV2.MasterPlaybackUtils;
+import muzic.coffeemug.com.muzic.MusicPlayback.MasterPlaybackController;
+import muzic.coffeemug.com.muzic.MusicPlayback.MasterPlaybackUtils;
 import muzic.coffeemug.com.muzic.R;
 
 public class PlayTrackActivity extends TrackBaseActivity implements View.OnClickListener {
