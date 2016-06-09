@@ -123,7 +123,6 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
         ivPlayPause.setImageResource(R.drawable.selector_pause);
     }
 
-
     @Override
     public void onClick(View v) {
 
