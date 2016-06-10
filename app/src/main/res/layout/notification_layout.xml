@@ -51,7 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="1"
-        android:src="@drawable/pause_solid_white" />
+        android:src="@drawable/noti_icon_pause" />
 
     <ImageView
         android:id="@+id/noti_next"
@@ -60,7 +60,7 @@
         android:layout_gravity="center"
         android:layout_marginLeft="10dp"
         android:layout_weight="1"
-        android:src="@drawable/next_solid_white" />
+        android:src="@drawable/noti_icon_next" />
 
     <ImageView
         android:id="@+id/noti_exit"
@@ -70,7 +70,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_weight="1"
-        android:src="@drawable/cross_solid_white" />
+        android:src="@drawable/noti_icon_cross" />
 
 
 </LinearLayout>
