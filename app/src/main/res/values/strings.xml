@@ -12,9 +12,11 @@
     <string name="action_settings">Settings</string>
     <string name="voice_search_text">Speak \'Song/Artist/Album\' Name</string>
     <string name="voice_search">Voice search</string>
-    <string name="voice_play">Say the Name of the Song to Play</string>
+    <string name="voice_play">Voice Play</string>
     <string name="action_change_label">Change label</string>
     <string name="err_home_label_empty">    Please enter a valid Label    </string>
     <string name="action_share_app">Share app</string>
+    <string name="action_get_recoms">Get Recommended Music</string>
+    <string name="title_activity_recoms_home">RecomsHomeActivity</string>
 
 </resources>

@@ -35,6 +35,7 @@ import muzic.coffeemug.com.muzic.Data.ScrollData;
 import muzic.coffeemug.com.muzic.Events.PlaybackStatusEvent;
 import muzic.coffeemug.com.muzic.MusicPlayback.MasterPlaybackController;
 import muzic.coffeemug.com.muzic.MusicPlayback.MasterPlaybackUtils;
+import muzic.coffeemug.com.muzic.Streaming.MasterStreamingService;
 import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.R;
@@ -207,8 +208,17 @@ public class HomeActivity extends BaseActivity {
                 shareApp();
                 break;
             }
+            case R.id.get_recoms: {
+                getRecoms();
+                break;
+            }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private void getRecoms() {
+        startActivity(new Intent(this, RecomsHomeActivity.class));
     }
 
 
@@ -246,7 +256,7 @@ public class HomeActivity extends BaseActivity {
 
 
     private void voicePlay() {
-        openSearchDialog(getString(R.string.voice_play));
+        openSearchDialog(getString(R.string.voice_search_text));
     }
 
 

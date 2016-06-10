@@ -13,6 +13,13 @@
         android:id="@+id/voice_play"
         android:icon="@drawable/voice_play"
         android:title="@string/voice_play"
+        app:showAsAction="ifRoom" />
+
+
+    <item
+        android:id="@+id/get_recoms"
+        android:icon="@drawable/actionbar_get_recoms"
+        android:title="@string/action_get_recoms"
         app:showAsAction="always" />
 
 

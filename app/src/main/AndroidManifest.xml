@@ -3,6 +3,7 @@
     package="muzic.coffeemug.com.muzic">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".Utilities.MuzicApplication"
@@ -27,7 +28,6 @@
             android:name=".Activities.PlayTrackActivity"
             android:screenOrientation="portrait" />
 
-
         <receiver
             android:name=".Notification.NotificationButtonClickListener"
             android:enabled="true"
@@ -37,6 +37,15 @@
             android:name=".MusicPlayback.MasterPlaybackService"
             android:enabled="true"
             android:exported="false" />
+        <service
+            android:name=".Streaming.MasterStreamingService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <activity
+            android:name=".Activities.RecomsHomeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.App.Base"></activity>
     </application>
 
 </manifest>

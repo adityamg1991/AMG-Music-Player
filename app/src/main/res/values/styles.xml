@@ -6,5 +6,9 @@
         <item name="android:textColorPrimary">@android:color/black</item>
     </style>
 
+    <style name="Theme.App.Base.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.App.Base.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
 
 </resources>
