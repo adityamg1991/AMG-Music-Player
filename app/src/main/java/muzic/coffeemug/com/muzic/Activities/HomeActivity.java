@@ -35,7 +35,7 @@ import muzic.coffeemug.com.muzic.Data.ScrollData;
 import muzic.coffeemug.com.muzic.Events.PlaybackStatusEvent;
 import muzic.coffeemug.com.muzic.MusicPlayback.MasterPlaybackController;
 import muzic.coffeemug.com.muzic.MusicPlayback.MasterPlaybackUtils;
-import muzic.coffeemug.com.muzic.Streaming.MasterStreamingService;
+import muzic.coffeemug.com.muzic.Streaming.Activities.RecomsHomeActivity;
 import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.R;

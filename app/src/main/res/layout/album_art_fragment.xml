@@ -46,7 +46,7 @@
 
     <ImageView
         android:id="@+id/iv_album_art"
-        android:scaleType="fitXY"
+        android:scaleType="fitCenter"
         android:adjustViewBounds="true"
         android:padding="40dp"
         android:src="@drawable/no_album_art"

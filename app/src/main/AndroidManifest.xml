@@ -43,7 +43,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".Activities.RecomsHomeActivity"
+            android:name=".Streaming.Activities.RecomsHomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.App.Base"></activity>
     </application>

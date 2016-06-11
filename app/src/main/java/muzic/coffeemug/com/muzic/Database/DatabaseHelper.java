@@ -5,10 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 import android.util.Log;
+
+import java.util.ArrayList;
 
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.Database.Table.PlayHistory;
+import muzic.coffeemug.com.muzic.Store.TrackStore;
 import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
 
 /**
@@ -23,11 +27,13 @@ public class DatabaseHelper {
     private static DatabaseHelper instance;
     private static PrivateDatabaseHelper innerInstance;
     private static SQLiteDatabase database;
-    private static SharedPrefs prefs;
+    private SharedPrefs prefs;
+    private TrackStore trackStore;
 
 
     private DatabaseHelper(Context context){
         prefs = SharedPrefs.getInstance(context);
+        trackStore = TrackStore.getInstance(context);
     }
 
 
@@ -150,6 +156,39 @@ public class DatabaseHelper {
         cursor.close();
         Log.d(LOG_TAG, "Track Present in Database");
         return true;
+    }
+
+
+    public ArrayList<Track> getTracksStoredInDatabase() {
+
+        final ArrayList<Track> list = new ArrayList<>();
+        final String query = "SELECT * FROM " + PlayHistory.TABLE_NAME;
+        Log.d(LOG_TAG, "Get all tracks from DB Query : " + query);
+
+        Cursor cursor = database.rawQuery(query, null);
+        try {
+            cursor.moveToFirst();
+            while (cursor.moveToNext()) {
+
+                final String strMediaId = cursor.getString(cursor.getColumnIndex(PlayHistory.MEDIA_ID));
+                final int timesPlayed = cursor.getInt(cursor.getColumnIndex(PlayHistory.TIMES_PLAYED));
+                final long lastPlayed = cursor.getLong(cursor.getColumnIndex(PlayHistory.LAST_PLAYED));
+
+                Track track = trackStore.getTrackByMediaID(strMediaId);
+                track.setTimesPlayed(timesPlayed);
+                track.setLastPlayed(lastPlayed);
+
+                list.add(track);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            cursor.close();
+        }
+
+        return list;
+
     }
 
 }

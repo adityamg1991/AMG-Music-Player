@@ -211,4 +211,16 @@ public class TrackStore {
         }
 
     }
+
+
+    public Track getTrackByMediaID(String id) {
+
+        for (Track track : mTrackList) {
+            if (track.getID().equals(id)) {
+                return track;
+            }
+        }
+        return null;
+    }
+
 }
