@@ -14,7 +14,7 @@ import java.io.File;
 
 import muzic.coffeemug.com.muzic.Utilities.AppConstants;
 import muzic.coffeemug.com.muzic.Data.Track;
-import muzic.coffeemug.com.muzic.Utilities.MuzicApplication;
+import muzic.coffeemug.com.muzic.Utilities.App;
 
 /**
  * Created by aditya on 09/09/15.
@@ -27,7 +27,7 @@ public class TrackOptionsDialog {
     private Context mContext;
     private boolean isDataAvailable = true;
     private ResultReceiver mResultReceiver;
-    private MuzicApplication muzicApplication;
+    private App app;
 
 
     public TrackOptionsDialog(Track track, Context context, ResultReceiver resultReceiver) {
@@ -35,7 +35,7 @@ public class TrackOptionsDialog {
         this.mTrack = track;
         this.mContext = context;
         this.mResultReceiver = resultReceiver;
-        muzicApplication = MuzicApplication.getInstance();
+        app = App.getInstance();
         if (TextUtils.isEmpty(mTrack.getData())) {
             isDataAvailable = false;
         }
@@ -86,7 +86,7 @@ public class TrackOptionsDialog {
                                 }
                             }
 
-                            MuzicApplication.getInstance().showToast("Error occurred while deleting File", mContext);
+                            App.getInstance().showToast("Error occurred while deleting File", mContext);
                         }
                     }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                 @Override
@@ -101,7 +101,7 @@ public class TrackOptionsDialog {
     private void shareTrack() {
 
         if (isDataAvailable) {
-            muzicApplication.shareTrack(mContext, mTrack);
+            app.shareTrack(mContext, mTrack);
         }
     }
 

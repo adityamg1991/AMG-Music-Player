@@ -162,23 +162,25 @@ public class DatabaseHelper {
     public ArrayList<Track> getTracksStoredInDatabase() {
 
         final ArrayList<Track> list = new ArrayList<>();
-        final String query = "SELECT * FROM " + PlayHistory.TABLE_NAME;
+        final String query = "SELECT * FROM " + PlayHistory.TABLE_NAME +
+                " ORDER BY " + PlayHistory.TIMES_PLAYED + " DESC";
         Log.d(LOG_TAG, "Get all tracks from DB Query : " + query);
 
-        Cursor cursor = database.rawQuery(query, null);
+        final Cursor cursor = database.rawQuery(query, null);
         try {
             cursor.moveToFirst();
             while (cursor.moveToNext()) {
 
                 final String strMediaId = cursor.getString(cursor.getColumnIndex(PlayHistory.MEDIA_ID));
-                final int timesPlayed = cursor.getInt(cursor.getColumnIndex(PlayHistory.TIMES_PLAYED));
-                final long lastPlayed = cursor.getLong(cursor.getColumnIndex(PlayHistory.LAST_PLAYED));
 
                 Track track = trackStore.getTrackByMediaID(strMediaId);
-                track.setTimesPlayed(timesPlayed);
-                track.setLastPlayed(lastPlayed);
-
-                list.add(track);
+                if (null != track) {
+                    final int timesPlayed = cursor.getInt(cursor.getColumnIndex(PlayHistory.TIMES_PLAYED));
+                    final long lastPlayed = cursor.getLong(cursor.getColumnIndex(PlayHistory.LAST_PLAYED));
+                    track.setTimesPlayed(timesPlayed);
+                    track.setLastPlayed(lastPlayed);
+                    list.add(track);
+                }
 
             }
         } catch (Exception e) {

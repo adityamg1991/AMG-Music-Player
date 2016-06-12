@@ -16,8 +16,13 @@ import android.view.Display;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
+
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.Database.DatabaseHelper;
@@ -25,16 +30,18 @@ import muzic.coffeemug.com.muzic.Database.DatabaseHelper;
 /**
  * Created by aditya on 01/09/15.
  */
-public class MuzicApplication extends Application {
+public class App extends Application {
 
-    private static MuzicApplication instance;
+    private static App instance;
     private static DatabaseHelper databaseHelper;
+    private static RequestQueue requestQueue;
 
 
     @Override
     public void onCreate() {
         super.onCreate();
         databaseHelper = DatabaseHelper.getInstance(this);
+        requestQueue = Volley.newRequestQueue(this);
     }
 
 
@@ -43,12 +50,17 @@ public class MuzicApplication extends Application {
     }
 
 
-    public static MuzicApplication getInstance() {
+    public static App getInstance() {
 
-        if(null == instance) {
-            instance = new MuzicApplication();
+        if (null == instance) {
+            instance = new App();
         }
         return instance;
+    }
+
+
+    public RequestQueue getRequestQueue() {
+        return requestQueue;
     }
 
 
@@ -81,7 +93,7 @@ public class MuzicApplication extends Application {
     }
 
 
-    public static Bitmap getSongCoverArt(Context context, long album_id){
+    public static Bitmap getSongCoverArt(Context context, long album_id) {
 
         Bitmap bmp = null;
 
@@ -92,7 +104,7 @@ public class MuzicApplication extends Application {
         try {
             InputStream in = res.openInputStream(uriSongCover);
             bmp = BitmapFactory.decodeStream(in);
-        }catch (FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -100,7 +112,7 @@ public class MuzicApplication extends Application {
     }
 
 
-    public Bitmap getAlbumArt(String _id, Activity activity) throws Exception{
+    public Bitmap getAlbumArt(String _id, Activity activity) throws Exception {
 
         Bitmap bmp = null;
 
@@ -114,7 +126,7 @@ public class MuzicApplication extends Application {
             String path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
 
             BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-            Bitmap bitmap = BitmapFactory.decodeFile(path,bmOptions);
+            Bitmap bitmap = BitmapFactory.decodeFile(path, bmOptions);
             bmp = Bitmap.createScaledBitmap(bitmap, 100, 100, true);
         }
 
@@ -122,7 +134,7 @@ public class MuzicApplication extends Application {
     }
 
 
-    public Bitmap getHighResAlbumArt(String _id, Activity activity) throws Exception{
+    public Bitmap getHighResAlbumArt(String _id, Activity activity) throws Exception {
 
         Bitmap bmp = null;
 
@@ -144,6 +156,7 @@ public class MuzicApplication extends Application {
 
     /**
      * Shares the track you pass as a parameter
+     *
      * @param mContext
      * @param mTrack
      */
@@ -157,13 +170,14 @@ public class MuzicApplication extends Application {
 
     /**
      * Shares the stored track From SharedPrefs
+     *
      * @param mContext
      */
     public void shareTrack(Context mContext) {
 
         SharedPrefs prefs = SharedPrefs.getInstance(mContext);
         Track track = prefs.getStoredTrack();
-        if(null != track) {
+        if (null != track) {
             Intent share = new Intent(Intent.ACTION_SEND);
             share.setType("audio/*");
             share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file:///" + track.getData()));
@@ -172,4 +186,15 @@ public class MuzicApplication extends Application {
             Toast.makeText(mContext, "Oops, some error occurred", Toast.LENGTH_SHORT).show();
         }
     }
+
+
+    public String urlEncode(String str) {
+        try {
+            return URLEncoder.encode(str, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

@@ -13,7 +13,7 @@ import muzic.coffeemug.com.muzic.Activities.PlayTrackActivity;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.R;
 import muzic.coffeemug.com.muzic.Utilities.AppConstants;
-import muzic.coffeemug.com.muzic.Utilities.MuzicApplication;
+import muzic.coffeemug.com.muzic.Utilities.App;
 
 /**
  * Created by aditya on 31/5/16.
@@ -22,7 +22,7 @@ public class NotificationsHub {
 
     private static NotificationsHub instance;
     private Context context;
-    private static MuzicApplication muzicApplication;
+    private static App app;
 
 
     private NotificationsHub(Context context) {
@@ -36,8 +36,8 @@ public class NotificationsHub {
             instance = new NotificationsHub(context);
         }
 
-        if (null == muzicApplication) {
-            muzicApplication = MuzicApplication.getInstance();
+        if (null == app) {
+            app = App.getInstance();
         }
 
         return instance;
@@ -50,7 +50,7 @@ public class NotificationsHub {
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_layout);
 
         // Adding relevant data to notification
-        Bitmap bmp = muzicApplication.getSongCoverArt(context, Long.parseLong(track.getAlbumID()));
+        Bitmap bmp = app.getSongCoverArt(context, Long.parseLong(track.getAlbumID()));
         if (null == bmp) {
             bmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.no_album_art_black_small);
         }
@@ -96,7 +96,7 @@ public class NotificationsHub {
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_layout_paused);
 
         // Adding relevant data to notification
-        Bitmap bmp = muzicApplication.getSongCoverArt(context, Long.parseLong(track.getAlbumID()));
+        Bitmap bmp = app.getSongCoverArt(context, Long.parseLong(track.getAlbumID()));
         if (null == bmp) {
             bmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.no_album_art_black_small);
         }

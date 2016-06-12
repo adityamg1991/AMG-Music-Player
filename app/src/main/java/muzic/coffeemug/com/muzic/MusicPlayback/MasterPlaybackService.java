@@ -24,14 +24,14 @@ import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.Events.TrackProgressEvent;
 import muzic.coffeemug.com.muzic.Store.TrackStore;
-import muzic.coffeemug.com.muzic.Utilities.MuzicApplication;
+import muzic.coffeemug.com.muzic.Utilities.App;
 
 public class MasterPlaybackService extends Service {
 
 
     private static final String LOG_TAG = "MasterPlaybackService";
     private MediaPlayer mediaPlayer;
-    private MuzicApplication muzicApplication;
+    private App app;
     private SharedPrefs prefs;
     private TrackStore mTrackStore;
     private Handler handlerProgress;
@@ -62,7 +62,7 @@ public class MasterPlaybackService extends Service {
         registerReceiver(headSetReceiver, filter);
 
         masterPlaybackController = MasterPlaybackController.getInstance(this);
-        muzicApplication = MuzicApplication.getInstance();
+        app = App.getInstance();
         prefs = SharedPrefs.getInstance(this);
         mTrackStore = TrackStore.getInstance(this);
         mediaPlayer.setOnErrorListener(new MediaPlayerErrorListener());
@@ -128,7 +128,7 @@ public class MasterPlaybackService extends Service {
 
         if (!seek) {
             // This is a Track being played from the beginning. Save in Database.
-            muzicApplication.getDatabaseHelper().saveTrackInDatabase();
+            app.getDatabaseHelper().saveTrackInDatabase();
         }
 
         if (null == trackToBePlayed) {

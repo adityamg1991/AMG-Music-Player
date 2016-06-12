@@ -16,7 +16,7 @@ import muzic.coffeemug.com.muzic.Utilities.PlayStyle;
 import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.R;
-import muzic.coffeemug.com.muzic.Utilities.MuzicApplication;
+import muzic.coffeemug.com.muzic.Utilities.App;
 
 /**
  * Created by Aditya on 9/20/2015.
@@ -27,7 +27,7 @@ public class AlbumArtFragment extends BaseFragment implements View.OnClickListen
     private boolean isControlPanelVisible;
     private RelativeLayout rlSettings;
     private int valueToAnimate = -1;
-    private MuzicApplication muzicApplication;
+    private App app;
     private SharedPrefs prefs;
     private ImageView ivPlayStyle;
 
@@ -47,7 +47,7 @@ public class AlbumArtFragment extends BaseFragment implements View.OnClickListen
         super.onActivityCreated(savedInstanceState);
 
         prefs = SharedPrefs.getInstance(getActivity());
-        muzicApplication = MuzicApplication.getInstance();
+        app = App.getInstance();
         isControlPanelVisible = false;
         ivAlbumArt = (ImageView) getActivity().findViewById(R.id.iv_album_art);
         rlSettings = (RelativeLayout) getActivity().findViewById(R.id.rl_settings);
@@ -94,7 +94,7 @@ public class AlbumArtFragment extends BaseFragment implements View.OnClickListen
 
         if(null != track) {
             try {
-                Bitmap bmp = MuzicApplication.getInstance().getHighResAlbumArt(track.getAlbumID(), getActivity());
+                Bitmap bmp = App.getInstance().getHighResAlbumArt(track.getAlbumID(), getActivity());
                 if(null != bmp) {
                     ivAlbumArt.setImageBitmap(bmp);
                     return;
@@ -139,7 +139,7 @@ public class AlbumArtFragment extends BaseFragment implements View.OnClickListen
                 break;
             }
             case R.id.iv_share : {
-                muzicApplication.shareTrack(getActivity());
+                app.shareTrack(getActivity());
                 break;
             }
             case R.id.iv_play_style : {

@@ -41,7 +41,7 @@ import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.R;
 import muzic.coffeemug.com.muzic.Store.TrackStore;
 import muzic.coffeemug.com.muzic.Utilities.AppConstants;
-import muzic.coffeemug.com.muzic.Utilities.MuzicApplication;
+import muzic.coffeemug.com.muzic.Utilities.App;
 
 
 public class HomeActivity extends BaseActivity {
@@ -77,7 +77,7 @@ public class HomeActivity extends BaseActivity {
         prefs = SharedPrefs.getInstance(this);
         bmpNoAlbumArt = BitmapFactory.decodeResource(getResources(), R.drawable.no_album_art_black_small);
         mTrackResultReceiver = new TrackResultReceiver(new Handler());
-        pixelsToMove = MuzicApplication.pxFromDp(mContext, 60);
+        pixelsToMove = App.pxFromDp(mContext, 60);
 
         scrollListener = new ScrollListener();
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -398,7 +398,7 @@ public class HomeActivity extends BaseActivity {
             }
 
             try {
-                Bitmap bmp = MuzicApplication.getInstance().getAlbumArt(track.getAlbumID(), this);
+                Bitmap bmp = App.getInstance().getAlbumArt(track.getAlbumID(), this);
                 if(null != bmp) {
                     ivAlbumArt.setImageBitmap(bmp);
                 } else {
