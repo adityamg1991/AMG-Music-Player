@@ -3,6 +3,8 @@ package muzic.coffeemug.com.muzic.Data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import muzic.coffeemug.com.muzic.Streaming.Models.SoundCloudTrack;
+
 /**
  * Created by aditya on 01/09/15.
  */
@@ -25,6 +27,16 @@ public class Track implements Parcelable {
     // Last played time in unix timestamp
     private long LAST_PLAYED = -1;
 
+    public SoundCloudTrack getSoundCloudTrack() {
+        return soundCloudTrack;
+    }
+
+    public void setSoundCloudTrack(SoundCloudTrack soundCloudTrack) {
+        this.soundCloudTrack = soundCloudTrack;
+    }
+
+    // In all other cases except SoundCloud Tracks, this will be null;
+    private SoundCloudTrack soundCloudTrack;
 
     // Constructor used when querying data from android database
     public Track(String ID, String ARTIST, String TITLE,

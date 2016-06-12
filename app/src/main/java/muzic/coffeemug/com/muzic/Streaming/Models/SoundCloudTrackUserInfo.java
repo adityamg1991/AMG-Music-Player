@@ -1,9 +1,11 @@
 package muzic.coffeemug.com.muzic.Streaming.Models;
 
+import java.io.Serializable;
+
 /**
  * Created by PAVILION on 6/12/2016.
  */
-public class SearchBaseUserResponse {
+public class SoundCloudTrackUserInfo {
 
     String avatar_url;
     String id;

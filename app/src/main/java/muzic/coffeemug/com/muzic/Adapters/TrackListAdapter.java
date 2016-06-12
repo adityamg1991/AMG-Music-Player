@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import muzic.coffeemug.com.muzic.Streaming.Models.SoundCloudTrack;
 import muzic.coffeemug.com.muzic.Utilities.AppConstants;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.Dialogs.TrackOptionsDialog;
@@ -25,6 +26,7 @@ import muzic.coffeemug.com.muzic.R;
 public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.ViewHolder> {
 
     private ArrayList<Track> dataSet;
+    private ArrayList<SoundCloudTrack> dataSetSoundCloud;
     private Context mContext;
     private ResultReceiver resultReceiver;
     private boolean isLongClickEnabled = false;
@@ -57,18 +59,18 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.View
         String strTitle = track.getTitle();
         String strAlbumName = track.getAlbumName();
 
-        if(!TextUtils.isEmpty(strTitle)) {
+        if (!TextUtils.isEmpty(strTitle)) {
             holder.mTextView.setText(strTitle);
         }
 
         String strInfo = "";
 
-        if(!TextUtils.isEmpty(strArtist)) {
+        if (!TextUtils.isEmpty(strArtist)) {
             strInfo += strArtist;
             strInfo += "  |  ";
         }
 
-        if(!TextUtils.isEmpty(strAlbumName)) {
+        if (!TextUtils.isEmpty(strAlbumName)) {
             strInfo += strAlbumName;
         }
 
@@ -90,7 +92,7 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.View
             @Override
             public boolean onLongClick(View view) {
 
-                if(isLongClickEnabled) {
+                if (isLongClickEnabled) {
                     int pos = (int) holder.llContainer.getTag();
                     Track selectedTrack = dataSet.get(pos);
                     new TrackOptionsDialog(selectedTrack, mContext, resultReceiver).show();

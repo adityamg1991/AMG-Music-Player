@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import muzic.coffeemug.com.muzic.Activities.BaseActivity;
+import muzic.coffeemug.com.muzic.Fragments.BaseFragment;
 import muzic.coffeemug.com.muzic.R;
 import muzic.coffeemug.com.muzic.Streaming.Fragments.FragmentRecomsHome;
 
@@ -26,7 +27,7 @@ public class RecomsHomeActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setTitle("Recoms");
+        setTitle("Recommendations");
 
         managerFragment = getSupportFragmentManager();
         if (null == managerFragment.findFragmentByTag(FRAG_TAGS.HOME)) {
@@ -46,7 +47,15 @@ public class RecomsHomeActivity extends BaseActivity {
     }
 
 
+    public void loadFragment(BaseFragment fragment) {
+        managerFragment.beginTransaction().replace(R.id.ll_container,
+                fragment, FRAG_TAGS.HOME).addToBackStack(null).commit();
+    }
+
+
     public interface FRAG_TAGS {
         String HOME = "HOME";
+        String ONLINE = "ONLINE";
     }
+
 }

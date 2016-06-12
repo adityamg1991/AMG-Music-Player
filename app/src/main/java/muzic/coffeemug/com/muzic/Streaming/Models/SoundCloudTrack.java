@@ -1,28 +1,30 @@
 package muzic.coffeemug.com.muzic.Streaming.Models;
 
+import java.io.Serializable;
+
 /**
  * Created by PAVILION on 6/12/2016.
  */
-public class SearchBaseResponseItem {
+public class SoundCloudTrack {
 
-    SearchBaseUserResponse user;
+    SoundCloudTrackUserInfo user;
 
     String download_url;
     String key_signature;
-    String user_favorite;
+    boolean user_favorite;
     String likes_count;
     String release;
     String attachments_uri;
     String waveform_url;
     String purchase_url;
     String video_url;
-    String streamable;
+    boolean streamable;
     String artwork_url;
     String comment_count;
-    String commentable;
+    boolean commentable;
     String description;
     String download_count;
-    String downloadable;
+    boolean downloadable;
     String embeddable_by;
     String favoritings_count;
     String genre;
@@ -55,5 +57,4 @@ public class SearchBaseResponseItem {
     String stream_url;
     String uri;
     String user_id;
-
 }

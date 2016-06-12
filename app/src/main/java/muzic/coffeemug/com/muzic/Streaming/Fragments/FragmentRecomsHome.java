@@ -20,7 +20,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
-import com.google.gson.internal.Excluder;
 
 import java.util.ArrayList;
 
@@ -29,7 +28,9 @@ import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.Database.DatabaseHelper;
 import muzic.coffeemug.com.muzic.Fragments.BaseFragment;
 import muzic.coffeemug.com.muzic.R;
-import muzic.coffeemug.com.muzic.Streaming.Models.SearchBaseResponseItem;
+import muzic.coffeemug.com.muzic.Streaming.Activities.RecomsHomeActivity;
+import muzic.coffeemug.com.muzic.Streaming.Models.SoundCloudTrack;
+import muzic.coffeemug.com.muzic.Streaming.Store.StreamTrackStore;
 import muzic.coffeemug.com.muzic.Utilities.AppConstants;
 import muzic.coffeemug.com.muzic.Utilities.App;
 
@@ -39,6 +40,14 @@ public class FragmentRecomsHome extends BaseFragment implements AppConstants {
     private static final String LOG_TAG = "FragmentRecomsHome";
     private RecyclerView rvRecon;
     private TrackResultReceiver mTrackResultReceiver;
+    private RecomsHomeActivity activity;
+
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.activity = (RecomsHomeActivity) activity;
+    }
 
 
     public FragmentRecomsHome() {
@@ -136,12 +145,14 @@ public class FragmentRecomsHome extends BaseFragment implements AppConstants {
     private void handleResponse(String response) {
 
         try {
-            SearchBaseResponseItem dataSet[] = new Gson().
-                    fromJson(response, SearchBaseResponseItem[].class);
+            SoundCloudTrack dataSet[] = new Gson().
+                    fromJson(response, SoundCloudTrack[].class);
             if (dataSet.length == 0) {
                 App.getInstance().showToast(getString(R.string.no_sug_found), getActivity());
             } else {
-
+                StreamTrackStore.getInstance().setDataSet(dataSet);
+                FragmentRecomsOnlineMusic fragment = FragmentRecomsOnlineMusic.newInstance();
+                activity.loadFragment(fragment);
             }
         } catch (Exception e) {
             e.printStackTrace();
