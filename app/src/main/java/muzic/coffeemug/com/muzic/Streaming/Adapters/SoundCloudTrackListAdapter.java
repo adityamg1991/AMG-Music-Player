@@ -1,4 +1,4 @@
-package muzic.coffeemug.com.muzic.Adapters;
+package muzic.coffeemug.com.muzic.Streaming.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,29 +14,25 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import muzic.coffeemug.com.muzic.Streaming.Models.SoundCloudTrack;
-import muzic.coffeemug.com.muzic.Utilities.AppConstants;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.Dialogs.TrackOptionsDialog;
 import muzic.coffeemug.com.muzic.R;
+import muzic.coffeemug.com.muzic.Streaming.Models.SoundCloudTrack;
+import muzic.coffeemug.com.muzic.Streaming.Playback.StreamingController;
+import muzic.coffeemug.com.muzic.Utilities.AppConstants;
 
 /**
- * Created by aditya on 02/09/15.
+ * Created by PAVILION on 6/13/2016.
  */
-public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.ViewHolder> {
+public class SoundCloudTrackListAdapter extends RecyclerView.Adapter<SoundCloudTrackListAdapter.ViewHolder> {
 
-    private ArrayList<Track> dataSet;
+    private ArrayList<SoundCloudTrack> dataSet;
     private Context mContext;
-    private ResultReceiver resultReceiver;
-    private boolean isLongClickEnabled = false;
 
 
-    public TrackListAdapter(Context context, ArrayList<Track> dataSet,
-                            ResultReceiver resultReceiver, boolean isLongClickEnabled) {
+    public SoundCloudTrackListAdapter(Context context, ArrayList<SoundCloudTrack> dataSet) {
         this.dataSet = dataSet;
         this.mContext = context;
-        this.resultReceiver = resultReceiver;
-        this.isLongClickEnabled = isLongClickEnabled;
     }
 
 
@@ -52,11 +48,11 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.View
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-        Track track = dataSet.get(position);
+        final SoundCloudTrack track = dataSet.get(position);
 
-        String strArtist = track.getArtist();
-        String strTitle = track.getTitle();
-        String strAlbumName = track.getAlbumName();
+        String strTrackType = track.track_type;
+        String strTitle = track.title;
+        String strTagList = track.tag_list;
 
         if (!TextUtils.isEmpty(strTitle)) {
             holder.mTextView.setText(strTitle);
@@ -64,13 +60,13 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.View
 
         String strInfo = "";
 
-        if (!TextUtils.isEmpty(strArtist)) {
-            strInfo += strArtist;
+        if (!TextUtils.isEmpty(strTrackType)) {
+            strInfo += strTrackType;
             strInfo += "  |  ";
         }
 
-        if (!TextUtils.isEmpty(strAlbumName)) {
-            strInfo += strAlbumName;
+        if (!TextUtils.isEmpty(strTagList)) {
+            strInfo += strTagList;
         }
 
         holder.tvInfo.setText(strInfo);
@@ -78,26 +74,7 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.View
         holder.llContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                int pos = (int) holder.llContainer.getTag();
-                Track selectedTrack = dataSet.get(pos);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(AppConstants.SELECTED_TRACK, selectedTrack);
-                resultReceiver.send(Activity.RESULT_OK, bundle);
-            }
-        });
-
-        holder.llContainer.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-
-                if (isLongClickEnabled) {
-                    int pos = (int) holder.llContainer.getTag();
-                    Track selectedTrack = dataSet.get(pos);
-                    new TrackOptionsDialog(selectedTrack, mContext, resultReceiver).show();
-                }
-                return true;
-
+                StreamingController.getInstance(mContext).playTrack(track.id);
             }
         });
 

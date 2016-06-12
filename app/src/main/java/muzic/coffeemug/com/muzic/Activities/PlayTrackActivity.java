@@ -21,8 +21,8 @@ import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.Events.TrackProgressEvent;
 import muzic.coffeemug.com.muzic.Fragments.AlbumArtFragment;
-import muzic.coffeemug.com.muzic.MusicPlayback.MasterPlaybackController;
-import muzic.coffeemug.com.muzic.MusicPlayback.MasterPlaybackUtils;
+import muzic.coffeemug.com.muzic.MusicPlayback.PlaybackController;
+import muzic.coffeemug.com.muzic.Utilities.MasterPlaybackUtils;
 import muzic.coffeemug.com.muzic.R;
 
 public class PlayTrackActivity extends TrackBaseActivity implements View.OnClickListener {
@@ -35,7 +35,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
     private TextView tvTotalTime, tvCurrentTime, tvTrackName, tvAdditionalInfo;
     private SeekBar seekBar;
 
-    private MasterPlaybackController masterPlaybackController;
+    private PlaybackController masterPlaybackController;
 
     private final SharedPrefs prefs = SharedPrefs.getInstance(this);
     private final TrackStore trackStore = TrackStore.getInstance(this);
@@ -59,7 +59,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_track);
-        masterPlaybackController = MasterPlaybackController.getInstance(this);
+        masterPlaybackController = PlaybackController.getInstance(this);
 
         ViewPager mPager = (ViewPager) findViewById(R.id.vp_player);
         adapter = new PlayTrackPagerAdapter(getSupportFragmentManager());
@@ -173,7 +173,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
             prefs.storeTrack(track);
         }
 
-        MasterPlaybackController.getInstance(this).playTrack();
+        PlaybackController.getInstance(this).playTrack();
 
     }
 

@@ -27,17 +27,6 @@ public class Track implements Parcelable {
     // Last played time in unix timestamp
     private long LAST_PLAYED = -1;
 
-    public SoundCloudTrack getSoundCloudTrack() {
-        return soundCloudTrack;
-    }
-
-    public void setSoundCloudTrack(SoundCloudTrack soundCloudTrack) {
-        this.soundCloudTrack = soundCloudTrack;
-    }
-
-    // In all other cases except SoundCloud Tracks, this will be null;
-    private SoundCloudTrack soundCloudTrack;
-
     // Constructor used when querying data from android database
     public Track(String ID, String ARTIST, String TITLE,
                  String DATA, String DISPLAY_NAME, long DURATION, String ALBUM_NAME, String ALBUM_ID) {

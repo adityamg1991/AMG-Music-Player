@@ -34,11 +34,11 @@
             android:exported="false" />
 
         <service
-            android:name=".MusicPlayback.MasterPlaybackService"
+            android:name=".MusicPlayback.PlaybackService"
             android:enabled="true"
             android:exported="false" />
         <service
-            android:name=".Streaming.MasterStreamingService"
+            android:name=".Streaming.Playback.StreamingService"
             android:enabled="true"
             android:exported="false" />
 

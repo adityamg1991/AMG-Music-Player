@@ -16,6 +16,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 
+import muzic.coffeemug.com.muzic.Utilities.MasterPlaybackUtils;
 import muzic.coffeemug.com.muzic.Utilities.MuzicAudioFocus;
 import muzic.coffeemug.com.muzic.Events.PlaybackStatusEvent;
 import muzic.coffeemug.com.muzic.Notification.NotificationsHub;
@@ -26,7 +27,7 @@ import muzic.coffeemug.com.muzic.Events.TrackProgressEvent;
 import muzic.coffeemug.com.muzic.Store.TrackStore;
 import muzic.coffeemug.com.muzic.Utilities.App;
 
-public class MasterPlaybackService extends Service {
+public class PlaybackService extends Service {
 
 
     private static final String LOG_TAG = "MasterPlaybackService";
@@ -36,11 +37,11 @@ public class MasterPlaybackService extends Service {
     private TrackStore mTrackStore;
     private Handler handlerProgress;
     private RunnableProgress runnableProgress;
-    private MasterPlaybackController masterPlaybackController;
+    private PlaybackController masterPlaybackController;
     private HeadSetReceiver headSetReceiver;
 
 
-    public MasterPlaybackService() {
+    public PlaybackService() {
     }
 
     @Nullable
@@ -61,7 +62,7 @@ public class MasterPlaybackService extends Service {
         IntentFilter filter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
         registerReceiver(headSetReceiver, filter);
 
-        masterPlaybackController = MasterPlaybackController.getInstance(this);
+        masterPlaybackController = PlaybackController.getInstance(this);
         app = App.getInstance();
         prefs = SharedPrefs.getInstance(this);
         mTrackStore = TrackStore.getInstance(this);
@@ -151,7 +152,7 @@ public class MasterPlaybackService extends Service {
                     @Override
                     public void onPrepared(MediaPlayer mp) {
 
-                        if (MuzicAudioFocus.getInstance(MasterPlaybackService.this).getAudioFocus()) {
+                        if (MuzicAudioFocus.getInstance(PlaybackService.this).getAudioFocus()) {
 
                             sendPlaybackStatusEvent(true);
                             startTimer();

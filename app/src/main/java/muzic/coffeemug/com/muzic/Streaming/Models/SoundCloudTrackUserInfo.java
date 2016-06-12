@@ -7,13 +7,13 @@ import java.io.Serializable;
  */
 public class SoundCloudTrackUserInfo {
 
-    String avatar_url;
-    String id;
-    String kind;
-    String permalink_url;
-    String uri;
-    String username;
-    String permalink;
-    String last_modified;
+    public String avatar_url;
+    public String id;
+    public String kind;
+    public String permalink_url;
+    public String uri;
+    public String username;
+    public String permalink;
+    public String last_modified;
 
 }

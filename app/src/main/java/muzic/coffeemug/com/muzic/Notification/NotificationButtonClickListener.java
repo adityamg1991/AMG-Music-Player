@@ -7,7 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 
-import muzic.coffeemug.com.muzic.MusicPlayback.MasterPlaybackController;
+import muzic.coffeemug.com.muzic.MusicPlayback.PlaybackController;
 import muzic.coffeemug.com.muzic.Utilities.AppConstants;
 import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
 
@@ -25,7 +25,7 @@ public class NotificationButtonClickListener extends BroadcastReceiver {
         if (null != intent) {
 
             final String strAction = intent.getAction();
-            final MasterPlaybackController controller = MasterPlaybackController.getInstance(context);
+            final PlaybackController controller = PlaybackController.getInstance(context);
             final NotificationsHub notificationsHub = NotificationsHub.getInstance(context);
             final SharedPrefs prefs = SharedPrefs.getInstance(context);
             final NotificationManager managerNotification =

@@ -5,30 +5,31 @@ import android.content.Intent;
 
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.Store.TrackStore;
+import muzic.coffeemug.com.muzic.Utilities.MasterPlaybackUtils;
 import muzic.coffeemug.com.muzic.Utilities.PlayStyle;
 import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
 
 /**
  * Created by PAVILION on 5/23/2016.
  */
-public class MasterPlaybackController {
+public class PlaybackController {
 
-    private static MasterPlaybackController instance;
+    private static PlaybackController instance;
     private Context context;
     private TrackStore trackStore;
     private SharedPrefs prefs;
 
 
-    private MasterPlaybackController(Context context) {
+    private PlaybackController(Context context) {
         this.context = context;
         trackStore = TrackStore.getInstance(context);
         prefs = SharedPrefs.getInstance(context);
     }
 
 
-    public static MasterPlaybackController getInstance(Context context) {
+    public static PlaybackController getInstance(Context context) {
         if (null == instance) {
-            instance = new MasterPlaybackController(context);
+            instance = new PlaybackController(context);
         }
         return instance;
     }
@@ -36,7 +37,7 @@ public class MasterPlaybackController {
 
     public void playTrack() {
 
-        Intent intent = new Intent(context, MasterPlaybackService.class);
+        Intent intent = new Intent(context, PlaybackService.class);
         intent.putExtra(MasterPlaybackUtils.Constants.ACTION, MasterPlaybackUtils.Values.PLAY_TRACK);
         context.startService(intent);
 
@@ -44,14 +45,14 @@ public class MasterPlaybackController {
 
 
     public void pauseTrack() {
-        Intent intent = new Intent(context, MasterPlaybackService.class);
+        Intent intent = new Intent(context, PlaybackService.class);
         intent.putExtra(MasterPlaybackUtils.Constants.ACTION, MasterPlaybackUtils.Values.PAUSE_TRACK);
         context.startService(intent);
     }
 
 
     public void resumeTrack() {
-        Intent intent = new Intent(context, MasterPlaybackService.class);
+        Intent intent = new Intent(context, PlaybackService.class);
         intent.putExtra(MasterPlaybackUtils.Constants.ACTION, MasterPlaybackUtils.Values.RESUME_TRACK);
         context.startService(intent);
     }
@@ -81,7 +82,7 @@ public class MasterPlaybackController {
     public void moveTrackToPoint() {
 
         if (MasterPlaybackUtils.getInstance().isMasterPlaybackServiceRunning(context)) {
-            Intent intent = new Intent(context, MasterPlaybackService.class);
+            Intent intent = new Intent(context, PlaybackService.class);
             intent.putExtra(MasterPlaybackUtils.Constants.ACTION, MasterPlaybackUtils.Values.MOVE_TRACK);
             context.startService(intent);
         }

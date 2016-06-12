@@ -13,6 +13,8 @@ import muzic.coffeemug.com.muzic.Activities.BaseActivity;
 import muzic.coffeemug.com.muzic.Fragments.BaseFragment;
 import muzic.coffeemug.com.muzic.R;
 import muzic.coffeemug.com.muzic.Streaming.Fragments.FragmentRecomsHome;
+import muzic.coffeemug.com.muzic.Streaming.Playback.StreamingController;
+import muzic.coffeemug.com.muzic.Utilities.MasterPlaybackUtils;
 
 public class RecomsHomeActivity extends BaseActivity {
 
@@ -58,4 +60,12 @@ public class RecomsHomeActivity extends BaseActivity {
         String ONLINE = "ONLINE";
     }
 
+
+    @Override
+    public void onBackPressed() {
+        if (MasterPlaybackUtils.getInstance().isMasterStreamingServiceRunning(this)) {
+            StreamingController.getInstance(this).pauseTrack();
+        }
+        super.onBackPressed();
+    }
 }

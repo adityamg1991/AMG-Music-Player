@@ -33,8 +33,8 @@ import java.util.ArrayList;
 import muzic.coffeemug.com.muzic.Adapters.TrackListAdapter;
 import muzic.coffeemug.com.muzic.Data.ScrollData;
 import muzic.coffeemug.com.muzic.Events.PlaybackStatusEvent;
-import muzic.coffeemug.com.muzic.MusicPlayback.MasterPlaybackController;
-import muzic.coffeemug.com.muzic.MusicPlayback.MasterPlaybackUtils;
+import muzic.coffeemug.com.muzic.MusicPlayback.PlaybackController;
+import muzic.coffeemug.com.muzic.Utilities.MasterPlaybackUtils;
 import muzic.coffeemug.com.muzic.Streaming.Activities.RecomsHomeActivity;
 import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
 import muzic.coffeemug.com.muzic.Data.Track;
@@ -114,9 +114,9 @@ public class HomeActivity extends BaseActivity {
         ivPlayPause.setImageResource(android.R.color.transparent);
 
         if(MasterPlaybackUtils.getInstance().isMasterPlaybackServiceRunning(this)) {
-            MasterPlaybackController.getInstance(this).pauseTrack();
+            PlaybackController.getInstance(this).pauseTrack();
         } else {
-            MasterPlaybackController.getInstance(this).resumeTrack();
+            PlaybackController.getInstance(this).resumeTrack();
         }
     }
 

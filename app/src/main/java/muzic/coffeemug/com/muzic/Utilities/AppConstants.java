@@ -41,5 +41,10 @@ public interface AppConstants {
         // Requires 'client_id' and 'q'
         String SEARCH_URL = BASE_URL + "/tracks?" + CLIENT_ID_INFO;
 
+        String STREAM_URL_FOOTER = "/stream?" + CLIENT_ID_INFO;
+        String STREAM_URL_HEADER = BASE_URL + "/tracks/";
+
     }
+
 }
+

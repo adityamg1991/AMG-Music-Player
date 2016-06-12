@@ -13,7 +13,7 @@ import android.provider.MediaStore;
 import java.util.ArrayList;
 import java.util.Random;
 
-import muzic.coffeemug.com.muzic.MusicPlayback.MasterPlaybackController;
+import muzic.coffeemug.com.muzic.MusicPlayback.PlaybackController;
 import muzic.coffeemug.com.muzic.Utilities.AppConstants;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
@@ -146,7 +146,7 @@ public class TrackStore {
 
     public void saveInPrefsAndPlayTrack(Track track) {
         SharedPrefs.getInstance(context).storeTrack(track);
-        MasterPlaybackController.getInstance(context).playTrack();
+        PlaybackController.getInstance(context).playTrack();
     }
 
 

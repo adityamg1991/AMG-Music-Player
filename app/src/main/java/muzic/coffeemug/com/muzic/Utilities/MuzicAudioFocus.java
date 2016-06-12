@@ -4,8 +4,7 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.util.Log;
 
-import muzic.coffeemug.com.muzic.MusicPlayback.MasterPlaybackController;
-import muzic.coffeemug.com.muzic.MusicPlayback.MasterPlaybackUtils;
+import muzic.coffeemug.com.muzic.MusicPlayback.PlaybackController;
 
 /**
  * Created by PAVILION on 6/10/2016.
@@ -46,7 +45,7 @@ public class MuzicAudioFocus {
     private void pauseTrackIfPlaying() {
 
         if (MasterPlaybackUtils.getInstance().isMasterPlaybackServiceRunning(context)) {
-            MasterPlaybackController.getInstance(context).pauseTrack();
+            PlaybackController.getInstance(context).pauseTrack();
         }
 
     }

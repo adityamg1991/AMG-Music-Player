@@ -1,4 +1,4 @@
-package muzic.coffeemug.com.muzic.Streaming;
+package muzic.coffeemug.com.muzic.Streaming.Playback;
 
 import android.app.Service;
 import android.content.Intent;
@@ -9,7 +9,11 @@ import android.util.Log;
 
 import java.io.IOException;
 
-public class MasterStreamingService extends Service
+import muzic.coffeemug.com.muzic.Utilities.AppConstants;
+import muzic.coffeemug.com.muzic.Utilities.MasterPlaybackUtils;
+import muzic.coffeemug.com.muzic.Utilities.MuzicAudioFocus;
+
+public class StreamingService extends Service
         implements MediaPlayer.OnCompletionListener,
         MediaPlayer.OnPreparedListener,
         MediaPlayer.OnBufferingUpdateListener {
@@ -18,7 +22,7 @@ public class MasterStreamingService extends Service
     private MediaPlayer mediaPlayer;
 
 
-    public MasterStreamingService() {
+    public StreamingService() {
     }
 
 
@@ -44,10 +48,29 @@ public class MasterStreamingService extends Service
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        String link = "https://api.soundcloud.com/tracks/346346/stream?client_id=d734fcc82b1f04127dd928093ef9c5f3";
-        startStreaming(link);
+        if (null != intent && intent.hasExtra(MasterPlaybackUtils.Constants.ACTION)) {
+            String strAction = intent.getStringExtra(MasterPlaybackUtils.Constants.ACTION);
+            if (null != strAction) {
+                if (strAction.equals(MasterPlaybackUtils.Values.PLAY_TRACK)) {
+                    playSoundCloudTrack(intent.getStringExtra(MasterPlaybackUtils.Constants.SOUND_CLOUD_TRACK_ID));
+                } else if (strAction.equals(MasterPlaybackUtils.Values.PAUSE_TRACK)) {
+                    releaseResourcesAndStopSelf();
+                }
+
+            }
+        }
 
         return START_NOT_STICKY;
+    }
+
+
+    private void playSoundCloudTrack(String soundCloudTrackId) {
+
+        // String link = "https://api.soundcloud.com/tracks/346346/stream?client_id=d734fcc82b1f04127dd928093ef9c5f3";
+        String link = AppConstants.SoundCloud.STREAM_URL_HEADER + soundCloudTrackId + AppConstants.SoundCloud.STREAM_URL_FOOTER;
+        Log.d(LOG_TAG, "Streaming Music : " + link);
+        startStreaming(link);
+
     }
 
 
@@ -87,7 +110,11 @@ public class MasterStreamingService extends Service
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        mediaPlayer.start();
+
+        if (MuzicAudioFocus.getInstance(StreamingService.this).getAudioFocus()) {
+            mediaPlayer.start();
+        }
+
     }
 
 
@@ -98,4 +125,24 @@ public class MasterStreamingService extends Service
             return false;
         }
     }
+
+
+    private void releaseResourcesAndStopSelf() {
+
+        Log.d(LOG_TAG, "Pausing Track, Stopping Service");
+        if (null != mediaPlayer) {
+            mediaPlayer.reset();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+
+        //sendPlaybackStatusEvent(false);
+        //stopTimer();
+        //stopForeground(removeNotification);
+        stopSelf();
+        MuzicAudioFocus.getInstance(this).abandon();
+        //unregisterReceiver(headSetReceiver);
+
+    }
+
 }

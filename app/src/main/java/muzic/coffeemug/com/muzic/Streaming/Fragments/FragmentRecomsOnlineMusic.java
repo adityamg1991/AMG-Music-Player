@@ -3,6 +3,7 @@ package muzic.coffeemug.com.muzic.Streaming.Fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +11,12 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
+import muzic.coffeemug.com.muzic.Adapters.TrackListAdapter;
+import muzic.coffeemug.com.muzic.Data.Track;
+import muzic.coffeemug.com.muzic.Database.DatabaseHelper;
 import muzic.coffeemug.com.muzic.Fragments.BaseFragment;
 import muzic.coffeemug.com.muzic.R;
+import muzic.coffeemug.com.muzic.Streaming.Adapters.SoundCloudTrackListAdapter;
 import muzic.coffeemug.com.muzic.Streaming.Models.SoundCloudTrack;
 import muzic.coffeemug.com.muzic.Streaming.Store.StreamTrackStore;
 
@@ -45,6 +50,10 @@ public class FragmentRecomsOnlineMusic extends BaseFragment {
 
         ArrayList<SoundCloudTrack> dataSet = StreamTrackStore.getInstance().getDataSet();
         if (null != dataSet && !dataSet.isEmpty()) {
+
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerView.setAdapter(new SoundCloudTrackListAdapter(getActivity(), dataSet));
 
         }
 
