@@ -113,7 +113,7 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.View
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView mTextView;
+        public TextView mTextView, tvSeparator;
         public TextView tvInfo;
         public LinearLayout llContainer;
 
@@ -122,6 +122,7 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.View
             mTextView = (TextView) v.findViewById(R.id.info_text);
             tvInfo = (TextView) v.findViewById(R.id.tv_info);
             llContainer = (LinearLayout) v.findViewById(R.id.ll_container);
+            tvSeparator = (TextView) v.findViewById(R.id.tv_separator);
         }
     }
 

@@ -8,12 +8,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -26,6 +28,7 @@ import java.util.ArrayList;
 import muzic.coffeemug.com.muzic.Adapters.TrackListAdapter;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.Database.DatabaseHelper;
+import muzic.coffeemug.com.muzic.Fragments.AlbumArtFragment;
 import muzic.coffeemug.com.muzic.Fragments.BaseFragment;
 import muzic.coffeemug.com.muzic.R;
 import muzic.coffeemug.com.muzic.Streaming.Activities.RecomsHomeActivity;
@@ -39,6 +42,7 @@ public class FragmentRecomsHome extends BaseFragment implements AppConstants {
 
     private static final String LOG_TAG = "FragmentRecomsHome";
     private RecyclerView rvRecon;
+    private FrameLayout frameLayout;
     private TrackResultReceiver mTrackResultReceiver;
     private RecomsHomeActivity activity;
 
@@ -68,6 +72,7 @@ public class FragmentRecomsHome extends BaseFragment implements AppConstants {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fragment_recom_home, container, false);
         rvRecon = (RecyclerView) view.findViewById(R.id.rv_recoms_step_one);
+        frameLayout = (FrameLayout) view.findViewById(R.id.container);
         return view;
     }
 
@@ -76,10 +81,27 @@ public class FragmentRecomsHome extends BaseFragment implements AppConstants {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        rvRecon.setHasFixedSize(true);
-        rvRecon.setLayoutManager(new LinearLayoutManager(getActivity()));
         ArrayList<Track> dataSet = DatabaseHelper.getInstance(getActivity()).getTracksStoredInDatabase();
-        rvRecon.setAdapter(new TrackListAdapter(getActivity(), dataSet, mTrackResultReceiver, false));
+
+        if (dataSet.isEmpty()) {
+            rvRecon.setVisibility(View.GONE);
+            final String strMessage = getString(R.string.no_recoms);
+            final Snackbar snackbar = Snackbar.make(frameLayout, strMessage, Snackbar.LENGTH_LONG);
+            snackbar.setDuration(Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction("Ok", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    snackbar.dismiss();
+                    getActivity().onBackPressed();
+                }
+            });
+            snackbar.show();
+        } else {
+            rvRecon.setHasFixedSize(true);
+            rvRecon.setLayoutManager(new LinearLayoutManager(getActivity()));
+            rvRecon.setAdapter(new TrackListAdapter(getActivity(), dataSet, mTrackResultReceiver, false));
+        }
+
     }
 
 

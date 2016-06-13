@@ -50,11 +50,9 @@ public class FragmentRecomsOnlineMusic extends BaseFragment {
 
         ArrayList<SoundCloudTrack> dataSet = StreamTrackStore.getInstance().getDataSet();
         if (null != dataSet && !dataSet.isEmpty()) {
-
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             recyclerView.setAdapter(new SoundCloudTrackListAdapter(getActivity(), dataSet));
-
         }
 
     }

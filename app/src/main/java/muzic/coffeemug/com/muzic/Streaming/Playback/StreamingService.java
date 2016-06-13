@@ -66,7 +66,6 @@ public class StreamingService extends Service
 
     private void playSoundCloudTrack(String soundCloudTrackId) {
 
-        // String link = "https://api.soundcloud.com/tracks/346346/stream?client_id=d734fcc82b1f04127dd928093ef9c5f3";
         String link = AppConstants.SoundCloud.STREAM_URL_HEADER + soundCloudTrackId + AppConstants.SoundCloud.STREAM_URL_FOOTER;
         Log.d(LOG_TAG, "Streaming Music : " + link);
         startStreaming(link);

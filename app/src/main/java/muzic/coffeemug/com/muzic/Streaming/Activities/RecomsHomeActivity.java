@@ -1,9 +1,11 @@
 package muzic.coffeemug.com.muzic.Streaming.Activities;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -51,7 +53,7 @@ public class RecomsHomeActivity extends BaseActivity {
 
     public void loadFragment(BaseFragment fragment) {
         managerFragment.beginTransaction().replace(R.id.ll_container,
-                fragment, FRAG_TAGS.HOME).addToBackStack(null).commit();
+                fragment, FRAG_TAGS.ONLINE).addToBackStack(null).commit();
     }
 
 
@@ -63,9 +65,30 @@ public class RecomsHomeActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (MasterPlaybackUtils.getInstance().isMasterStreamingServiceRunning(this)) {
-            StreamingController.getInstance(this).pauseTrack();
+
+        if (managerFragment.getBackStackEntryCount() == 0) {
+
+            if (MasterPlaybackUtils.getInstance().isMasterStreamingServiceRunning(this)){
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Warning");
+                builder.setMessage("Continue back and stop streaming Music?");
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        StreamingController.getInstance(RecomsHomeActivity.this).pauseTrack();
+                        RecomsHomeActivity.super.onBackPressed();
+                    }
+                });
+                builder.create().show();
+            } else {
+                super.onBackPressed();
+            }
+        } else {
+            super.onBackPressed();
         }
-        super.onBackPressed();
     }
 }

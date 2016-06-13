@@ -197,4 +197,27 @@ public class App extends Application {
         }
     }
 
+
+    public String getTimeString(long durationInSec) {
+
+        String str = "";
+
+        try {
+            String strMins = String.valueOf(durationInSec / 60);
+            if(strMins.length() == 1) {
+                strMins = "0" + strMins;
+            }
+
+            String strSecs = String.valueOf(durationInSec % 60);
+            if(strSecs.length() == 1) {
+                strSecs = "0" + strSecs;
+            }
+
+            str = strMins + ":" + strSecs;
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return str;
+    }
 }

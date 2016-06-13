@@ -15,6 +15,7 @@ import org.greenrobot.eventbus.Subscribe;
 import muzic.coffeemug.com.muzic.Adapters.PlayTrackPagerAdapter;
 import muzic.coffeemug.com.muzic.Events.PlaybackStatusEvent;
 import muzic.coffeemug.com.muzic.Store.TrackStore;
+import muzic.coffeemug.com.muzic.Utilities.App;
 import muzic.coffeemug.com.muzic.Utilities.AppConstants;
 import muzic.coffeemug.com.muzic.Utilities.PlayStyle;
 import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
@@ -229,7 +230,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
                 tvCurrentTime.setText("00:00");
                 seekBar.setMax((int) currentTrack.getDuration());
                 long durationInSec = currentTrack.getDuration() / 1000;
-                String strTrackDuration = getTimeString(durationInSec);
+                String strTrackDuration = App.getInstance().getTimeString(durationInSec);
                 tvTotalTime.setText(strTrackDuration);
 
                 int progress = SharedPrefs.getInstance(this).getTrackProgress();
@@ -292,30 +293,6 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
     }
 
 
-    private String getTimeString(long durationInSec) {
-
-        String str = "";
-
-        try {
-            String strMins = String.valueOf(durationInSec / 60);
-            if(strMins.length() == 1) {
-                strMins = "0" + strMins;
-            }
-
-            String strSecs = String.valueOf(durationInSec % 60);
-            if(strSecs.length() == 1) {
-                strSecs = "0" + strSecs;
-            }
-
-            str = strMins + ":" + strSecs;
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-
-        return str;
-    }
-
-
     @Subscribe
     public void onEvent(TrackProgressEvent event) {
         if (null != event) {
@@ -342,7 +319,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
 
     private void setTrackProgress(int progress) {
 
-        tvCurrentTime.setText(getTimeString(progress));
+        tvCurrentTime.setText(App.getInstance().getTimeString(progress));
         seekBar.setProgress(progress * 1000);
     }
 }
