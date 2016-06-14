@@ -1,6 +1,7 @@
 package muzic.coffeemug.com.muzic.Streaming.Fragments;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +17,7 @@ import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.Database.DatabaseHelper;
 import muzic.coffeemug.com.muzic.Fragments.BaseFragment;
 import muzic.coffeemug.com.muzic.R;
+import muzic.coffeemug.com.muzic.Streaming.Activities.RecomsHomeActivity;
 import muzic.coffeemug.com.muzic.Streaming.Adapters.SoundCloudTrackListAdapter;
 import muzic.coffeemug.com.muzic.Streaming.Models.SoundCloudTrack;
 import muzic.coffeemug.com.muzic.Streaming.Store.StreamTrackStore;
@@ -23,6 +25,7 @@ import muzic.coffeemug.com.muzic.Streaming.Store.StreamTrackStore;
 public class FragmentRecomsOnlineMusic extends BaseFragment {
 
     private RecyclerView recyclerView;
+
 
     public static FragmentRecomsOnlineMusic newInstance() {
         Bundle args = new Bundle();

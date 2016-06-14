@@ -7,8 +7,11 @@ import android.media.MediaPlayer;
 import android.os.IBinder;
 import android.util.Log;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.IOException;
 
+import muzic.coffeemug.com.muzic.Events.StreamStatusEvent;
 import muzic.coffeemug.com.muzic.Utilities.AppConstants;
 import muzic.coffeemug.com.muzic.Utilities.MasterPlaybackUtils;
 import muzic.coffeemug.com.muzic.Utilities.MuzicAudioFocus;
@@ -112,8 +115,14 @@ public class StreamingService extends Service
 
         if (MuzicAudioFocus.getInstance(StreamingService.this).getAudioFocus()) {
             mediaPlayer.start();
+            sendStreamEvent(true);
         }
 
+    }
+
+
+    private void sendStreamEvent(boolean bool) {
+        EventBus.getDefault().post(new StreamStatusEvent(bool));
     }
 
 

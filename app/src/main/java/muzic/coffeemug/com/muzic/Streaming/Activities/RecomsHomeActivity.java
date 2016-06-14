@@ -8,13 +8,25 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import muzic.coffeemug.com.muzic.Activities.BaseActivity;
+import muzic.coffeemug.com.muzic.Events.StreamStatusEvent;
+import muzic.coffeemug.com.muzic.Events.TrackProgressEvent;
 import muzic.coffeemug.com.muzic.Fragments.BaseFragment;
 import muzic.coffeemug.com.muzic.R;
 import muzic.coffeemug.com.muzic.Streaming.Fragments.FragmentRecomsHome;
+import muzic.coffeemug.com.muzic.Streaming.Models.SoundCloudTrack;
 import muzic.coffeemug.com.muzic.Streaming.Playback.StreamingController;
 import muzic.coffeemug.com.muzic.Utilities.MasterPlaybackUtils;
 
@@ -22,6 +34,12 @@ public class RecomsHomeActivity extends BaseActivity {
 
 
     private FragmentManager managerFragment;
+
+    // Bottom bar views
+    private TextView tvArtistName, tvTitle;
+    private ImageView ivAlbumArt, ivPlayPause;
+    private int noArtworkDrawable = R.mipmap.ic_launcher;
+    private ProgressBar pb;
 
 
     @Override
@@ -32,6 +50,13 @@ public class RecomsHomeActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle("Recommendations");
+
+        // Bottom bar views
+        tvArtistName = (TextView) findViewById(R.id.tv_bb_uploader_name);
+        tvTitle = (TextView) findViewById(R.id.tv_bb_title);
+        ivAlbumArt = (ImageView) findViewById(R.id.iv_bb_album_art);
+        ivPlayPause = (ImageView) findViewById(R.id.iv_bb_play_pause);
+        pb = (ProgressBar) findViewById(R.id.pb);
 
         managerFragment = getSupportFragmentManager();
         if (null == managerFragment.findFragmentByTag(FRAG_TAGS.HOME)) {
@@ -91,4 +116,72 @@ public class RecomsHomeActivity extends BaseActivity {
             super.onBackPressed();
         }
     }
+
+
+    public void setUpBottomBar(SoundCloudTrack track) {
+
+        final String strTrackType = track.track_type;
+        final String strTitle = track.title;
+        final String strUploader = track.user.username;
+
+        if (!TextUtils.isEmpty(strTitle)) {
+            tvTitle.setText(strTitle);
+        }
+
+        String strInfo = "";
+
+        if (!TextUtils.isEmpty(strUploader)) {
+            strInfo += strUploader;
+        }
+
+        if (!TextUtils.isEmpty(strTrackType)) {
+            strInfo += "  |  ";
+            strInfo += strTrackType;
+        }
+
+        tvArtistName.setText(strInfo);
+        String strAlbumArtURL = track.artwork_url;
+        if (!TextUtils.isEmpty(strAlbumArtURL)) {
+            Picasso.with(this).load(strAlbumArtURL).error(noArtworkDrawable).into(ivAlbumArt);
+        } else {
+            ivAlbumArt.setImageResource(noArtworkDrawable);
+        }
+
+        setStreamingIcons();
+    }
+
+
+    @Subscribe
+    public void onEvent(StreamStatusEvent event) {
+        if (null != event) {
+            if (event.isPlaying()) {
+                setPlayingIcons();
+            }
+        }
+    }
+
+
+    private void setPlayingIcons() {
+        pb.setVisibility(View.INVISIBLE);
+    }
+
+
+    private void setStreamingIcons() {
+        pb.setVisibility(View.VISIBLE);
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
+
+
+    @Override
+    protected void onPause() {
+        EventBus.getDefault().unregister(this);
+        super.onPause();
+    }
+
 }

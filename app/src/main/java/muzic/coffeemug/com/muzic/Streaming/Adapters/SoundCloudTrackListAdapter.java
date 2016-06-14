@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.Dialogs.TrackOptionsDialog;
 import muzic.coffeemug.com.muzic.R;
+import muzic.coffeemug.com.muzic.Streaming.Activities.RecomsHomeActivity;
 import muzic.coffeemug.com.muzic.Streaming.Models.SoundCloudTrack;
 import muzic.coffeemug.com.muzic.Streaming.Playback.StreamingController;
 import muzic.coffeemug.com.muzic.Utilities.App;
@@ -96,6 +97,9 @@ public class SoundCloudTrackListAdapter extends RecyclerView.Adapter<SoundCloudT
             @Override
             public void onClick(View v) {
                 StreamingController.getInstance(mContext).playTrack(track.id);
+                if (mContext instanceof RecomsHomeActivity) {
+                    ((RecomsHomeActivity) mContext).setUpBottomBar(track);
+                }
             }
         });
     }

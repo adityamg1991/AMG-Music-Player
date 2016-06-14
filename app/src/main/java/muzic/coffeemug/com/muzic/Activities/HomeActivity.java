@@ -75,7 +75,8 @@ public class HomeActivity extends BaseActivity {
         mContext = this;
 
         prefs = SharedPrefs.getInstance(this);
-        bmpNoAlbumArt = BitmapFactory.decodeResource(getResources(), R.drawable.no_album_art_black_small);
+        bmpNoAlbumArt = BitmapFactory.decodeResource(getResources(),
+                /*R.drawable.no_album_art_black_small*/R.mipmap.ic_launcher);
         mTrackResultReceiver = new TrackResultReceiver(new Handler());
         pixelsToMove = App.pxFromDp(mContext, 60);
 
