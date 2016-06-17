@@ -24,5 +24,6 @@
     <string name="no_sug_found">No Suggestions Found ...</string>
     <string name="error">This just went downhill :( Please try again later ... </string>
     <string name="no_recoms">Oops, no recommendations found. Play some tracks to help us analyse your playing style ...</string>
+    <string name="product_tour_song_settings">Click on the Album Art to reveal track settings.\n( Click on Ok to stop this hint from appearing )</string>
 
 </resources>

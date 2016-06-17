@@ -1,11 +1,13 @@
 package muzic.coffeemug.com.muzic.Activities;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -40,6 +42,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
 
     private final SharedPrefs prefs = SharedPrefs.getInstance(this);
     private final TrackStore trackStore = TrackStore.getInstance(this);
+    private RelativeLayout rlContainer;
 
 
     @Override
@@ -69,6 +72,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
         mPager.addOnPageChangeListener(new MyPagerChangeListener());
         findViewById(R.id.iv_drop_down).setOnClickListener(this);
 
+        rlContainer = (RelativeLayout) findViewById(R.id.rl_container_play_track);
         seekBar = (SeekBar) findViewById(R.id.seekBarDistance);
         tvTrackName = (TextView) findViewById(R.id.tv_track_title);
         tvAdditionalInfo = (TextView) findViewById(R.id.tv_add_info);
@@ -87,16 +91,43 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {}
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            }
+
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
 
             public void onStopTrackingTouch(SeekBar seekBar) {
                 Log.d(LOG_TAG, "From User : Finger up");
-                setTrackProgress(seekBar.getProgress()/1000);
-                prefs.saveTrackProgress(seekBar.getProgress()/1000);
+                setTrackProgress(seekBar.getProgress() / 1000);
+                prefs.saveTrackProgress(seekBar.getProgress() / 1000);
                 masterPlaybackController.moveTrackToPoint();
             }
         });
+
+        showProductTourIfNec();
+    }
+
+
+    @Override
+    public void showProductTourIfNec() {
+
+        if (prefs.getIntroKeyData(SharedPrefs.PRODUCT_TOUR.KEY_PLAY_TRACK_SCREEN)) {
+            String strMessage = getString(R.string.product_tour_song_settings);
+            final Snackbar snackbar = Snackbar.make(rlContainer, strMessage, Snackbar.LENGTH_LONG);
+            snackbar.setAction("Ok", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    snackbar.dismiss();
+                    prefs.setIntroKeyDataFalse(SharedPrefs.PRODUCT_TOUR.KEY_PLAY_TRACK_SCREEN);
+                }
+            });
+
+            View sbView = snackbar.getView();
+            sbView.setBackgroundColor(getResources().getColor(android.R.color.black));
+            snackbar.show();
+        }
+
     }
 
 
@@ -106,7 +137,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
     private void playPauseButtonDecider() {
 
         ivPlayPause.setImageResource(android.R.color.transparent);
-        if(MasterPlaybackUtils.getInstance().isMasterPlaybackServiceRunning(this)) {
+        if (MasterPlaybackUtils.getInstance().isMasterPlaybackServiceRunning(this)) {
             setPauseIcon();
         } else {
             setPlayIcon();
@@ -128,22 +159,22 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
 
         switch (v.getId()) {
 
-            case R.id.iv_drop_down : {
+            case R.id.iv_drop_down: {
                 onBackPressed();
                 break;
             }
 
-            case R.id.iv_play_pause : {
+            case R.id.iv_play_pause: {
                 handlePlayPause();
                 break;
             }
 
-            case R.id.iv_forward : {
+            case R.id.iv_forward: {
                 masterPlaybackController.playNextTrack();
                 break;
             }
 
-            case R.id.iv_rewind : {
+            case R.id.iv_rewind: {
                 playPreviousTrack();
                 break;
             }
@@ -188,7 +219,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
 
         ivPlayPause.setImageResource(android.R.color.transparent);
 
-        if(MasterPlaybackUtils.getInstance().isMasterPlaybackServiceRunning(this)) {
+        if (MasterPlaybackUtils.getInstance().isMasterPlaybackServiceRunning(this)) {
             pausePlayback();
         } else {
             resumePlayback();
@@ -213,16 +244,16 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
         Track currentTrack = SharedPrefs.getInstance(this).getStoredTrack();
         tvTrackName.setSelected(true);
 
-        if(null != currentTrack) {
+        if (null != currentTrack) {
 
             String strTrackName = currentTrack.getTitle();
             String strInfo = currentTrack.getArtist();
 
-            if(!TextUtils.isEmpty(strTrackName)) {
+            if (!TextUtils.isEmpty(strTrackName)) {
                 tvTrackName.setText(strTrackName);
             }
 
-            if(!TextUtils.isEmpty(strInfo)) {
+            if (!TextUtils.isEmpty(strInfo)) {
                 tvAdditionalInfo.setText(strInfo);
             }
 
@@ -238,7 +269,7 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
                     setTrackProgress(progress);
                 }
 
-            } catch(Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -264,17 +295,20 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
 
         public void onPageSelected(int position) {
 
-            if(position == PlayTrackPagerAdapter.POS_ALBUM_ART) {
+            if (position == PlayTrackPagerAdapter.POS_ALBUM_ART) {
                 setSelected(ivOne);
                 setSelectedNot(ivTwo);
-            } else if(position == PlayTrackPagerAdapter.POS_TRACK_LIST) {
+            } else if (position == PlayTrackPagerAdapter.POS_TRACK_LIST) {
                 setSelected(ivTwo);
                 setSelectedNot(ivOne);
             }
         }
 
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
-        public void onPageScrollStateChanged(int state) { }
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        }
+
+        public void onPageScrollStateChanged(int state) {
+        }
 
 
         private void setSelected(ImageView view) {

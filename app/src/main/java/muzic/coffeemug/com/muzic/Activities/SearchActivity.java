@@ -55,6 +55,14 @@ public class SearchActivity extends TrackBaseActivity {
                 }
             }
         });
+
+        showProductTourIfNec();
+    }
+
+
+    @Override
+    public void showProductTourIfNec() {
+
     }
 
 

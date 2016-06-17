@@ -24,8 +24,12 @@ public class SharedPrefs {
 
     private static final String KEY_PLAY_STYLE = "KEY_PLAY_STYLE";
     private static final String KEY_TRACK_PROGRESS = "KEY_TRACK_PROGRESS";
-    private static final String GSON_KEY = "gson_key";
+    private static final String GSON_KEY = "GSON_KEY";
     private static final String KEY_HOME_LABEL = "KEY_HOME_LABEL";
+
+    public interface PRODUCT_TOUR {
+        String KEY_PLAY_TRACK_SCREEN = "KEY_PLAY_TRACK_SCREEN";
+    }
 
     private SharedPrefs(Context context) {
         mContext = context;
@@ -100,5 +104,15 @@ public class SharedPrefs {
     public String getHomeLabel() {
         return sharedPreferences.getString(KEY_HOME_LABEL,
                 mContext.getString(R.string.track_list_activity_label));
+    }
+
+
+    public boolean getIntroKeyData(String key) {
+        return sharedPreferences.getBoolean(key, true);
+    }
+
+
+    public void setIntroKeyDataFalse(String key) {
+        sharedPreferences.edit().putBoolean(key, false).commit();
     }
 }
