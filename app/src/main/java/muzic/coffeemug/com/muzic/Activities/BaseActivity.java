@@ -100,11 +100,4 @@ public abstract class BaseActivity extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    /**
-     * Name says it all.
-     */
-    public abstract void showProductTourIfNec();
-
-
-    public Snackbar getAppSnackBar
 }

@@ -64,13 +64,6 @@ public class RecomsHomeActivity extends BaseActivity {
             managerFragment.beginTransaction().add(R.id.ll_container,
                     fragmentRecomsHome, FRAG_TAGS.HOME).commit();
         }
-
-        showProductTourIfNec();
-    }
-
-    @Override
-    public void showProductTourIfNec() {
-
     }
 
 

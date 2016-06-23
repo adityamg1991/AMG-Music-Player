@@ -3,6 +3,7 @@ package muzic.coffeemug.com.muzic.Fragments;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -160,4 +161,17 @@ public class AlbumArtFragment extends BaseFragment implements View.OnClickListen
         int drawablePlayStyle = PlayStyle.getPlayStyleDrawable(playStyle);
         ivPlayStyle.setImageResource(drawablePlayStyle);
     }
+
+
+    public void toggleOptionsForProductTour() {
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+               ivAlbumArt.performClick();
+            }
+        }, 1000);
+
+    }
+
 }

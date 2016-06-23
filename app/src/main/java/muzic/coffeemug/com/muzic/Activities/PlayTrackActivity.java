@@ -109,15 +109,19 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
     }
 
 
-    @Override
     public void showProductTourIfNec() {
 
         if (prefs.getIntroKeyData(SharedPrefs.PRODUCT_TOUR.KEY_PLAY_TRACK_SCREEN)) {
-            String strMessage = getString(R.string.product_tour_song_settings);
-            final Snackbar snackbar = Snackbar.make(rlContainer, strMessage, Snackbar.LENGTH_LONG);
+
+            final AlbumArtFragment albumArtFragment = adapter.getAlbumArtFragment();
+            final String strMessage = getString(R.string.product_tour_song_settings);
+            final Snackbar snackbar = Snackbar.make(rlContainer, strMessage, Snackbar.LENGTH_INDEFINITE);
             snackbar.setAction("Ok", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (null != albumArtFragment) {
+                        albumArtFragment.toggleOptionsForProductTour();
+                    }
                     snackbar.dismiss();
                     prefs.setIntroKeyDataFalse(SharedPrefs.PRODUCT_TOUR.KEY_PLAY_TRACK_SCREEN);
                 }
@@ -126,6 +130,10 @@ public class PlayTrackActivity extends TrackBaseActivity implements View.OnClick
             View sbView = snackbar.getView();
             sbView.setBackgroundColor(getResources().getColor(android.R.color.black));
             snackbar.show();
+
+            if (null != albumArtFragment) {
+                albumArtFragment.toggleOptionsForProductTour();
+            }
         }
 
     }

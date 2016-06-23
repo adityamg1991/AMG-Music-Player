@@ -107,13 +107,6 @@ public class HomeActivity extends BaseActivity {
         });
 
         TrackStore.getInstance(this).readyTracks(this, mTrackResultReceiver);
-        showProductTourIfNec();
-    }
-
-
-    @Override
-    public void showProductTourIfNec() {
-
     }
 
 
