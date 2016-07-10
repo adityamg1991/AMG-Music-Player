@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
+import muzic.coffeemug.com.muzic.Activities.BaseActivity;
 import muzic.coffeemug.com.muzic.Adapters.TrackListAdapter;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.Database.DatabaseHelper;
@@ -25,6 +26,7 @@ import muzic.coffeemug.com.muzic.Streaming.Store.StreamTrackStore;
 public class FragmentRecomsOnlineMusic extends BaseFragment {
 
     private RecyclerView recyclerView;
+    private BaseActivity activity = null;
 
 
     public static FragmentRecomsOnlineMusic newInstance() {
@@ -48,8 +50,21 @@ public class FragmentRecomsOnlineMusic extends BaseFragment {
 
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof BaseActivity) {
+            this.activity = (BaseActivity) activity;
+        }
+    }
+
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        if (null != activity) {
+            activity.setTitle("Recommendations");
+        }
 
         ArrayList<SoundCloudTrack> dataSet = StreamTrackStore.getInstance().getDataSet();
         if (null != dataSet && !dataSet.isEmpty()) {

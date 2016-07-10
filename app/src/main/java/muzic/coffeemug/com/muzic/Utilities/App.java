@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.telephony.TelephonyManager;
 import android.view.Display;
 import android.view.WindowManager;
 import android.widget.Toast;

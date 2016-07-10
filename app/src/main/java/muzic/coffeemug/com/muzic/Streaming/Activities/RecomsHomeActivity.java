@@ -20,20 +20,25 @@ import com.squareup.picasso.Picasso;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
+
 import muzic.coffeemug.com.muzic.Activities.BaseActivity;
 import muzic.coffeemug.com.muzic.Events.StreamStatusEvent;
 import muzic.coffeemug.com.muzic.Events.TrackProgressEvent;
 import muzic.coffeemug.com.muzic.Fragments.BaseFragment;
 import muzic.coffeemug.com.muzic.R;
 import muzic.coffeemug.com.muzic.Streaming.Fragments.FragmentRecomsHome;
+import muzic.coffeemug.com.muzic.Streaming.Fragments.FragmentRecomsOnlineMusic;
 import muzic.coffeemug.com.muzic.Streaming.Models.SoundCloudTrack;
 import muzic.coffeemug.com.muzic.Streaming.Playback.StreamingController;
+import muzic.coffeemug.com.muzic.Streaming.Store.StreamTrackStore;
 import muzic.coffeemug.com.muzic.Utilities.MasterPlaybackUtils;
 
 public class RecomsHomeActivity extends BaseActivity {
 
 
     private FragmentManager managerFragment;
+    private ArrayList<SoundCloudTrack> currentlyPlayingList = new ArrayList<>();
 
     // Bottom bar views
     private TextView tvArtistName, tvTitle;
@@ -49,7 +54,6 @@ public class RecomsHomeActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setTitle("Recommendations");
 
         // Bottom bar views
         tvArtistName = (TextView) findViewById(R.id.tv_bb_uploader_name);
@@ -64,6 +68,17 @@ public class RecomsHomeActivity extends BaseActivity {
             managerFragment.beginTransaction().add(R.id.ll_container,
                     fragmentRecomsHome, FRAG_TAGS.HOME).commit();
         }
+
+        /*findViewById(R.id.recoms_bottom_bar).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (currentlyPlayingList != null
+                        && !currentlyPlayingList.isEmpty()) {
+                    StreamTrackStore.getInstance().setDataSet(currentlyPlayingList);
+                    FragmentRecomsOnlineMusic fragment = FragmentRecomsOnlineMusic.newInstance();
+                    loadFragment(fragment);
+                }
+            }
+        });*/
     }
 
 
@@ -184,4 +199,13 @@ public class RecomsHomeActivity extends BaseActivity {
         super.onPause();
     }
 
+
+    public ArrayList<SoundCloudTrack> getCurrentlyPlayingList() {
+        return currentlyPlayingList;
+    }
+
+
+    public void setCurrentlyPlayingList(ArrayList<SoundCloudTrack> list) {
+        this.currentlyPlayingList = list;
+    }
 }

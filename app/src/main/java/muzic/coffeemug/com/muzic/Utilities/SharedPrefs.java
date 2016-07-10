@@ -3,8 +3,11 @@ package muzic.coffeemug.com.muzic.Utilities;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
+
+import java.util.UUID;
 
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.R;
@@ -26,6 +29,7 @@ public class SharedPrefs {
     private static final String KEY_TRACK_PROGRESS = "KEY_TRACK_PROGRESS";
     private static final String GSON_KEY = "GSON_KEY";
     private static final String KEY_HOME_LABEL = "KEY_HOME_LABEL";
+    private static final String KEY_UUID = "KEY_UUID";
 
     public interface PRODUCT_TOUR {
         String KEY_PLAY_TRACK_SCREEN = "KEY_PLAY_TRACK_SCREEN";
@@ -54,6 +58,19 @@ public class SharedPrefs {
 
         String str = gson.toJson(track);
         sharedPreferences.edit().putString(GSON_KEY, str).commit();
+    }
+
+
+    public void setUUID() {
+        String savedUUID = getUUID();
+        if (TextUtils.isEmpty(savedUUID)) {
+            sharedPreferences.edit().putString(KEY_UUID, UUID.randomUUID().toString()).commit();
+        }
+    }
+
+
+    public String getUUID() {
+        return sharedPreferences.getString(KEY_UUID, null);
     }
 
 

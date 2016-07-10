@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -25,6 +26,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
+import muzic.coffeemug.com.muzic.Activities.BaseActivity;
 import muzic.coffeemug.com.muzic.Adapters.TrackListAdapter;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.Database.DatabaseHelper;
@@ -81,10 +83,14 @@ public class FragmentRecomsHome extends BaseFragment implements AppConstants {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        if (null != activity) {
+            activity.setTitle("Fav Tracks");
+        }
+
         ArrayList<Track> dataSet = DatabaseHelper.getInstance(getActivity()).getTracksStoredInDatabase();
 
         if (dataSet.isEmpty()) {
-            rvRecon.setVisibility(View.GONE);
+            /*rvRecon.setVisibility(View.GONE);
             final String strMessage = getString(R.string.no_recoms);
             final Snackbar snackbar = Snackbar.make(frameLayout, strMessage, Snackbar.LENGTH_LONG);
             snackbar.setDuration(Snackbar.LENGTH_INDEFINITE);
@@ -95,7 +101,8 @@ public class FragmentRecomsHome extends BaseFragment implements AppConstants {
                     getActivity().onBackPressed();
                 }
             });
-            snackbar.show();
+            snackbar.show();*/
+            Toast.makeText(getActivity(), getString(R.string.no_recoms), Toast.LENGTH_LONG).show();
         } else {
             rvRecon.setHasFixedSize(true);
             rvRecon.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -182,6 +189,4 @@ public class FragmentRecomsHome extends BaseFragment implements AppConstants {
         }
 
     }
-
-
 }

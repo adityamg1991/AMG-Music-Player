@@ -99,6 +99,8 @@ public class SoundCloudTrackListAdapter extends RecyclerView.Adapter<SoundCloudT
                 StreamingController.getInstance(mContext).playTrack(track.id);
                 if (mContext instanceof RecomsHomeActivity) {
                     ((RecomsHomeActivity) mContext).setUpBottomBar(track);
+                    ((RecomsHomeActivity) mContext).setCurrentlyPlayingList(dataSet);
+
                 }
             }
         });

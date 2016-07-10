@@ -38,4 +38,9 @@ public class StreamTrackStore {
         return dataSet;
     }
 
+
+    public void setDataSet(ArrayList<SoundCloudTrack> currentlyPlayingList) {
+        this.dataSet.clear();
+        this.dataSet = currentlyPlayingList;
+    }
 }

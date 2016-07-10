@@ -49,7 +49,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
 
-    protected void setTitle(String str) {
+    public void setTitle(String str) {
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(Html.fromHtml("<font color=\"#FFFFFF\">" + str + "</font>"));

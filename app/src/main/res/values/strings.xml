@@ -25,5 +25,6 @@
     <string name="error">This just went downhill :( Please try again later ... </string>
     <string name="no_recoms">Oops, no recommendations found. Play some tracks to help us analyse your playing style ...</string>
     <string name="product_tour_song_settings">Click on the Album Art to reveal track settings.\n( Click on Ok to stop this hint from appearing )</string>
+    <string name="share_text">Check out this great Music Player with loads of innovative features -</string>
 
 </resources>

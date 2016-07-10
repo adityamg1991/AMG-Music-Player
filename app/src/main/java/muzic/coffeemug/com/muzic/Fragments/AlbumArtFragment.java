@@ -170,7 +170,7 @@ public class AlbumArtFragment extends BaseFragment implements View.OnClickListen
             public void run() {
                ivAlbumArt.performClick();
             }
-        }, 1000);
+        }, 500);
 
     }
 

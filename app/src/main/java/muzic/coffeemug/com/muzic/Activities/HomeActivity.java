@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
@@ -15,6 +16,7 @@ import android.speech.RecognizerIntent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,15 +27,29 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import muzic.coffeemug.com.muzic.Adapters.TrackListAdapter;
 import muzic.coffeemug.com.muzic.Data.ScrollData;
+import muzic.coffeemug.com.muzic.Database.DatabaseHelper;
 import muzic.coffeemug.com.muzic.Events.PlaybackStatusEvent;
 import muzic.coffeemug.com.muzic.MusicPlayback.PlaybackController;
+import muzic.coffeemug.com.muzic.Utilities.APIConstants;
 import muzic.coffeemug.com.muzic.Utilities.MasterPlaybackUtils;
 import muzic.coffeemug.com.muzic.Streaming.Activities.RecomsHomeActivity;
 import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
@@ -107,7 +123,67 @@ public class HomeActivity extends BaseActivity {
         });
 
         TrackStore.getInstance(this).readyTracks(this, mTrackResultReceiver);
+
+        saveUUIDIfNec();
+        sendDataToServer();
     }
+
+
+    private void saveUUIDIfNec() {
+        SharedPrefs.getInstance(this).setUUID();
+    }
+
+
+    private void sendDataToServer() {
+
+        final Gson gson = new Gson();
+        final RequestQueue queue = App.getInstance().getRequestQueue();
+
+        ArrayList<Track> trackList = App.getInstance().getDatabaseHelper()
+                .getTracksStoredInDatabase();
+
+        try {
+            JSONArray jArray = new JSONArray();
+
+            if (!trackList.isEmpty()) {
+
+                for (Track track : trackList) {
+                    String strObj = gson.toJson(track);
+                    JSONObject obj = new JSONObject(strObj);
+                    jArray.put(obj);
+                }
+
+                final JSONObject obj = new JSONObject();
+                final String strIMEI = SharedPrefs.getInstance(this).getUUID();
+                if (!TextUtils.isEmpty(strIMEI)) {
+
+                    obj.put("imei", strIMEI);
+                    obj.put("music_data", jArray);
+
+                    Log.d("JSONObject to send", obj.toString());
+
+                    JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
+                            APIConstants.ADD_USER_DATA, obj, new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d("Response", response.toString());
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.d("Error User Info", error.toString());
+                        }
+                    });
+                    queue.add(request);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
 
     private void handlePlayPause() {
@@ -224,7 +300,15 @@ public class HomeActivity extends BaseActivity {
 
 
     private void shareApp() {
-
+        try {
+            final String strAppAddress = "https://play.google.com/store/apps/details?id=" + getPackageName();
+            Intent intent2 = new Intent(); intent2.setAction(Intent.ACTION_SEND);
+            intent2.setType("text/plain");
+            intent2.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text) + " " + strAppAddress );
+            startActivity(Intent.createChooser(intent2, "Share via"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

@@ -4,9 +4,11 @@ package muzic.coffeemug.com.muzic.Streaming.Playback;
  * Created by PAVILION on 6/13/2016.
  */
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
+import muzic.coffeemug.com.muzic.Streaming.Activities.RecomsHomeActivity;
 import muzic.coffeemug.com.muzic.Utilities.MasterPlaybackUtils;
 import muzic.coffeemug.com.muzic.Store.TrackStore;
 import muzic.coffeemug.com.muzic.Utilities.SharedPrefs;
@@ -44,7 +46,6 @@ public class StreamingController {
         intent.putExtra(MasterPlaybackUtils.Constants.ACTION, MasterPlaybackUtils.Values.PLAY_TRACK);
         intent.putExtra(MasterPlaybackUtils.Constants.SOUND_CLOUD_TRACK_ID, id);
         context.startService(intent);
-
     }
 
 
