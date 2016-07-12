@@ -69,16 +69,15 @@ public class RecomsHomeActivity extends BaseActivity {
                     fragmentRecomsHome, FRAG_TAGS.HOME).commit();
         }
 
-        /*findViewById(R.id.recoms_bottom_bar).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.recoms_bottom_bar).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (currentlyPlayingList != null
-                        && !currentlyPlayingList.isEmpty()) {
+                if (currentlyPlayingList != null) {
                     StreamTrackStore.getInstance().setDataSet(currentlyPlayingList);
                     FragmentRecomsOnlineMusic fragment = FragmentRecomsOnlineMusic.newInstance();
                     loadFragment(fragment);
                 }
             }
-        });*/
+        });
     }
 
 
@@ -197,11 +196,6 @@ public class RecomsHomeActivity extends BaseActivity {
     protected void onPause() {
         EventBus.getDefault().unregister(this);
         super.onPause();
-    }
-
-
-    public ArrayList<SoundCloudTrack> getCurrentlyPlayingList() {
-        return currentlyPlayingList;
     }
 
 

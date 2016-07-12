@@ -3,7 +3,9 @@ package muzic.coffeemug.com.muzic.Activities;
 import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -43,12 +45,15 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import muzic.coffeemug.com.muzic.Adapters.TrackListAdapter;
 import muzic.coffeemug.com.muzic.Data.ScrollData;
 import muzic.coffeemug.com.muzic.Database.DatabaseHelper;
 import muzic.coffeemug.com.muzic.Events.PlaybackStatusEvent;
 import muzic.coffeemug.com.muzic.MusicPlayback.PlaybackController;
+import muzic.coffeemug.com.muzic.Receivers.AlarmReceiver;
+import muzic.coffeemug.com.muzic.Service.DataService;
 import muzic.coffeemug.com.muzic.Utilities.APIConstants;
 import muzic.coffeemug.com.muzic.Utilities.MasterPlaybackUtils;
 import muzic.coffeemug.com.muzic.Streaming.Activities.RecomsHomeActivity;
@@ -126,6 +131,28 @@ public class HomeActivity extends BaseActivity {
 
         saveUUIDIfNec();
         sendDataToServer();
+        checkAndSetAlarm();
+    }
+
+
+    private void checkAndSetAlarm() {
+
+        final AlarmManager alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        final Intent intent = new Intent(this, AlarmReceiver.class);
+        final PendingIntent alarmIntent = PendingIntent.
+                getBroadcast(this, 0, intent, 0);
+
+        boolean alarmUp = prefs.getIsAlarmSet();
+
+        if (alarmUp) {
+            Log.d("AlarmReceiver", "Alarm is already active");
+        } else {
+            Log.d("AlarmReceiver", "Setting up alarm");
+            alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis(),
+                /*AlarmManager.INTERVAL_DAY*/1000, alarmIntent);
+            prefs.setIsAlarmSet(true);
+        }
+
     }
 
 
@@ -135,53 +162,7 @@ public class HomeActivity extends BaseActivity {
 
 
     private void sendDataToServer() {
-
-        final Gson gson = new Gson();
-        final RequestQueue queue = App.getInstance().getRequestQueue();
-
-        ArrayList<Track> trackList = App.getInstance().getDatabaseHelper()
-                .getTracksStoredInDatabase();
-
-        try {
-            JSONArray jArray = new JSONArray();
-
-            if (!trackList.isEmpty()) {
-
-                for (Track track : trackList) {
-                    String strObj = gson.toJson(track);
-                    JSONObject obj = new JSONObject(strObj);
-                    jArray.put(obj);
-                }
-
-                final JSONObject obj = new JSONObject();
-                final String strIMEI = SharedPrefs.getInstance(this).getUUID();
-                if (!TextUtils.isEmpty(strIMEI)) {
-
-                    obj.put("imei", strIMEI);
-                    obj.put("music_data", jArray);
-
-                    Log.d("JSONObject to send", obj.toString());
-
-                    JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
-                            APIConstants.ADD_USER_DATA, obj, new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Log.d("Response", response.toString());
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.d("Error User Info", error.toString());
-                        }
-                    });
-                    queue.add(request);
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        startService(new Intent(this, DataService.class));
     }
 
 

@@ -35,7 +35,7 @@ public class StreamTrackStore {
 
 
     public ArrayList<SoundCloudTrack> getDataSet() {
-        return dataSet;
+        return this.dataSet;
     }
 
 

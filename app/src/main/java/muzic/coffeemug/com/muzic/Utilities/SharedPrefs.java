@@ -30,6 +30,7 @@ public class SharedPrefs {
     private static final String GSON_KEY = "GSON_KEY";
     private static final String KEY_HOME_LABEL = "KEY_HOME_LABEL";
     private static final String KEY_UUID = "KEY_UUID";
+    private static final String KEY_ALARM_SET = "KEY_ALARM_SET";
 
     public interface PRODUCT_TOUR {
         String KEY_PLAY_TRACK_SCREEN = "KEY_PLAY_TRACK_SCREEN";
@@ -38,6 +39,16 @@ public class SharedPrefs {
     private SharedPrefs(Context context) {
         mContext = context;
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+    }
+
+
+    public boolean getIsAlarmSet() {
+        return sharedPreferences.getBoolean(KEY_ALARM_SET, false);
+    }
+
+
+    public void setIsAlarmSet(boolean b) {
+        sharedPreferences.edit().putBoolean(KEY_ALARM_SET, b).commit();
     }
 
 

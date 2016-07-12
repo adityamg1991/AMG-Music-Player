@@ -46,7 +46,16 @@
         <activity
             android:name=".Streaming.Activities.RecomsHomeActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.App.Base"></activity>
+            android:theme="@style/Theme.App.Base" />
+
+        <receiver
+            android:name=".Receivers.AlarmReceiver"
+            android:enabled="true"
+            android:exported="false" />
+
+        <service
+            android:name=".Service.DataService"
+            android:exported="false"></service>
     </application>
 
 </manifest>
