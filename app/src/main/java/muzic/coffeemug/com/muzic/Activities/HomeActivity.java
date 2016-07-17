@@ -149,7 +149,7 @@ public class HomeActivity extends BaseActivity {
         } else {
             Log.d("AlarmReceiver", "Setting up alarm");
             alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis(),
-                /*AlarmManager.INTERVAL_DAY*/1000, alarmIntent);
+                AlarmManager.INTERVAL_DAY/2, alarmIntent);
             prefs.setIsAlarmSet(true);
         }
 
