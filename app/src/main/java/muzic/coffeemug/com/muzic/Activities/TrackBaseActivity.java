@@ -8,4 +8,5 @@ import muzic.coffeemug.com.muzic.Data.Track;
 public abstract class TrackBaseActivity extends BaseActivity {
 
     public abstract void throwSearchedTrackBack(Track track);
+
 }

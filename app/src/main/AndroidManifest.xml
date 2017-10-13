@@ -3,15 +3,17 @@
     package="muzic.coffeemug.com.muzic">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
-        android:name=".Utilities.MuzicApplication"
+        android:name=".Utilities.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.App.Base">
         <activity
-            android:name=".Activities.TrackListActivity"
+            android:name=".Activities.HomeActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,15 +29,33 @@
             android:name=".Activities.PlayTrackActivity"
             android:screenOrientation="portrait" />
 
-        <service
-            android:name=".MusicPlayback.MusicPlaybackService"
+        <receiver
+            android:name=".Notification.NotificationButtonClickListener"
             android:enabled="true"
             android:exported="false" />
 
-        <receiver
-            android:name=".MusicPlayback.NotificationButtonClickListener"
+        <service
+            android:name=".MusicPlayback.PlaybackService"
             android:enabled="true"
-            android:exported="false"></receiver>
+            android:exported="false" />
+        <service
+            android:name=".Streaming.Playback.StreamingService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <activity
+            android:name=".Streaming.Activities.RecomsHomeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.App.Base" />
+
+        <receiver
+            android:name=".Receivers.AlarmReceiver"
+            android:enabled="true"
+            android:exported="false" />
+
+        <service
+            android:name=".Service.DataService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

@@ -1,60 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/black">
+    android:layout_height="wrap_content"
+    android:background="@android:color/black"
+    android:clickable="true">
 
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="2dp"
         android:alpha="0.5"
-        android:background="@color/dark_grey"/>
+        android:background="@color/dark_grey" />
 
     <ImageView
         android:id="@+id/iv_album_art"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:scaleType="fitCenter"
         android:layout_centerVertical="true"
-        android:src="@drawable/no_album_art_black_small"
-        android:layout_marginLeft="15dp"/>
+        android:layout_marginLeft="15dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/no_album_art_black_small" />
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:orientation="vertical"
         android:layout_height="match_parent"
+        android:layout_marginLeft="15dp"
+        android:layout_toRightOf="@+id/iv_album_art"
         android:gravity="center_vertical"
-        android:layout_marginLeft="5dp"
-        android:layout_toRightOf="@+id/iv_album_art">
+        android:orientation="vertical"
+        android:layout_toLeftOf="@+id/iv_play_pause"
+        android:layout_toStartOf="@+id/iv_play_pause">
 
         <TextView
             android:id="@+id/tv_track_name"
             android:layout_width="wrap_content"
-            android:text="-"
+            android:layout_height="wrap_content"
             android:singleLine="true"
-            android:textColor="@android:color/white"
-            android:layout_height="wrap_content"/>
+            android:text="-"
+            android:textColor="@android:color/white" />
 
         <TextView
             android:id="@+id/tv_artist_name"
             android:layout_width="wrap_content"
-            android:text="-"
-            android:textSize="11sp"
+            android:layout_height="wrap_content"
             android:singleLine="true"
+            android:text="-"
             android:textColor="@color/dark_grey"
-            android:layout_height="wrap_content"/>
+            android:textSize="11sp" />
 
     </LinearLayout>
 
     <ImageView
         android:id="@+id/iv_play_pause"
-        android:layout_width="50dp"
-        android:layout_marginRight="15dp"
-        android:layout_height="50dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true"
+        android:scaleType="fitXY"
+        android:layout_marginRight="15dp"
+        android:padding="5dp" />
 
 </RelativeLayout>

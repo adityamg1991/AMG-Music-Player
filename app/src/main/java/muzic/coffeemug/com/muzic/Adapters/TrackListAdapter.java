@@ -14,7 +14,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import muzic.coffeemug.com.muzic.Utilities.Constants;
+import muzic.coffeemug.com.muzic.Streaming.Models.SoundCloudTrack;
+import muzic.coffeemug.com.muzic.Utilities.AppConstants;
 import muzic.coffeemug.com.muzic.Data.Track;
 import muzic.coffeemug.com.muzic.Dialogs.TrackOptionsDialog;
 import muzic.coffeemug.com.muzic.R;
@@ -57,18 +58,18 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.View
         String strTitle = track.getTitle();
         String strAlbumName = track.getAlbumName();
 
-        if(!TextUtils.isEmpty(strTitle)) {
+        if (!TextUtils.isEmpty(strTitle)) {
             holder.mTextView.setText(strTitle);
         }
 
         String strInfo = "";
 
-        if(!TextUtils.isEmpty(strArtist)) {
+        if (!TextUtils.isEmpty(strArtist)) {
             strInfo += strArtist;
             strInfo += "  |  ";
         }
 
-        if(!TextUtils.isEmpty(strAlbumName)) {
+        if (!TextUtils.isEmpty(strAlbumName)) {
             strInfo += strAlbumName;
         }
 
@@ -81,7 +82,7 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.View
                 int pos = (int) holder.llContainer.getTag();
                 Track selectedTrack = dataSet.get(pos);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(Constants.SELECTED_TRACK, selectedTrack);
+                bundle.putParcelable(AppConstants.SELECTED_TRACK, selectedTrack);
                 resultReceiver.send(Activity.RESULT_OK, bundle);
             }
         });
@@ -90,7 +91,7 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.View
             @Override
             public boolean onLongClick(View view) {
 
-                if(isLongClickEnabled) {
+                if (isLongClickEnabled) {
                     int pos = (int) holder.llContainer.getTag();
                     Track selectedTrack = dataSet.get(pos);
                     new TrackOptionsDialog(selectedTrack, mContext, resultReceiver).show();
@@ -112,7 +113,7 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.View
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView mTextView;
+        public TextView mTextView, tvSeparator;
         public TextView tvInfo;
         public LinearLayout llContainer;
 
@@ -121,6 +122,7 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.View
             mTextView = (TextView) v.findViewById(R.id.info_text);
             tvInfo = (TextView) v.findViewById(R.id.tv_info);
             llContainer = (LinearLayout) v.findViewById(R.id.ll_container);
+            tvSeparator = (TextView) v.findViewById(R.id.tv_separator);
         }
     }
 

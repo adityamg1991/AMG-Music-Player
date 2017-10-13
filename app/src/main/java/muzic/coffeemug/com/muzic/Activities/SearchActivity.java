@@ -1,6 +1,7 @@
 package muzic.coffeemug.com.muzic.Activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -10,20 +11,21 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import java.util.ArrayList;
 
-import muzic.coffeemug.com.muzic.Utilities.Constants;
+import muzic.coffeemug.com.muzic.Utilities.AppConstants;
 import muzic.coffeemug.com.muzic.Data.Track;
-import muzic.coffeemug.com.muzic.Fragments.SearchTrackFragment;
+import muzic.coffeemug.com.muzic.Fragments.TrackListFragment;
 import muzic.coffeemug.com.muzic.R;
 
 public class SearchActivity extends TrackBaseActivity {
 
     private final String LABEL_STRING = "Search";
     private final String FRAG_TAG = "frag_tag";
-    private SearchTrackFragment mSearchFragment;
+    private TrackListFragment mSearchFragment;
     private EditText etSearch;
 
     private FragmentManager managerFragment;
@@ -60,7 +62,7 @@ public class SearchActivity extends TrackBaseActivity {
 
         if(null == managerFragment.findFragmentByTag(FRAG_TAG)) {
 
-            mSearchFragment = SearchTrackFragment.getInstance();
+            mSearchFragment = TrackListFragment.getInstance();
             managerFragment.beginTransaction().
                     add(R.id.ll_container, mSearchFragment, FRAG_TAG).commit();
         }
@@ -103,7 +105,7 @@ public class SearchActivity extends TrackBaseActivity {
     public void throwSearchedTrackBack(Track track) {
 
         Intent intent = new Intent();
-        intent.putExtra(Constants.SELECTED_TRACK, track);
+        intent.putExtra(AppConstants.SELECTED_TRACK, track);
         setResult(RESULT_OK, intent);
         finish();
     }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="light_grey">#d3d3d3</color>
+    <color name="app_theme">#7C0020</color>
+    <color name="app_theme_light">#701A30</color>
+    <color name="notification_bg">#424242</color>
+    <color name="dark_grey">#7e7e7e</color>
+    <color name="light_black">#403532</color>
+    <color name="app_theme_super_light">#5A1A30</color>
+
+</resources>

@@ -7,15 +7,24 @@
     <string name="scroll_to_top">Scroll to Top</string>
     <string name="search_text">Search</string>
 
-    <color name="app_theme">#7C0020</color>
-    <color name="app_theme_light">#701A30</color>
 
-    <color name="light_grey">#d3d3d3</color>
-    <color name="dark_grey">#7e7e7e</color>
     <string name="title_activity_search">Search</string>
     <string name="action_settings">Settings</string>
     <string name="voice_search_text">Speak \'Song/Artist/Album\' Name</string>
     <string name="voice_search">Voice search</string>
-    <string name="voice_play">Say the Name of the Song to Play</string>
+    <string name="voice_play">Voice Play</string>
+    <string name="action_change_label">Change label</string>
+    <string name="err_home_label_empty">    Please enter a valid Label    </string>
+    <string name="action_share_app">Share app</string>
+    <string name="action_get_recoms">Get Recommended Music</string>
+    <string name="title_activity_recoms_home">RecomsHomeActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="no_sug_found">No Suggestions Found ...</string>
+    <string name="error">This just went downhill :( Please try again later ... </string>
+    <string name="no_recoms">Oops, no recommendations found. Play some tracks to help us analyse your playing style ...</string>
+    <string name="product_tour_song_settings">Click on the Album Art to reveal track settings.\n( Click on Ok to stop this hint from appearing )</string>
+    <string name="share_text">Check out this great Music Player with loads of innovative features -</string>
 
 </resources>

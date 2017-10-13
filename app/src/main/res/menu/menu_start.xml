@@ -1,29 +1,46 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
 
     <item
         android:id="@+id/search"
         android:icon="@drawable/searchicon"
         android:title="@string/search_text"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/voice_play"
-        android:title="@string/voice_play"
         android:icon="@drawable/voice_play"
-        app:showAsAction="always"/>
+        android:title="@string/voice_play"
+        app:showAsAction="ifRoom" />
+
+
+    <item
+        android:id="@+id/get_recoms"
+        android:icon="@drawable/actionbar_get_recoms"
+        android:title="@string/action_get_recoms"
+        app:showAsAction="always" />
 
 
     <item
         android:id="@+id/scroll_to_top"
         android:title="@string/scroll_to_top"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/share_app"
+        android:title="@string/action_share_app"
+        app:showAsAction="never" />
 
 
     <item
         android:id="@+id/rate_app"
         android:title="@string/action_rate_app"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/change_label"
+        android:title="@string/action_change_label"
+        app:showAsAction="never" />
 </menu>

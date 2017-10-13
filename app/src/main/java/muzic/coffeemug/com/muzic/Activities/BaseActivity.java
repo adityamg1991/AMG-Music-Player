@@ -4,33 +4,42 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Toast;
 
-import muzic.coffeemug.com.muzic.Data.SharedPrefs;
-import muzic.coffeemug.com.muzic.Data.Track;
-import muzic.coffeemug.com.muzic.MusicPlayback.MusicPlaybackController;
-import muzic.coffeemug.com.muzic.MusicPlayback.MusicPlaybackService;
 import muzic.coffeemug.com.muzic.R;
 
 /**
  * Created by aditya on 07/09/15.
  */
-public class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity {
 
     protected static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
-    private MusicPlaybackController musicPlaybackController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        musicPlaybackController = MusicPlaybackController.getInstance(this);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Window window = this.getWindow();
+                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(this.getResources().getColor(android.R.color.black));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     protected void initActionBar() {
@@ -40,7 +49,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
 
-    protected void setTitle(String str) {
+    public void setTitle(String str) {
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(Html.fromHtml("<font color=\"#FFFFFF\">" + str + "</font>"));
@@ -75,12 +84,6 @@ public class BaseActivity extends AppCompatActivity {
     }
 
 
-    protected void saveInPrefsAndPlayTrack(Track track) {
-        SharedPrefs.getInstance(this).storeTrack(track);
-        musicPlaybackController.playTrack(this);
-    }
-
-
     protected void openSearchDialog(String msg) {
 
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -91,4 +94,10 @@ public class BaseActivity extends AppCompatActivity {
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"en-US");
         startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
     }
+
+
+    protected void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
 }
